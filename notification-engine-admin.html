@@ -236,8 +236,8 @@
   }
 
   /* Event detail rows (shown when module is expanded) */
-  tbody tr.event-row { background: var(--neutral-50); }
-  tbody tr.event-row:hover { background: var(--neutral-50); }
+  tbody tr.event-row { background: var(--neutral-0); }
+  tbody tr.event-row:hover { background: var(--neutral-0); }
   tbody tr.event-row td {
     padding: 10px 16px 10px 72px;
     border-bottom: 1px solid var(--border);
@@ -975,7 +975,7 @@
               <button class="expand-btn ${isExpanded ? 'expanded' : ''}" title="${isExpanded ? 'Collapse' : 'Expand'} events"><i class="ph ph-caret-right"></i></button>
               <span class="group-icon"><i class="ph ${mod.icon}"></i></span>
               <span class="group-name">${mod.name}</span>
-              <span class="group-count">${mod.events.length} ${mod.events.length === 1 ? 'event' : 'events'}</span>
+              <span class="group-count">${mod.events.length}</span>
             </div>
           </td>
           ${internalKeys.map(t => chipCell(mod, t)).join('')}
