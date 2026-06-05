@@ -498,6 +498,137 @@
   .toast-body { font-size: 13px; color: var(--neutral-500); }
   @keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
+  .icon-btn {
+    width: 32px; height: 32px;
+    border-radius: 6px;
+    display: inline-grid; place-items: center;
+    color: var(--neutral-500);
+    transition: all 120ms ease;
+  }
+  .icon-btn:hover { background: var(--neutral-100); color: var(--neutral-800); }
+  .icon-btn i { font-size: 16px; }
+
+  /* ========== Inbox ========== */
+  .inbox-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .inbox-stat-card {
+    background: var(--neutral-0);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+  }
+  .inbox-stat-label {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300; font-size: 11px;
+    color: var(--neutral-500);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .inbox-stat-value {
+    font-size: 22px; font-weight: 700;
+    color: var(--neutral-900);
+    line-height: 1.1;
+  }
+  .inbox-stat-card.today .inbox-stat-value    { color: var(--primary-700); }
+  .inbox-stat-card.read .inbox-stat-value     { color: var(--success-700); }
+  .inbox-stat-card.queued .inbox-stat-value   { color: var(--warning-700); }
+  .inbox-stat-card.failed .inbox-stat-value   { color: var(--danger-700); }
+
+  .inbox-time {
+    display: flex; flex-direction: column;
+  }
+  .inbox-time .relative {
+    font-weight: 700; font-size: 13px;
+    color: var(--neutral-900);
+  }
+  .inbox-time .absolute {
+    font-size: 11px; color: var(--neutral-500);
+    margin-top: 2px;
+  }
+
+  .inbox-event-name {
+    font-weight: 700; font-size: 14px;
+    color: var(--neutral-900);
+    display: block; margin-bottom: 2px;
+  }
+  .inbox-event-module {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300; font-size: 11px;
+    color: var(--neutral-500);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    display: inline-block;
+  }
+
+  .inbox-recipient {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .inbox-recipient .avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 11px; font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+  .inbox-recipient .avatar.client     { background: #1059BD; }
+  .inbox-recipient .avatar.manager    { background: #7B61FF; }
+  .inbox-recipient .avatar.worker     { background: #12B76A; }
+  .inbox-recipient .avatar.contractor { background: #F79009; }
+  .inbox-recipient .who {
+    font-size: 13px; font-weight: 700;
+    color: var(--neutral-900);
+    line-height: 1.2;
+  }
+  .inbox-recipient .role {
+    font-size: 11px;
+    color: var(--neutral-500); font-weight: 500;
+    margin-top: 2px;
+  }
+  .role-mini {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-size: 10px; font-weight: 700;
+    padding: 1px 5px; border-radius: 4px;
+    text-transform: uppercase; letter-spacing: 0.4px;
+    margin-left: 4px;
+    vertical-align: middle;
+  }
+  .role-mini.primary  { background: var(--primary-500); color: white; }
+  .role-mini.informed { background: var(--primary-50);  color: var(--primary-700); }
+
+  .inbox-channel {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 9px; border-radius: 6px;
+    background: var(--neutral-100);
+    font-size: 12px; font-weight: 700;
+    color: var(--neutral-700);
+  }
+  .inbox-channel i { font-size: 13px; }
+  .inbox-channel.slack { background: #F4ECFF; color: #5A3FD6; }
+  .inbox-channel.email { background: #FFF4E5; color: #B54708; }
+  .inbox-channel.inapp { background: var(--primary-50); color: var(--primary-700); }
+  .inbox-channel.sms   { background: var(--success-50); color: var(--success-700); }
+
+  .inbox-status {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 700;
+  }
+  .inbox-status::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+  }
+  .inbox-status.read      { background: var(--success-50); color: var(--success-700); }
+  .inbox-status.read::before      { background: var(--success-500); }
+  .inbox-status.delivered { background: var(--primary-50); color: var(--primary-700); }
+  .inbox-status.delivered::before { background: var(--primary-500); }
+  .inbox-status.queued    { background: var(--warning-50); color: var(--warning-700); }
+  .inbox-status.queued::before    { background: var(--warning-500); }
+  .inbox-status.failed    { background: var(--danger-50); color: var(--danger-700); }
+  .inbox-status.failed::before    { background: var(--danger-500); }
+
   /* ========== Info banner ========== */
   .info-banner {
     background: var(--primary-50);
@@ -533,6 +664,10 @@
         <a class="nav-item" data-view="owners" onclick="switchView('owners')">
           <i class="ph ph-users-three"></i> Owners
           <span class="nav-badge" id="owners-count">6</span>
+        </a>
+        <a class="nav-item" data-view="inbox" onclick="switchView('inbox')">
+          <i class="ph ph-tray"></i> Inbox
+          <span class="nav-badge" id="inbox-count">24</span>
         </a>
       </nav>
     </div>
@@ -687,6 +822,131 @@
 
         <div class="table-footer">
           <div>Showing <strong style="color:var(--neutral-800)" id="owners-result-count">6</strong> clients</div>
+        </div>
+      </section>
+    </section>
+
+    <!-- ========== VIEW: INBOX ========== -->
+    <section class="view" id="view-inbox">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Notification inbox</div>
+          <div class="page-subtitle">
+            Every notification the engine has dispatched in the last 30 days. Use the filters to debug who got what, when, and via which channel.
+          </div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-secondary" onclick="exportInbox()"><i class="ph ph-download-simple"></i> Export</button>
+        </div>
+      </div>
+
+      <!-- Stats strip -->
+      <div class="inbox-stats">
+        <div class="inbox-stat-card">
+          <div class="inbox-stat-label">Today</div>
+          <div class="inbox-stat-value" id="stat-today">0</div>
+        </div>
+        <div class="inbox-stat-card">
+          <div class="inbox-stat-label">Read</div>
+          <div class="inbox-stat-value" id="stat-read">0</div>
+        </div>
+        <div class="inbox-stat-card">
+          <div class="inbox-stat-label">Queued</div>
+          <div class="inbox-stat-value" id="stat-queued">0</div>
+        </div>
+        <div class="inbox-stat-card">
+          <div class="inbox-stat-label">Failed</div>
+          <div class="inbox-stat-value" id="stat-failed">0</div>
+        </div>
+      </div>
+
+      <section class="card">
+        <div class="filter-bar">
+          <div class="search">
+            <i class="ph ph-magnifying-glass"></i>
+            <input id="inbox-search-input" type="text" placeholder="Search event, recipient, or client…" />
+          </div>
+          <div class="select-wrap">
+            <select id="inbox-range-select" class="select">
+              <option value="">All time</option>
+              <option value="today">Today</option>
+              <option value="7d">Last 7 days</option>
+              <option value="30d">Last 30 days</option>
+            </select>
+          </div>
+          <div class="select-wrap">
+            <select id="inbox-module-select" class="select">
+              <option value="">All modules</option>
+              <option>Employees</option>
+              <option>Payroll</option>
+              <option>Invoicing</option>
+              <option>Compliance</option>
+              <option>Leaves</option>
+              <option>Contractors</option>
+              <option>Account</option>
+            </select>
+          </div>
+          <div class="select-wrap">
+            <select id="inbox-audience-select" class="select">
+              <option value="">All recipients</option>
+              <option value="internal">Internal team</option>
+              <option value="client">Client</option>
+              <option value="manager">Manager</option>
+              <option value="worker">Worker</option>
+              <option value="contractor">Contractor</option>
+            </select>
+          </div>
+          <div class="select-wrap">
+            <select id="inbox-channel-select" class="select">
+              <option value="">All channels</option>
+              <option value="slack">Slack</option>
+              <option value="email">Email</option>
+              <option value="inapp">In-app</option>
+              <option value="sms">SMS</option>
+            </select>
+          </div>
+          <div class="filter-spacer"></div>
+          <button class="btn btn-ghost" id="reset-inbox-btn" onclick="resetInboxFilters()" style="display:none;">
+            <i class="ph ph-arrow-counter-clockwise"></i> Reset
+          </button>
+        </div>
+
+        <!-- Status filter chips row -->
+        <div class="filter-bar" style="padding-top:12px; padding-bottom:12px; gap:6px;">
+          <span style="font-family:'Open Sans', sans-serif; font-weight:300; font-size:11px; color:var(--neutral-500); text-transform:uppercase; letter-spacing:0.5px; padding-right:6px;">Status</span>
+          <button class="chip status-chip active" data-status="read">
+            <span class="chip-dot" style="background:var(--success-500);"></span> Read
+          </button>
+          <button class="chip status-chip active" data-status="delivered">
+            <span class="chip-dot" style="background:var(--primary-500);"></span> Delivered
+          </button>
+          <button class="chip status-chip active" data-status="queued">
+            <span class="chip-dot" style="background:var(--warning-500);"></span> Queued
+          </button>
+          <button class="chip status-chip active" data-status="failed">
+            <span class="chip-dot" style="background:var(--danger-500);"></span> Failed
+          </button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:130px;">Time</th>
+                <th>Event</th>
+                <th style="width:160px;">Client</th>
+                <th style="width:220px;">Recipient</th>
+                <th style="width:110px;">Channel</th>
+                <th style="width:120px;">Status</th>
+                <th style="width:40px;"></th>
+              </tr>
+            </thead>
+            <tbody id="inbox-body"></tbody>
+          </table>
+        </div>
+
+        <div class="table-footer">
+          <div>Showing <strong style="color:var(--neutral-800)" id="inbox-result-count">24</strong> notifications</div>
         </div>
       </section>
     </section>
@@ -1278,10 +1538,242 @@
   }
 
   /* =============================================================
+     INBOX
+     ============================================================= */
+  const notifications = [
+    // Today
+    { id:'n1',  ts:'2026-06-05T11:42', module:'Payroll',     event:'Payroll inputs missing at cutoff', client:'Acme Inc.',    recipient:{ type:'internal', team:'cf', name:'Shashank',  initial:'S' }, role:'P', channel:'slack', status:'read' },
+    { id:'n2',  ts:'2026-06-05T11:42', module:'Payroll',     event:'Payroll inputs missing at cutoff', client:'Acme Inc.',    recipient:{ type:'internal', team:'cs', name:'Chandana', initial:'C' }, role:'I', channel:'email', status:'queued' },
+    { id:'n3',  ts:'2026-06-05T11:42', module:'Payroll',     event:'Payroll inputs missing at cutoff', client:'Acme Inc.',    recipient:{ type:'client',  name:'Acme HR Admin',     initial:'A' }, role:'P', channel:'email', status:'delivered' },
+    { id:'n4',  ts:'2026-06-05T10:15', module:'Invoicing',   event:'Invoice paid',                     client:'Beta Corp',    recipient:{ type:'internal', team:'cf', name:'Raj',       initial:'R' }, role:'P', channel:'slack', status:'read' },
+    { id:'n5',  ts:'2026-06-05T09:03', module:'Employees',   event:'BGV flagged (discrepancy)',        client:'Gamma Ltd',    recipient:{ type:'internal', team:'hr', name:'Sneha',     initial:'S' }, role:'P', channel:'slack', status:'read' },
+    { id:'n6',  ts:'2026-06-05T09:03', module:'Employees',   event:'BGV flagged (discrepancy)',        client:'Gamma Ltd',    recipient:{ type:'internal', team:'cs', name:'Aarav',     initial:'A' }, role:'P', channel:'slack', status:'delivered' },
+    { id:'n7',  ts:'2026-06-05T09:03', module:'Employees',   event:'BGV flagged (discrepancy)',        client:'Gamma Ltd',    recipient:{ type:'client',  name:'Gamma Compliance',  initial:'G' }, role:'P', channel:'email', status:'read' },
+    { id:'n8',  ts:'2026-06-05T08:15', module:'Leaves',      event:'Leave request approved',           client:'Acme Inc.',    recipient:{ type:'worker',  name:'Netan Mangal',      initial:'N' }, role:'P', channel:'inapp', status:'read' },
+    { id:'n9',  ts:'2026-06-05T07:45', module:'Account',     event:'KYC document expiring (T-30)',     client:'Gamma Ltd',    recipient:{ type:'client',  name:'Gamma HR',          initial:'G' }, role:'P', channel:'email', status:'delivered' },
+    // Yesterday
+    { id:'n10', ts:'2026-06-04T18:30', module:'Payroll',     event:'Payslips published',               client:'Acme Inc.',    recipient:{ type:'manager', name:'Acme line manager', initial:'A' }, role:'I', channel:'email', status:'delivered' },
+    { id:'n11', ts:'2026-06-04T18:30', module:'Payroll',     event:'Payslips published',               client:'Acme Inc.',    recipient:{ type:'worker',  name:'Netan Mangal',      initial:'N' }, role:'P', channel:'email', status:'read' },
+    { id:'n12', ts:'2026-06-04T18:30', module:'Payroll',     event:'Payslips published',               client:'Acme Inc.',    recipient:{ type:'worker',  name:'Rohit Sharma',      initial:'R' }, role:'P', channel:'email', status:'read' },
+    { id:'n13', ts:'2026-06-04T15:22', module:'Compliance',  event:'Form 16 ready to download',        client:'Delta LLC',    recipient:{ type:'worker',  name:'John Smith',        initial:'J' }, role:'P', channel:'email', status:'delivered' },
+    { id:'n14', ts:'2026-06-04T11:08', module:'Invoicing',   event:'Invoice overdue (T+7)',            client:'Epsilon GmbH', recipient:{ type:'internal', team:'cf', name:'Shashank', initial:'S' }, role:'P', channel:'slack', status:'read' },
+    { id:'n15', ts:'2026-06-04T11:08', module:'Invoicing',   event:'Invoice overdue (T+7)',            client:'Epsilon GmbH', recipient:{ type:'client',  name:'Epsilon Finance',   initial:'E' }, role:'P', channel:'email', status:'failed' },
+    { id:'n16', ts:'2026-06-04T09:50', module:'Employees',   event:'Reimbursement approved',           client:'Beta Corp',    recipient:{ type:'worker',  name:'Rajesh K',          initial:'R' }, role:'P', channel:'email', status:'read' },
+    // 2 days ago
+    { id:'n17', ts:'2026-06-03T19:00', module:'Contractors', event:'Contractor payment processed',     client:'Delta LLC',    recipient:{ type:'contractor', name:'Ahmed K',        initial:'A' }, role:'P', channel:'email', status:'read' },
+    { id:'n18', ts:'2026-06-03T16:45', module:'Contractors', event:'Contractor invoice submitted',     client:'Zeta Pvt Ltd', recipient:{ type:'internal', team:'cf', name:'Mira',     initial:'M' }, role:'P', channel:'slack', status:'read' },
+    { id:'n19', ts:'2026-06-03T16:45', module:'Contractors', event:'Contractor invoice submitted',     client:'Zeta Pvt Ltd', recipient:{ type:'contractor', name:'Priyansh K',     initial:'P' }, role:'I', channel:'email', status:'delivered' },
+    { id:'n20', ts:'2026-06-03T14:22', module:'Employees',   event:'Offer accepted',                   client:'Acme Inc.',    recipient:{ type:'internal', team:'cs', name:'Chandana', initial:'C' }, role:'P', channel:'slack', status:'read' },
+    { id:'n21', ts:'2026-06-03T14:22', module:'Employees',   event:'Offer accepted',                   client:'Acme Inc.',    recipient:{ type:'worker',  name:'Aditi Mehta',       initial:'A' }, role:'P', channel:'email', status:'read' },
+    // 3 days ago
+    { id:'n22', ts:'2026-06-02T10:30', module:'Account',     event:'Contract renewal due (T-60)',      client:'Beta Corp',    recipient:{ type:'internal', team:'sales', name:'Vikram', initial:'V' }, role:'P', channel:'slack', status:'read' },
+    { id:'n23', ts:'2026-06-02T10:30', module:'Account',     event:'Contract renewal due (T-60)',      client:'Beta Corp',    recipient:{ type:'internal', team:'cs', name:'Priya',     initial:'P' }, role:'P', channel:'slack', status:'delivered' },
+    { id:'n24', ts:'2026-06-02T10:30', module:'Account',     event:'Contract renewal due (T-60)',      client:'Beta Corp',    recipient:{ type:'client',  name:'Beta CEO',          initial:'B' }, role:'I', channel:'email', status:'queued' },
+  ];
+
+  const NOW = new Date('2026-06-05T12:00:00');
+  function timeAgo(ts) {
+    const d = new Date(ts);
+    const diff = (NOW - d) / 1000;
+    if (diff < 60) return 'just now';
+    if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+    if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+    if (diff < 86400*7) return Math.floor(diff/86400) + 'd ago';
+    return d.toLocaleDateString();
+  }
+  function formatAbsolute(ts) {
+    const d = new Date(ts);
+    const h = String(d.getHours()).padStart(2,'0');
+    const m = String(d.getMinutes()).padStart(2,'0');
+    return `${d.toLocaleDateString('en-IN', { day:'2-digit', month:'short' })} · ${h}:${m}`;
+  }
+  function isWithin(ts, range) {
+    const d = new Date(ts);
+    const diff = (NOW - d) / 1000;
+    if (range === 'today') {
+      return d.toDateString() === NOW.toDateString();
+    }
+    if (range === '7d')  return diff <= 86400 * 7;
+    if (range === '30d') return diff <= 86400 * 30;
+    return true;
+  }
+
+  const channelIcon = { slack:'ph-chat-circle-dots', email:'ph-envelope', inapp:'ph-bell', sms:'ph-device-mobile' };
+  const channelLabel = { slack:'Slack', email:'Email', inapp:'In-app', sms:'SMS' };
+  const recipientRoleLabel = (n) => {
+    if (n.recipient.type === 'internal') return teamName[n.recipient.team] || 'Internal';
+    if (n.recipient.type === 'client')   return 'Client admin';
+    if (n.recipient.type === 'manager')  return "Client's manager";
+    if (n.recipient.type === 'worker')   return 'Employee';
+    if (n.recipient.type === 'contractor') return 'Contractor';
+    return '';
+  };
+
+  const inboxFilters = {
+    search:'', range:'', module:'', audience:'', channel:'',
+    statuses: { read:true, delivered:true, queued:true, failed:true }
+  };
+
+  function filteredInbox() {
+    const s = inboxFilters.search.trim().toLowerCase();
+    const activeStatuses = Object.entries(inboxFilters.statuses).filter(([_,v]) => v).map(([k]) => k);
+    return notifications.filter(n => {
+      if (s) {
+        const hay = `${n.event} ${n.client} ${n.recipient.name}`.toLowerCase();
+        if (!hay.includes(s)) return false;
+      }
+      if (inboxFilters.range  && !isWithin(n.ts, inboxFilters.range)) return false;
+      if (inboxFilters.module && n.module !== inboxFilters.module)   return false;
+      if (inboxFilters.audience) {
+        if (inboxFilters.audience === 'internal' && n.recipient.type !== 'internal') return false;
+        if (inboxFilters.audience !== 'internal' && n.recipient.type !== inboxFilters.audience) return false;
+      }
+      if (inboxFilters.channel && n.channel !== inboxFilters.channel) return false;
+      if (!activeStatuses.includes(n.status)) return false;
+      return true;
+    });
+  }
+
+  function renderInbox() {
+    const tbody = document.getElementById('inbox-body');
+    const list = filteredInbox()
+      .slice()
+      .sort((a, b) => new Date(b.ts) - new Date(a.ts));
+
+    // Stats (from full data, not filtered)
+    const today    = notifications.filter(n => isWithin(n.ts, 'today')).length;
+    const readCt   = notifications.filter(n => n.status === 'read').length;
+    const queuedCt = notifications.filter(n => n.status === 'queued').length;
+    const failedCt = notifications.filter(n => n.status === 'failed').length;
+    document.getElementById('stat-today').textContent  = today;
+    document.getElementById('stat-read').textContent   = readCt;
+    document.getElementById('stat-queued').textContent = queuedCt;
+    document.getElementById('stat-failed').textContent = failedCt;
+    document.getElementById('inbox-count').textContent = notifications.length;
+
+    document.getElementById('inbox-result-count').textContent = list.length;
+
+    const resetBtn = document.getElementById('reset-inbox-btn');
+    const dirty = inboxFilters.search || inboxFilters.range || inboxFilters.module ||
+                  inboxFilters.audience || inboxFilters.channel ||
+                  Object.values(inboxFilters.statuses).some(v => !v);
+    if (resetBtn) resetBtn.style.display = dirty ? 'inline-flex' : 'none';
+
+    if (list.length === 0) {
+      tbody.innerHTML = `
+        <tr><td colspan="7">
+          <div class="empty-state">
+            <i class="ph ph-tray"></i>
+            <h4>No notifications match these filters</h4>
+            <p>Try clearing filters or widening the date range.</p>
+            <button class="btn btn-secondary" onclick="resetInboxFilters()"><i class="ph ph-arrow-counter-clockwise"></i> Reset filters</button>
+          </div>
+        </td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = list.map(n => {
+      const avatarClass = n.recipient.type === 'internal'
+        ? (n.recipient.team === 'cs' ? 'internal' : n.recipient.team === 'cf' ? 'internal' : 'internal')
+        : n.recipient.type;
+      const avatarColor = n.recipient.type === 'internal' ? 'background:var(--primary-500);' : '';
+      const role = recipientRoleLabel(n);
+      const roleMini = (n.role === 'P' || n.role === 'I')
+        ? `<span class="role-mini ${n.role === 'P' ? 'primary' : 'informed'}">${n.role === 'P' ? 'Primary' : 'Informed'}</span>`
+        : '';
+      return `
+        <tr>
+          <td>
+            <div class="inbox-time">
+              <span class="relative">${timeAgo(n.ts)}</span>
+              <span class="absolute">${formatAbsolute(n.ts)}</span>
+            </div>
+          </td>
+          <td>
+            <span class="inbox-event-name">${n.event}</span>
+            <span class="inbox-event-module">${n.module}</span>
+          </td>
+          <td><span style="font-weight:700; font-size:13px; color:var(--neutral-800);">${n.client}</span></td>
+          <td>
+            <div class="inbox-recipient">
+              <div class="avatar ${avatarClass}" style="${avatarColor}">${n.recipient.initial}</div>
+              <div>
+                <div class="who">${n.recipient.name}</div>
+                <div class="role">${role}${roleMini}</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <span class="inbox-channel ${n.channel}">
+              <i class="ph ${channelIcon[n.channel]}"></i> ${channelLabel[n.channel]}
+            </span>
+          </td>
+          <td><span class="inbox-status ${n.status}">${n.status.charAt(0).toUpperCase() + n.status.slice(1)}</span></td>
+          <td><button class="icon-btn" title="View payload" onclick="inboxRowAction('${n.id}')"><i class="ph ph-dots-three-vertical"></i></button></td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  // Inbox filter wiring
+  document.getElementById('inbox-search-input').addEventListener('input',  e => { inboxFilters.search   = e.target.value; renderInbox(); });
+  document.getElementById('inbox-range-select').addEventListener('change', e => { inboxFilters.range    = e.target.value; renderInbox(); });
+  document.getElementById('inbox-module-select').addEventListener('change',e => { inboxFilters.module   = e.target.value; renderInbox(); });
+  document.getElementById('inbox-audience-select').addEventListener('change', e => { inboxFilters.audience = e.target.value; renderInbox(); });
+  document.getElementById('inbox-channel-select').addEventListener('change',  e => { inboxFilters.channel  = e.target.value; renderInbox(); });
+  document.querySelectorAll('.status-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const s = chip.dataset.status;
+      inboxFilters.statuses[s] = !inboxFilters.statuses[s];
+      chip.classList.toggle('active');
+      renderInbox();
+    });
+  });
+
+  function resetInboxFilters() {
+    inboxFilters.search = ''; inboxFilters.range = ''; inboxFilters.module = '';
+    inboxFilters.audience = ''; inboxFilters.channel = '';
+    inboxFilters.statuses = { read:true, delivered:true, queued:true, failed:true };
+    document.getElementById('inbox-search-input').value = '';
+    document.getElementById('inbox-range-select').value = '';
+    document.getElementById('inbox-module-select').value = '';
+    document.getElementById('inbox-audience-select').value = '';
+    document.getElementById('inbox-channel-select').value = '';
+    document.querySelectorAll('.status-chip').forEach(c => c.classList.add('active'));
+    renderInbox();
+    toast({ title:'Filters reset', body:'Showing all notifications.', type:'success' });
+  }
+
+  function exportInbox() {
+    const list = filteredInbox();
+    const header = ['Time','Module','Event','Client','Recipient','Recipient type','Role','Channel','Status'];
+    const rows = list.map(n => [
+      n.ts, n.module, n.event, n.client, n.recipient.name,
+      n.recipient.type, n.role === 'P' ? 'Primary' : n.role === 'I' ? 'Informed' : 'None',
+      channelLabel[n.channel], n.status
+    ]);
+    const csv = [header, ...rows].map(row => row.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type:'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `notifications-${new Date().toISOString().slice(0,10)}.csv`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast({ title:'Export started', body:`${list.length} notification${list.length === 1 ? '' : 's'} downloaded.`, type:'success' });
+  }
+
+  function inboxRowAction(id) {
+    const n = notifications.find(x => x.id === id);
+    if (!n) return;
+    toast({ title:'View notification', body:`${n.event} → ${n.recipient.name} (${n.status})`, type:'success' });
+  }
+
+  /* =============================================================
      INIT
      ============================================================= */
   renderModules();
   renderOwners();
+  renderInbox();
 </script>
 
 </body>
