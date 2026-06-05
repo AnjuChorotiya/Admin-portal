@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Notification Engine — Admin · Wisemonk</title>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" />
+<style>
+  :root {
+    --primary-50:#E8F2FF; --primary-100:#C5DCFF; --primary-200:#9DC4FF;
+    --primary-300:#72ABFF; --primary-400:#4D97FF; --primary-500:#2684FF;
+    --primary-600:#1A6FE0; --primary-700:#1059BD; --primary-800:#09449A; --primary-900:#03307A;
+    --neutral-0:#FFFFFF; --neutral-50:#F7F8FA; --neutral-100:#EEF0F4;
+    --neutral-200:#DDE1E9; --neutral-300:#C4CAD6; --neutral-400:#9AA2B2;
+    --neutral-500:#6B7588; --neutral-600:#4E5768; --neutral-700:#363D4D;
+    --neutral-800:#222733; --neutral-900:#121620;
+    --border:#EEF0F4; --border-strong:#DDE1E9; --screen-bg:#F1F8FF;
+    --success-50:#E6F9F0; --success-500:#12B76A; --success-700:#027A48;
+    --warning-50:#FFFAEB; --warning-500:#F79009; --warning-700:#B54708;
+    --danger-50:#FFF1F0;  --danger-500:#F04438;  --danger-700:#B42318;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 500; font-size: 14px;
+    color: var(--neutral-800);
+    background: var(--screen-bg);
+    -webkit-font-smoothing: antialiased;
+  }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  input { font-family: inherit; }
+  a { color: inherit; text-decoration: none; }
+
+  .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+
+  /* ========== Sidebar ========== */
+  .sidebar {
+    background: var(--neutral-0);
+    border-right: 1px solid var(--border);
+    padding: 24px 16px;
+    display: flex; flex-direction: column; gap: 24px;
+    position: sticky; top: 0; height: 100vh;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; padding: 0 8px; }
+  .brand-logo {
+    width: 32px; height: 32px;
+    background: var(--primary-500);
+    border-radius: 8px;
+    display: grid; place-items: center;
+    color: white; font-weight: 700; font-size: 16px;
+  }
+  .brand-name { font-weight: 700; font-size: 16px; color: var(--neutral-900); }
+  .nav-section-label {
+    font-family: 'Open Sans', sans-serif; font-weight: 300; font-size: 13px;
+    color: var(--neutral-500); text-transform: uppercase; letter-spacing: 0.5px;
+    padding: 0 8px; margin-bottom: 8px;
+  }
+  .nav { display: flex; flex-direction: column; gap: 2px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; border-radius: 8px;
+    color: var(--neutral-700); font-weight: 500; font-size: 14px;
+    transition: all 120ms ease;
+  }
+  .nav-item:hover { background: var(--neutral-50); color: var(--neutral-900); }
+  .nav-item.active { background: var(--primary-50); color: var(--primary-700); }
+  .nav-item i { font-size: 18px; }
+  .nav-badge {
+    margin-left: auto;
+    background: var(--neutral-100); color: var(--neutral-700);
+    font-size: 11px; padding: 2px 6px; border-radius: 999px;
+  }
+  .nav-item.active .nav-badge { background: var(--primary-100); color: var(--primary-700); }
+
+  /* ========== Main ========== */
+  .main { padding: 24px 32px 80px; min-width: 0; }
+  .page-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 24px; gap: 24px;
+  }
+  .page-title {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 23px; font-weight: 700; color: var(--neutral-900);
+  }
+  .page-title i { font-size: 24px; color: var(--primary-500); }
+  .page-subtitle { font-size: 14px; color: var(--neutral-500); margin-top: 4px; max-width: 720px; }
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ========== Buttons ========== */
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 16px; border-radius: 8px;
+    font-weight: 500; font-size: 14px;
+    transition: all 120ms ease;
+  }
+  .btn i { font-size: 16px; }
+  .btn-primary { background: var(--primary-500); color: white; }
+  .btn-primary:hover { background: var(--primary-600); }
+  .btn-secondary { background: var(--neutral-0); border: 1px solid var(--border-strong); color: var(--neutral-800); }
+  .btn-secondary:hover { background: var(--neutral-50); }
+  .btn-ghost { color: var(--neutral-600); padding: 6px 10px; }
+  .btn-ghost:hover { background: var(--neutral-100); color: var(--neutral-900); }
+
+  /* ========== Card ========== */
+  .card {
+    background: var(--neutral-0);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  /* ========== Filter bar ========== */
+  .filter-bar {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+    flex-wrap: wrap;
+  }
+  .search { position: relative; flex: 1; min-width: 220px; max-width: 320px; }
+  .search input {
+    width: 100%; height: 40px;
+    padding: 0 12px 0 40px;
+    border: 1px solid var(--border-strong); border-radius: 8px;
+    font-size: 14px; color: var(--neutral-900);
+    background: var(--neutral-0);
+  }
+  .search input::placeholder { color: var(--neutral-400); }
+  .search input:focus { outline: none; border-color: var(--primary-400); box-shadow: 0 0 0 3px var(--primary-100); }
+  .search i {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    color: var(--neutral-400); font-size: 18px;
+  }
+  .select-wrap { position: relative; }
+  .select {
+    height: 40px; padding: 0 36px 0 14px;
+    border: 1px solid var(--border-strong); border-radius: 8px;
+    background: var(--neutral-0); color: var(--neutral-800);
+    font-size: 14px; font-weight: 500;
+    appearance: none; cursor: pointer;
+  }
+  .select-wrap::after {
+    content: '\25BC'; position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+    font-size: 9px; color: var(--neutral-500); pointer-events: none;
+  }
+  .chip {
+    height: 32px; padding: 0 12px;
+    display: inline-flex; align-items: center; gap: 6px;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    background: var(--neutral-0); color: var(--neutral-700);
+    font-size: 13px; font-weight: 500;
+    transition: all 120ms ease;
+  }
+  .chip:hover { background: var(--neutral-50); }
+  .chip.active { background: var(--primary-50); border-color: var(--primary-200); color: var(--primary-700); }
+  .chip-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--neutral-400); }
+  .chip.active .chip-dot { background: var(--primary-500); }
+  .filter-spacer { flex: 1; }
+
+  /* ========== Table ========== */
+  .table-wrap { overflow-x: auto; }
+  table {
+    width: 100%; border-collapse: collapse; font-size: 14px;
+  }
+  thead th {
+    background: var(--neutral-50); text-align: left;
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.3px; color: var(--neutral-600);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 100ms ease;
+  }
+  tbody tr:hover { background: var(--neutral-50); }
+  td { padding: 14px 16px; vertical-align: middle; }
+
+  /* Column grouping for Internal vs External recipients */
+  thead tr.group-row th {
+    background: var(--neutral-50);
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300; font-size: 11px;
+    color: var(--neutral-500);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    text-align: center;
+    padding: 8px 12px;
+    border-bottom: 1px dashed var(--border-strong);
+  }
+  thead tr.group-row th.group-internal { border-right: 1px solid var(--border); }
+  thead th.col-ext-start { border-left: 1px solid var(--border); }
+  tbody td.col-ext-start { border-left: 1px solid var(--border); }
+
+  /* Module row */
+  tbody tr.module-row { cursor: pointer; }
+  tbody tr.module-row:hover { background: var(--neutral-50); }
+  .module-header-content {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .expand-btn {
+    width: 26px; height: 26px;
+    border-radius: 6px;
+    display: grid; place-items: center;
+    color: var(--neutral-500);
+    background: transparent;
+    transition: all 150ms ease;
+    flex-shrink: 0;
+  }
+  .expand-btn i { font-size: 14px; transition: transform 200ms ease; }
+  .expand-btn.expanded { background: var(--primary-50); color: var(--primary-700); }
+  .expand-btn.expanded i { transform: rotate(90deg); }
+  .group-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: grid; place-items: center;
+    background: var(--primary-50);
+    color: var(--primary-600);
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .group-name {
+    font-weight: 700; font-size: 15px;
+    color: var(--neutral-900);
+    letter-spacing: 0.1px;
+  }
+  .group-count {
+    font-size: 11px; color: var(--neutral-600); font-weight: 700;
+    background: var(--neutral-100);
+    padding: 2px 8px; border-radius: 999px;
+    margin-left: 2px;
+  }
+
+  /* Event detail rows (shown when module is expanded) */
+  tbody tr.event-row { background: var(--neutral-50); }
+  tbody tr.event-row:hover { background: var(--neutral-50); }
+  tbody tr.event-row td {
+    padding: 10px 16px 10px 72px;
+    border-bottom: 1px solid var(--border);
+  }
+  tbody tr.event-row.last td { border-bottom: 2px solid var(--border-strong); }
+  .event-detail {
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .event-detail > i.bullet {
+    color: var(--neutral-400);
+    font-size: 14px;
+    margin-top: 3px;
+    flex-shrink: 0;
+  }
+  .event-detail-name {
+    font-weight: 700; font-size: 13px;
+    color: var(--neutral-800);
+    line-height: 1.3;
+  }
+  .event-detail-trigger {
+    font-size: 12px; color: var(--neutral-500); font-weight: 500;
+    margin-top: 2px;
+  }
+
+  .tag-module {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300; font-size: 13px;
+    color: var(--neutral-700); background: var(--neutral-100);
+    padding: 3px 8px; border-radius: 6px;
+    text-transform: uppercase; letter-spacing: 0.3px;
+    display: inline-block;
+  }
+  .event-name {
+    font-weight: 700; font-size: 14px; color: var(--neutral-900);
+    display: block; margin-bottom: 2px;
+  }
+  .event-trigger { font-size: 12px; color: var(--neutral-500); font-weight: 500; }
+
+  /* Audience tag */
+  .audience-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-family: 'Open Sans', sans-serif; font-weight: 300;
+    font-size: 11px; padding: 2px 7px; border-radius: 4px;
+    text-transform: uppercase; letter-spacing: 0.4px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .audience-tag i { font-size: 11px; }
+  .audience-internal   { background: var(--neutral-100);  color: var(--neutral-600); }
+  .audience-client     { background: #E8F2FF;             color: #1059BD; }
+  .audience-employee   { background: #E6F9F0;             color: #027A48; }
+  .audience-contractor { background: #F2EBFF;             color: #5A3FD6; }
+  .audience-mixed      { background: var(--primary-50);   color: var(--primary-700); }
+
+  /* ========== Role chips ========== */
+  .role-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 28px; padding: 0 8px 0 12px;
+    border-radius: 999px;
+    font-size: 12px; font-weight: 700;
+    cursor: pointer; user-select: none;
+    transition: all 120ms ease;
+    border: 1px solid transparent;
+    min-width: 92px;
+    max-width: 120px;
+    justify-content: center;
+    white-space: nowrap;
+  }
+  .role-chip .role-caret { font-size: 9px; opacity: 0.7; margin-left: 2px; flex-shrink: 0; }
+  .role-chip.primary { background: var(--primary-500); color: white; }
+  .role-chip.primary:hover { background: var(--primary-600); }
+  .role-chip.informed { background: var(--primary-50); color: var(--primary-700); border-color: var(--primary-100); }
+  .role-chip.informed:hover { background: var(--primary-100); }
+  .role-chip.none { background: var(--neutral-100); color: var(--neutral-500); border-color: var(--neutral-200); }
+  .role-chip.none:hover { background: var(--neutral-200); color: var(--neutral-700); }
+  .role-chip.open { box-shadow: 0 0 0 3px var(--primary-100); }
+
+  /* ========== Generic dropdown menu ========== */
+  .menu {
+    position: absolute; z-index: 80;
+    background: var(--neutral-0);
+    border: 1px solid var(--border-strong);
+    border-radius: 10px;
+    padding: 6px;
+    min-width: 240px;
+    box-shadow: 0 8px 24px rgba(18,22,32,0.12);
+    opacity: 0; transform: translateY(-4px); pointer-events: none;
+    transition: opacity 140ms ease, transform 140ms ease;
+  }
+  .menu.open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .menu-header {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300; font-size: 11px;
+    color: var(--neutral-500);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    padding: 6px 10px 8px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4px;
+  }
+  .menu-search {
+    position: relative; padding: 4px;
+    border-bottom: 1px solid var(--border); margin-bottom: 4px;
+  }
+  .menu-search input {
+    width: 100%; height: 34px;
+    padding: 0 10px 0 32px;
+    border: 1px solid var(--border-strong); border-radius: 6px;
+    font-size: 13px;
+  }
+  .menu-search input:focus { outline: none; border-color: var(--primary-400); box-shadow: 0 0 0 3px var(--primary-100); }
+  .menu-search i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--neutral-400); font-size: 14px; }
+  .menu-list { max-height: 320px; overflow-y: auto; }
+  .menu-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; border-radius: 6px; cursor: pointer;
+    font-size: 13px; font-weight: 500; color: var(--neutral-800);
+    transition: background 100ms ease;
+  }
+  .menu-item:hover { background: var(--neutral-50); }
+  .menu-item.selected { background: var(--primary-50); }
+  .menu-item .menu-ic {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 12px; font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+  .menu-item .menu-ic.primary { background: var(--primary-500); }
+  .menu-item .menu-ic.informed { background: var(--primary-50); color: var(--primary-600); }
+  .menu-item .menu-ic.none { background: var(--neutral-100); color: var(--neutral-400); }
+  .menu-item .menu-text { flex: 1; min-width: 0; }
+  .menu-item .menu-title {
+    font-weight: 700; color: var(--neutral-900); line-height: 1.2;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .menu-item .menu-desc {
+    font-size: 11px; color: var(--neutral-500); font-weight: 500;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .menu-item .menu-check {
+    color: var(--primary-500); font-size: 16px; opacity: 0;
+  }
+  .menu-item.selected .menu-check { opacity: 1; }
+  .menu-empty { padding: 14px; text-align: center; color: var(--neutral-500); font-size: 13px; }
+
+  /* ========== Owner cell (person chip in Owners table) ========== */
+  .owner-chip {
+    display: inline-flex; align-items: center;
+    gap: 8px;
+    padding: 4px 12px 4px 4px;
+    border-radius: 999px;
+    background: var(--neutral-0);
+    border: 1px solid var(--border-strong);
+    cursor: pointer;
+    transition: all 120ms ease;
+    max-width: 200px;
+  }
+  .owner-chip:hover { background: var(--neutral-50); border-color: var(--neutral-300); }
+  .owner-chip.open { box-shadow: 0 0 0 3px var(--primary-100); border-color: var(--primary-300); }
+  .owner-chip .person-ic {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 11px; font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+  .owner-chip .person-name {
+    font-size: 13px; font-weight: 700; color: var(--neutral-900);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .owner-chip .owner-caret { font-size: 9px; opacity: 0.6; color: var(--neutral-500); margin-left: 2px; }
+
+  .owner-empty {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: var(--warning-50);
+    color: var(--warning-700);
+    border: 1px dashed var(--warning-500);
+    font-size: 12px; font-weight: 700;
+    cursor: pointer;
+    transition: all 120ms ease;
+  }
+  .owner-empty:hover { background: var(--warning-500); color: white; }
+  .owner-empty i { font-size: 14px; }
+
+  /* ========== Client cell (Owners table) ========== */
+  .client-cell { display: flex; align-items: center; gap: 10px; }
+  .client-avatar {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: grid; place-items: center;
+    font-size: 13px; font-weight: 700; color: white;
+    flex-shrink: 0;
+  }
+  .client-name { font-size: 14px; font-weight: 700; color: var(--neutral-900); }
+  .client-meta { font-size: 11px; color: var(--neutral-500); font-weight: 500; }
+  .tier-tag {
+    margin-left: 8px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300; font-size: 11px;
+    padding: 2px 6px; border-radius: 4px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .tier-premium { background: var(--primary-50); color: var(--primary-700); }
+  .tier-standard { background: var(--neutral-100); color: var(--neutral-600); }
+  .tier-trial { background: var(--warning-50); color: var(--warning-700); }
+
+  /* ========== Table footer ========== */
+  .table-footer {
+    padding: 12px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-top: 1px solid var(--border);
+    background: var(--neutral-50);
+    font-size: 13px; color: var(--neutral-500);
+  }
+  .pager { display: flex; gap: 4px; }
+  .pager button {
+    width: 32px; height: 32px; border-radius: 6px;
+    background: var(--neutral-0); border: 1px solid var(--border-strong);
+    color: var(--neutral-700); font-weight: 500;
+  }
+  .pager button.active { background: var(--primary-500); color: white; border-color: var(--primary-500); }
+
+  /* ========== Empty state ========== */
+  .empty-state { padding: 60px 24px; text-align: center; }
+  .empty-state i { font-size: 64px; color: var(--neutral-300); display: inline-block; margin-bottom: 12px; }
+  .empty-state h4 { font-size: 18px; font-weight: 500; color: var(--neutral-800); margin-bottom: 6px; }
+  .empty-state p { font-size: 14px; color: var(--neutral-500); margin-bottom: 16px; }
+
+  /* ========== Toast ========== */
+  .toast-host {
+    position: fixed; bottom: 24px; right: 24px;
+    display: flex; flex-direction: column; gap: 10px;
+    z-index: 100;
+  }
+  .toast {
+    min-width: 280px; max-width: 380px;
+    background: var(--neutral-0);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--primary-500);
+    border-radius: 10px;
+    padding: 12px 16px;
+    display: flex; align-items: flex-start; gap: 10px;
+    box-shadow: 0 8px 24px rgba(18,22,32,0.08);
+    animation: slideIn 200ms ease-out;
+  }
+  .toast.success { border-left-color: var(--success-500); }
+  .toast.warning { border-left-color: var(--warning-500); }
+  .toast.danger { border-left-color: var(--danger-500); }
+  .toast i.lead { font-size: 18px; color: var(--primary-500); margin-top: 1px; }
+  .toast.success i.lead { color: var(--success-500); }
+  .toast.warning i.lead { color: var(--warning-500); }
+  .toast.danger i.lead { color: var(--danger-500); }
+  .toast-title { font-weight: 700; font-size: 14px; color: var(--neutral-900); margin-bottom: 2px; }
+  .toast-body { font-size: 13px; color: var(--neutral-500); }
+  @keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+  /* ========== Info banner ========== */
+  .info-banner {
+    background: var(--primary-50);
+    border: 1px solid var(--primary-100);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    display: flex; align-items: flex-start; gap: 12px;
+    color: var(--primary-700);
+    font-size: 13px; font-weight: 500;
+  }
+  .info-banner i { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .info-banner strong { color: var(--primary-800); }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- ========== SIDEBAR ========== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">W</div>
+      <div class="brand-name">Wisemonk</div>
+    </div>
+
+    <div>
+      <div class="nav-section-label">Notification engine</div>
+      <nav class="nav">
+        <a class="nav-item active" data-view="defaults" onclick="switchView('defaults')">
+          <i class="ph ph-list-checks"></i> Defaults
+          <span class="nav-badge" id="defaults-count">10</span>
+        </a>
+        <a class="nav-item" data-view="owners" onclick="switchView('owners')">
+          <i class="ph ph-users-three"></i> Owners
+          <span class="nav-badge" id="owners-count">6</span>
+        </a>
+      </nav>
+    </div>
+  </aside>
+
+  <!-- ========== MAIN ========== -->
+  <main class="main">
+
+    <!-- ========== VIEW: DEFAULTS ========== -->
+    <section class="view active" id="view-defaults">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Default routing rules</div>
+          <div class="page-subtitle">
+            Global routing for every product event. These defaults apply to every client unless overridden later.
+            The team you pick here is resolved to a specific person via the <strong>Owners</strong> tab.
+          </div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-primary" onclick="newRule()"><i class="ph ph-plus"></i> New rule</button>
+        </div>
+      </div>
+
+      <section class="card">
+        <div class="filter-bar">
+          <div class="search">
+            <i class="ph ph-magnifying-glass"></i>
+            <input id="search-input" type="text" placeholder="Search events or triggers…" />
+          </div>
+          <div class="select-wrap">
+            <select id="module-select" class="select">
+              <option value="">All modules</option>
+              <option>Employees</option>
+              <option>Payroll</option>
+              <option>Invoicing</option>
+              <option>Compliance</option>
+              <option>Leaves</option>
+              <option>Assets</option>
+              <option>Contractors</option>
+              <option>Offboarding</option>
+              <option>Account</option>
+              <option>Support</option>
+            </select>
+          </div>
+          <div class="select-wrap">
+            <select id="audience-select" class="select">
+              <option value="">All audiences</option>
+              <option value="internal">Internal only</option>
+              <option value="client">Client only</option>
+              <option value="employee">Manager only</option>
+              <option value="contractor">Worker only</option>
+              <option value="mixed">Mixed</option>
+            </select>
+          </div>
+          <div style="display:flex; gap:6px;">
+            <button class="chip active" data-team="cs"><span class="chip-dot"></span> Customer Success</button>
+            <button class="chip active" data-team="cf"><span class="chip-dot"></span> Customer Finance</button>
+            <button class="chip active" data-team="hr"><span class="chip-dot"></span> HR Ops</button>
+            <button class="chip active" data-team="sales"><span class="chip-dot"></span> Sales</button>
+          </div>
+          <div class="filter-spacer"></div>
+          <button class="btn btn-ghost" id="reset-filters-btn" onclick="resetFilters()" style="display:none;">
+            <i class="ph ph-arrow-counter-clockwise"></i> Reset
+          </button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr class="group-row">
+                <th colspan="1"></th>
+                <th colspan="4" class="group-internal">Internal teams</th>
+                <th colspan="3" class="group-external">External recipients</th>
+              </tr>
+              <tr>
+                <th>Event</th>
+                <th style="width:108px; text-align:center;">CS</th>
+                <th style="width:108px; text-align:center;">CF</th>
+                <th style="width:108px; text-align:center;">HR Ops</th>
+                <th style="width:108px; text-align:center;">Sales</th>
+                <th style="width:108px; text-align:center;" class="col-ext-start">Client</th>
+                <th style="width:108px; text-align:center;">Manager</th>
+                <th style="width:108px; text-align:center;">Worker</th>
+              </tr>
+            </thead>
+            <tbody id="rules-body"></tbody>
+          </table>
+        </div>
+
+        <div class="table-footer">
+          <div>Showing <strong style="color:var(--neutral-800)" id="result-count">7</strong> features</div>
+          <div class="pager">
+            <button><i class="ph ph-caret-left"></i></button>
+            <button class="active">1</button>
+            <button>2</button>
+            <button>3</button>
+            <button><i class="ph ph-caret-right"></i></button>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- ========== VIEW: OWNERS ========== -->
+    <section class="view" id="view-owners">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Client owners</div>
+          <div class="page-subtitle">
+            Assign the person on each team who owns each client. When a notification routes to a team
+            (e.g. "Customer Success"), the engine looks up the assigned person here and sends to them directly.
+          </div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-primary" onclick="newClient()"><i class="ph ph-plus"></i> Add client</button>
+        </div>
+      </div>
+
+      <section class="card">
+        <div class="filter-bar">
+          <div class="search">
+            <i class="ph ph-magnifying-glass"></i>
+            <input id="owners-search-input" type="text" placeholder="Search clients…" />
+          </div>
+          <div class="select-wrap">
+            <select id="tier-select" class="select">
+              <option value="">All tiers</option>
+              <option>Premium</option>
+              <option>Standard</option>
+              <option>Trial</option>
+            </select>
+          </div>
+          <div class="filter-spacer"></div>
+          <button class="btn btn-ghost" id="reset-owners-btn" onclick="resetOwnersFilters()" style="display:none;">
+            <i class="ph ph-arrow-counter-clockwise"></i> Reset
+          </button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Customer Success</th>
+                <th>Customer Finance</th>
+                <th>HR Ops</th>
+                <th>Sales</th>
+              </tr>
+            </thead>
+            <tbody id="owners-body"></tbody>
+          </table>
+        </div>
+
+        <div class="table-footer">
+          <div>Showing <strong style="color:var(--neutral-800)" id="owners-result-count">6</strong> clients</div>
+        </div>
+      </section>
+    </section>
+
+  </main>
+</div>
+
+<!-- ========== ROLE DROPDOWN MENU ========== -->
+<div class="menu" id="role-menu">
+  <div class="menu-header" id="role-menu-header">Routing for team</div>
+  <div class="menu-list">
+    <div class="menu-item" data-role="P" onclick="selectRole('P')">
+      <span class="menu-ic primary"><i class="ph ph-check"></i></span>
+      <div class="menu-text">
+        <div class="menu-title">Primary owner</div>
+        <div class="menu-desc">Acts on this notification</div>
+      </div>
+      <i class="ph ph-check-circle menu-check"></i>
+    </div>
+    <div class="menu-item" data-role="I" onclick="selectRole('I')">
+      <span class="menu-ic informed"><i class="ph ph-eye"></i></span>
+      <div class="menu-text">
+        <div class="menu-title">Informed</div>
+        <div class="menu-desc">CC'd for visibility</div>
+      </div>
+      <i class="ph ph-check-circle menu-check"></i>
+    </div>
+    <div class="menu-item" data-role="-" onclick="selectRole('-')">
+      <span class="menu-ic none"><i class="ph ph-minus"></i></span>
+      <div class="menu-text">
+        <div class="menu-title">Not routed</div>
+        <div class="menu-desc">No notification sent</div>
+      </div>
+      <i class="ph ph-check-circle menu-check"></i>
+    </div>
+  </div>
+</div>
+
+<!-- ========== OWNER PICKER MENU ========== -->
+<div class="menu" id="owner-menu" style="min-width:280px;">
+  <div class="menu-header" id="owner-menu-header">Assign owner</div>
+  <div class="menu-search">
+    <i class="ph ph-magnifying-glass"></i>
+    <input id="owner-search-input" type="text" placeholder="Search people…" />
+  </div>
+  <div class="menu-list" id="owner-menu-list"></div>
+</div>
+
+<!-- ========== TOAST HOST ========== -->
+<div class="toast-host" id="toast-host"></div>
+
+<script>
+  /* =============================================================
+     DATA
+     ============================================================= */
+  // Routing is configured PER MODULE/FEATURE — all events inside inherit it.
+  const modules = [
+    {
+      name: 'Employees', icon: 'ph-users-three',
+      routing: { cs:'P', cf:'I', hr:'P', sales:'-', client:'I', employee:'I', contractor:'-' },
+      events: [
+        { name:'New employee onboarding initiated', trigger:'Client adds new hire' },
+        { name:'BGV completed (clear)',             trigger:'Vendor returns clear report' },
+        { name:'BGV flagged (discrepancy)',         trigger:'Vendor flags discrepancy' },
+        { name:'Offer accepted',                    trigger:'Candidate accepts offer in portal' },
+        { name:'Reimbursement approved',            trigger:'Client approves expense claim' },
+        { name:'Probation completed',               trigger:'90 days from joining date' },
+      ],
+    },
+    {
+      name: 'Payroll', icon: 'ph-credit-card',
+      routing: { cs:'I', cf:'P', hr:'I', sales:'-', client:'I', employee:'P', contractor:'-' },
+      events: [
+        { name:'Payroll inputs missing at cutoff',  trigger:"Client hasn't submitted by cutoff" },
+        { name:'Payroll run completed',             trigger:'Monthly run processed' },
+        { name:'Payslips published',                trigger:'Payslips released to employees' },
+        { name:'Salary credited to employees',      trigger:'Bank confirms disbursement' },
+      ],
+    },
+    {
+      name: 'Invoicing', icon: 'ph-receipt',
+      routing: { cs:'I', cf:'P', hr:'-', sales:'-', client:'P', employee:'-', contractor:'-' },
+      events: [
+        { name:'Invoice paid',                      trigger:'Payment received & reconciled' },
+        { name:'Invoice overdue (T+7)',             trigger:'Due date passed by 7 days' },
+        { name:'Statement of account ready',        trigger:'Monthly statement generated for client' },
+      ],
+    },
+    {
+      name: 'Compliance', icon: 'ph-shield-check',
+      routing: { cs:'-', cf:'-', hr:'I', sales:'-', client:'-', employee:'P', contractor:'-' },
+      events: [
+        { name:'Form 16 ready to download',         trigger:'Annual tax form generated for employee' },
+      ],
+    },
+    {
+      name: 'Leaves', icon: 'ph-airplane-tilt',
+      routing: { cs:'-', cf:'-', hr:'I', sales:'-', client:'I', employee:'P', contractor:'-' },
+      events: [
+        { name:'Leave request approved',            trigger:'Client approves leave in portal' },
+      ],
+    },
+    {
+      name: 'Contractors', icon: 'ph-briefcase',
+      routing: { cs:'I', cf:'P', hr:'-', sales:'-', client:'I', employee:'-', contractor:'P' },
+      events: [
+        { name:'Contractor agreement signed',       trigger:'E-sign completed by both parties' },
+        { name:'Contractor invoice submitted',      trigger:'Contractor uploads invoice in portal' },
+        { name:'Contractor 1099 / W-8 BEN ready',   trigger:'Annual tax form generated' },
+        { name:'Contractor payment processed',      trigger:'Payment hits contractor account' },
+      ],
+    },
+    {
+      name: 'Account', icon: 'ph-storefront',
+      routing: { cs:'P', cf:'I', hr:'-', sales:'P', client:'I', employee:'-', contractor:'-' },
+      events: [
+        { name:'Contract renewal due (T-60)',       trigger:'Calendar trigger 60 days before expiry' },
+        { name:'KYC document expiring (T-30)',      trigger:'Client KYC doc expires in 30 days' },
+      ],
+    },
+  ];
+  const findModule = (name) => modules.find(m => m.name === name);
+
+  const clientPalette = {
+    'Acme Inc.':    { color: '#2684FF', tier: 'Premium',  meta: '24 employees · India'    },
+    'Beta Corp':    { color: '#12B76A', tier: 'Standard', meta: '12 employees · India'    },
+    'Gamma Ltd':    { color: '#F79009', tier: 'Standard', meta: '8 employees · India'     },
+    'Delta LLC':    { color: '#7B61FF', tier: 'Premium',  meta: '31 employees · USA'      },
+    'Epsilon GmbH': { color: '#F04438', tier: 'Trial',    meta: '5 contractors · Germany' },
+    'Zeta Pvt Ltd': { color: '#1059BD', tier: 'Standard', meta: '16 employees · India'    },
+  };
+
+  // Team members per team
+  const team = {
+    cs:    [ { id:'u_chandana', name:'Chandana', avatar:'#2684FF' },
+             { id:'u_priya',    name:'Priya',    avatar:'#F79009' },
+             { id:'u_aarav',    name:'Aarav',    avatar:'#12B76A' },
+             { id:'u_riya',     name:'Riya',     avatar:'#7B61FF' } ],
+    cf:    [ { id:'u_shashank', name:'Shashank', avatar:'#1059BD' },
+             { id:'u_raj',      name:'Raj',      avatar:'#F04438' },
+             { id:'u_mira',     name:'Mira',     avatar:'#12B76A' },
+             { id:'u_karan',    name:'Karan',    avatar:'#F79009' } ],
+    hr:    [ { id:'u_neha',     name:'Neha',     avatar:'#7B61FF' },
+             { id:'u_arjun',    name:'Arjun',    avatar:'#2684FF' },
+             { id:'u_sneha',    name:'Sneha',    avatar:'#12B76A' },
+             { id:'u_vikash',   name:'Vikash',   avatar:'#F04438' } ],
+    sales: [ { id:'u_vikram',   name:'Vikram',   avatar:'#1059BD' },
+             { id:'u_pooja',    name:'Pooja',    avatar:'#F79009' },
+             { id:'u_dev',      name:'Dev',      avatar:'#12B76A' } ],
+  };
+
+  // Client-owner mapping
+  const owners = [
+    { client:'Acme Inc.',    cs:'u_chandana', cf:'u_shashank', hr:'u_neha',  sales:'u_vikram' },
+    { client:'Beta Corp',    cs:'u_priya',    cf:'u_raj',      hr:'u_arjun', sales:null       },
+    { client:'Gamma Ltd',    cs:'u_aarav',    cf:'u_mira',     hr:'u_sneha', sales:'u_pooja'  },
+    { client:'Delta LLC',    cs:'u_chandana', cf:'u_karan',    hr:'u_neha',  sales:'u_dev'    },
+    { client:'Epsilon GmbH', cs:null,         cf:'u_shashank', hr:null,      sales:null       },
+    { client:'Zeta Pvt Ltd', cs:'u_riya',     cf:'u_mira',     hr:'u_vikash',sales:'u_vikram' },
+  ];
+
+  /* =============================================================
+     VIEW SWITCHING
+     ============================================================= */
+  function switchView(view) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('view-' + view).classList.add('active');
+    document.querySelector(`.nav-item[data-view="${view}"]`).classList.add('active');
+    closeAllMenus();
+  }
+
+  /* =============================================================
+     DEFAULTS — Rule table
+     ============================================================= */
+  const roleClass = { P:'primary', I:'informed', '-':'none' };
+  const roleLabel = { P:'Primary', I:'Informed', '-':'None' };
+  const teamName  = {
+    cs:'Customer Success', cf:'Customer Finance', hr:'HR Ops', sales:'Sales',
+    client:'Client', employee:'Manager', contractor:'Worker'
+  };
+  const internalKeys = ['cs','cf','hr','sales'];
+  const externalKeys = ['client','employee','contractor'];
+
+  const filters = { search:'', module:'', audience:'', teams:{ cs:true, cf:true, hr:true, sales:true } };
+
+  function computeAudience(mod) {
+    const r = mod.routing;
+    const hasInternal   = internalKeys.some(k => r[k] === 'P' || r[k] === 'I');
+    const hasClient     = r.client     === 'P' || r.client     === 'I';
+    const hasEmployee   = r.employee   === 'P' || r.employee   === 'I';
+    const hasContractor = r.contractor === 'P' || r.contractor === 'I';
+    const extCount = [hasClient, hasEmployee, hasContractor].filter(Boolean).length;
+
+    if (!hasInternal && extCount === 1) {
+      if (hasEmployee)   return 'employee';
+      if (hasClient)     return 'client';
+      if (hasContractor) return 'contractor';
+    }
+    if (hasInternal && extCount === 0) return 'internal';
+    return 'mixed';
+  }
+
+  const audienceLabel = {
+    internal:   'Internal only',
+    client:     'Client only',
+    employee:   'Manager only',
+    contractor: 'Worker only',
+    mixed:      'Mixed',
+  };
+  const audienceIcon = {
+    internal:   'ph-users',
+    client:     'ph-buildings',
+    employee:   'ph-user',
+    contractor: 'ph-briefcase',
+    mixed:      'ph-share-network',
+  };
+
+  function filteredModules() {
+    const s = filters.search.trim().toLowerCase();
+    const activeTeams = Object.entries(filters.teams).filter(([_,v]) => v).map(([k]) => k);
+    return modules.filter(mod => {
+      // Module-name + event search
+      if (s) {
+        const hitModule = mod.name.toLowerCase().includes(s);
+        const hitEvent = mod.events.some(e => e.name.toLowerCase().includes(s) || e.trigger.toLowerCase().includes(s));
+        if (!hitModule && !hitEvent) return false;
+      }
+      if (filters.module && mod.name !== filters.module) return false;
+      if (filters.audience && computeAudience(mod) !== filters.audience) return false;
+      const audience = computeAudience(mod);
+      if (audience === 'internal' || audience === 'mixed') {
+        const involves = activeTeams.some(t => mod.routing[t] === 'P' || mod.routing[t] === 'I');
+        if (!involves) return false;
+      }
+      return true;
+    });
+  }
+
+  const expandedModules = new Set();
+
+  function toggleModule(name) {
+    if (expandedModules.has(name)) expandedModules.delete(name);
+    else expandedModules.add(name);
+    renderModules();
+  }
+
+  function renderModules() {
+    const tbody = document.getElementById('rules-body');
+    const list = filteredModules();
+    const totalEvents = modules.reduce((s, m) => s + m.events.length, 0);
+    document.getElementById('result-count').textContent = list.length;
+    document.getElementById('defaults-count').textContent = totalEvents;
+
+    const resetBtn = document.getElementById('reset-filters-btn');
+    const dirty = filters.search || filters.module || filters.audience || Object.values(filters.teams).some(v => !v);
+    if (resetBtn) resetBtn.style.display = dirty ? 'inline-flex' : 'none';
+
+    if (list.length === 0) {
+      tbody.innerHTML = `
+        <tr><td colspan="8">
+          <div class="empty-state">
+            <i class="ph ph-bell-slash"></i>
+            <h4>No features match these filters</h4>
+            <p>Try clearing filters or creating a new rule.</p>
+            <button class="btn btn-secondary" onclick="resetFilters()"><i class="ph ph-arrow-counter-clockwise"></i> Reset filters</button>
+          </div>
+        </td></tr>`;
+      return;
+    }
+
+    const chipCell = (mod, t, isFirstExt = false) => `
+      <td style="text-align:center;" class="${isFirstExt ? 'col-ext-start' : ''}" onclick="event.stopPropagation();">
+        <span class="role-chip ${roleClass[mod.routing[t]]}" onclick="event.stopPropagation(); openRoleMenu(this, '${mod.name.replace(/'/g, "\\'")}', '${t}');" title="Click to change">
+          <span>${roleLabel[mod.routing[t]]}</span>
+          <i class="ph ph-caret-down role-caret"></i>
+        </span>
+      </td>`;
+
+    tbody.innerHTML = list.map(mod => {
+      const isExpanded = expandedModules.has(mod.name);
+      const moduleRow = `
+        <tr class="module-row" onclick="toggleModule('${mod.name.replace(/'/g, "\\'")}')">
+          <td>
+            <div class="module-header-content">
+              <button class="expand-btn ${isExpanded ? 'expanded' : ''}" title="${isExpanded ? 'Collapse' : 'Expand'} events"><i class="ph ph-caret-right"></i></button>
+              <span class="group-icon"><i class="ph ${mod.icon}"></i></span>
+              <span class="group-name">${mod.name}</span>
+              <span class="group-count">${mod.events.length} ${mod.events.length === 1 ? 'event' : 'events'}</span>
+            </div>
+          </td>
+          ${internalKeys.map(t => chipCell(mod, t)).join('')}
+          ${externalKeys.map((t, i) => chipCell(mod, t, i === 0)).join('')}
+        </tr>
+      `;
+      const eventRows = isExpanded ? mod.events.map((e, idx) => `
+        <tr class="event-row ${idx === mod.events.length - 1 ? 'last' : ''}">
+          <td colspan="8">
+            <div class="event-detail">
+              <i class="ph ph-dot bullet"></i>
+              <div>
+                <div class="event-detail-name">${e.name}</div>
+                <div class="event-detail-trigger">${e.trigger}</div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      `).join('') : '';
+      return moduleRow + eventRows;
+    }).join('');
+  }
+
+  // Filter wiring
+  document.getElementById('search-input').addEventListener('input', e => { filters.search = e.target.value; renderModules(); });
+  document.getElementById('module-select').addEventListener('change', e => { filters.module = e.target.value; renderModules(); });
+  document.getElementById('audience-select').addEventListener('change', e => { filters.audience = e.target.value; renderModules(); });
+  document.querySelectorAll('.chip[data-team]').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const team = chip.dataset.team;
+      filters.teams[team] = !filters.teams[team];
+      chip.classList.toggle('active');
+      renderModules();
+    });
+  });
+  function resetFilters() {
+    filters.search = ''; filters.module = ''; filters.audience = '';
+    filters.teams = { cs:true, cf:true, hr:true, sales:true };
+    document.getElementById('search-input').value = '';
+    document.getElementById('module-select').value = '';
+    document.getElementById('audience-select').value = '';
+    document.querySelectorAll('#view-defaults .chip[data-team]').forEach(c => c.classList.add('active'));
+    renderModules();
+    toast({ title:'Filters reset', body:'Showing all rules.', type:'success' });
+  }
+  function newRule() { toast({ title:'Create rule', body:'Rule editor would open here.', type:'success' }); }
+
+  /* =============================================================
+     ROLE DROPDOWN
+     ============================================================= */
+  let activeRoleMenu = null;
+  const roleMenu = document.getElementById('role-menu');
+
+  function openRoleMenu(chipEl, moduleName, team) {
+    if (activeRoleMenu && activeRoleMenu.chipEl === chipEl) { closeAllMenus(); return; }
+    closeAllMenus();
+    const mod = findModule(moduleName);
+    if (!mod) return;
+    activeRoleMenu = { chipEl, moduleName, team };
+
+    document.getElementById('role-menu-header').textContent = `${mod.name} · ${teamName[team]}`;
+    roleMenu.querySelectorAll('.menu-item').forEach(item => {
+      item.classList.toggle('selected', item.dataset.role === mod.routing[team]);
+    });
+
+    positionMenu(roleMenu, chipEl, 240);
+    chipEl.classList.add('open');
+    requestAnimationFrame(() => roleMenu.classList.add('open'));
+  }
+
+  function selectRole(role) {
+    if (!activeRoleMenu) return;
+    const { chipEl, moduleName, team } = activeRoleMenu;
+    const mod = findModule(moduleName);
+    if (!mod) { closeAllMenus(); return; }
+    if (mod.routing[team] !== role) {
+      mod.routing[team] = role;
+      chipEl.className = `role-chip ${roleClass[role]}`;
+      chipEl.innerHTML = `<span>${roleLabel[role]}</span><i class="ph ph-caret-down role-caret"></i>`;
+      toast({
+        title:'Routing updated',
+        body: `${mod.name} · ${teamName[team]} → ${role === 'P' ? 'Primary owner' : role === 'I' ? 'Informed' : 'Not routed'}.`,
+        type:'success'
+      });
+    }
+    closeAllMenus();
+  }
+
+  /* =============================================================
+     OWNERS — Table
+     ============================================================= */
+  const ownersFilters = { search:'', tier:'' };
+
+  function findPerson(teamKey, userId) {
+    if (!userId) return null;
+    return team[teamKey].find(p => p.id === userId);
+  }
+
+  function filteredOwners() {
+    const s = ownersFilters.search.trim().toLowerCase();
+    return owners.filter(o => {
+      if (s && !o.client.toLowerCase().includes(s)) return false;
+      if (ownersFilters.tier && (clientPalette[o.client] || {}).tier !== ownersFilters.tier) return false;
+      return true;
+    });
+  }
+
+  function personChip(teamKey, userId, client) {
+    const p = findPerson(teamKey, userId);
+    if (!p) {
+      return `<button class="owner-empty" onclick="openOwnerMenu(this, '${client.replace(/'/g, "\\'")}', '${teamKey}')">
+        <i class="ph ph-warning"></i> Assign
+      </button>`;
+    }
+    const initial = p.name.charAt(0).toUpperCase();
+    return `<span class="owner-chip" onclick="openOwnerMenu(this, '${client.replace(/'/g, "\\'")}', '${teamKey}')">
+      <span class="person-ic" style="background:${p.avatar}">${initial}</span>
+      <span class="person-name">${p.name}</span>
+      <i class="ph ph-caret-down owner-caret"></i>
+    </span>`;
+  }
+
+  function clientCell(client) {
+    const meta = clientPalette[client] || { color:'#6B7588', tier:'Standard', meta:'' };
+    const initial = client.replace(/[^A-Za-z]/g, '').charAt(0).toUpperCase();
+    const tierClass = `tier-${(meta.tier || 'standard').toLowerCase()}`;
+    return `<div class="client-cell">
+      <div class="client-avatar" style="background:${meta.color}">${initial}</div>
+      <div>
+        <div class="client-name">${client}<span class="tier-tag ${tierClass}">${meta.tier}</span></div>
+        <div class="client-meta">${meta.meta}</div>
+      </div>
+    </div>`;
+  }
+
+  function renderOwners() {
+    const tbody = document.getElementById('owners-body');
+    const list = filteredOwners();
+    document.getElementById('owners-result-count').textContent = list.length;
+    document.getElementById('owners-count').textContent = owners.length;
+
+    const resetBtn = document.getElementById('reset-owners-btn');
+    if (resetBtn) resetBtn.style.display = (ownersFilters.search || ownersFilters.tier) ? 'inline-flex' : 'none';
+
+    if (list.length === 0) {
+      tbody.innerHTML = `
+        <tr><td colspan="5">
+          <div class="empty-state">
+            <i class="ph ph-buildings"></i>
+            <h4>No clients match</h4>
+            <p>Try clearing filters or adding a new client.</p>
+            <button class="btn btn-secondary" onclick="resetOwnersFilters()"><i class="ph ph-arrow-counter-clockwise"></i> Reset filters</button>
+          </div>
+        </td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = list.map(o => `
+      <tr data-client="${o.client.replace(/"/g, '&quot;')}">
+        <td>${clientCell(o.client)}</td>
+        <td>${personChip('cs',    o.cs,    o.client)}</td>
+        <td>${personChip('cf',    o.cf,    o.client)}</td>
+        <td>${personChip('hr',    o.hr,    o.client)}</td>
+        <td>${personChip('sales', o.sales, o.client)}</td>
+      </tr>
+    `).join('');
+  }
+
+  document.getElementById('owners-search-input').addEventListener('input', e => { ownersFilters.search = e.target.value; renderOwners(); });
+  document.getElementById('tier-select').addEventListener('change', e => { ownersFilters.tier = e.target.value; renderOwners(); });
+  function resetOwnersFilters() {
+    ownersFilters.search = ''; ownersFilters.tier = '';
+    document.getElementById('owners-search-input').value = '';
+    document.getElementById('tier-select').value = '';
+    renderOwners();
+    toast({ title:'Filters reset', body:'Showing all clients.', type:'success' });
+  }
+  function newClient() { toast({ title:'Add client', body:'Client onboarding flow would open here.', type:'success' }); }
+
+  /* =============================================================
+     OWNER PICKER DROPDOWN
+     ============================================================= */
+  let activeOwnerMenu = null;
+  const ownerMenu = document.getElementById('owner-menu');
+  const ownerMenuList = document.getElementById('owner-menu-list');
+  const ownerSearchInput = document.getElementById('owner-search-input');
+
+  function buildOwnerMenuOptions(teamKey, currentId, query='') {
+    const q = query.trim().toLowerCase();
+    const people = team[teamKey].filter(p => !q || p.name.toLowerCase().includes(q));
+    const unassign = `
+      <div class="menu-item ${currentId === null ? 'selected' : ''}" onclick="selectOwner(null)">
+        <span class="menu-ic none"><i class="ph ph-minus"></i></span>
+        <div class="menu-text">
+          <div class="menu-title">Unassigned</div>
+          <div class="menu-desc">Fall back to team Slack channel</div>
+        </div>
+        <i class="ph ph-check-circle menu-check"></i>
+      </div>
+      <div style="height:1px; background:var(--border); margin:4px 0;"></div>
+    `;
+    if (people.length === 0 && q) {
+      return unassign + `<div class="menu-empty">No people match "${query}"</div>`;
+    }
+    return unassign + people.map(p => `
+      <div class="menu-item ${currentId === p.id ? 'selected' : ''}" onclick="selectOwner('${p.id}')">
+        <span class="menu-ic" style="background:${p.avatar};">${p.name.charAt(0).toUpperCase()}</span>
+        <div class="menu-text">
+          <div class="menu-title">${p.name}</div>
+          <div class="menu-desc">${teamName[teamKey]}</div>
+        </div>
+        <i class="ph ph-check-circle menu-check"></i>
+      </div>
+    `).join('');
+  }
+
+  function openOwnerMenu(chipEl, client, teamKey) {
+    if (activeOwnerMenu && activeOwnerMenu.chipEl === chipEl) { closeAllMenus(); return; }
+    closeAllMenus();
+    const row = owners.find(o => o.client === client);
+    activeOwnerMenu = { chipEl, client, teamKey };
+
+    document.getElementById('owner-menu-header').textContent = `${teamName[teamKey]} owner · ${client}`;
+    ownerSearchInput.value = '';
+    ownerMenuList.innerHTML = buildOwnerMenuOptions(teamKey, row[teamKey]);
+
+    positionMenu(ownerMenu, chipEl, 280);
+    chipEl.classList.add('open');
+    requestAnimationFrame(() => { ownerMenu.classList.add('open'); ownerSearchInput.focus(); });
+  }
+
+  function selectOwner(userId) {
+    if (!activeOwnerMenu) return;
+    const { client, teamKey } = activeOwnerMenu;
+    const row = owners.find(o => o.client === client);
+    if (row[teamKey] !== userId) {
+      row[teamKey] = userId;
+      renderOwners();
+      const p = findPerson(teamKey, userId);
+      toast({
+        title:'Owner updated',
+        body: p ? `${p.name} now owns ${teamName[teamKey]} for ${client}.` : `${teamName[teamKey]} unassigned for ${client}. Will use team channel.`,
+        type: p ? 'success' : 'warning'
+      });
+    }
+    closeAllMenus();
+  }
+
+  ownerSearchInput.addEventListener('input', e => {
+    if (!activeOwnerMenu) return;
+    const row = owners.find(o => o.client === activeOwnerMenu.client);
+    ownerMenuList.innerHTML = buildOwnerMenuOptions(activeOwnerMenu.teamKey, row[activeOwnerMenu.teamKey], e.target.value);
+  });
+
+  /* =============================================================
+     MENU POSITIONING + GLOBAL CLOSE
+     ============================================================= */
+  function positionMenu(menuEl, anchorEl, width) {
+    const rect = anchorEl.getBoundingClientRect();
+    let left = rect.left + window.scrollX;
+    let top  = rect.bottom + 6 + window.scrollY;
+    left = Math.max(8, Math.min(left, window.innerWidth - width - 8));
+    menuEl.style.left = `${left}px`;
+    menuEl.style.top  = `${top}px`;
+  }
+
+  function closeAllMenus() {
+    if (activeRoleMenu) {
+      activeRoleMenu.chipEl.classList.remove('open');
+      roleMenu.classList.remove('open');
+      activeRoleMenu = null;
+    }
+    if (activeOwnerMenu) {
+      activeOwnerMenu.chipEl.classList.remove('open');
+      ownerMenu.classList.remove('open');
+      activeOwnerMenu = null;
+    }
+  }
+
+  document.addEventListener('click', e => {
+    if (activeRoleMenu && !roleMenu.contains(e.target) && !activeRoleMenu.chipEl.contains(e.target)) closeAllMenus();
+    if (activeOwnerMenu && !ownerMenu.contains(e.target) && !activeOwnerMenu.chipEl.contains(e.target)) closeAllMenus();
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAllMenus(); });
+  window.addEventListener('scroll', closeAllMenus, true);
+  window.addEventListener('resize', closeAllMenus);
+
+  /* =============================================================
+     TOAST
+     ============================================================= */
+  function toast({ title, body, type='success' }) {
+    const host = document.getElementById('toast-host');
+    const el = document.createElement('div');
+    el.className = `toast ${type}`;
+    const ic = type === 'success' ? 'ph-check-circle' : type === 'warning' ? 'ph-warning-circle' : type === 'danger' ? 'ph-x-circle' : 'ph-info';
+    el.innerHTML = `<i class="ph ${ic} lead"></i><div><div class="toast-title">${title}</div><div class="toast-body">${body}</div></div>`;
+    host.appendChild(el);
+    setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity 200ms ease'; }, 2400);
+    setTimeout(() => el.remove(), 2700);
+  }
+
+  /* =============================================================
+     INIT
+     ============================================================= */
+  renderModules();
+  renderOwners();
+</script>
+
+</body>
+</html>
