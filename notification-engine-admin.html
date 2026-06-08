@@ -508,6 +508,362 @@
   .icon-btn:hover { background: var(--neutral-100); color: var(--neutral-800); }
   .icon-btn i { font-size: 16px; }
 
+  /* ========== Templates editor ========== */
+  .tpl-shell {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    min-height: 640px;
+  }
+  .tpl-event-list {
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    min-height: 0;
+  }
+  .tpl-search {
+    position: relative;
+    padding: 14px 14px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tpl-search input {
+    width: 100%; height: 36px;
+    padding: 0 12px 0 36px;
+    border: 1px solid var(--border-strong); border-radius: 8px;
+    font-family: inherit; font-size: 13px;
+  }
+  .tpl-search input:focus { outline: none; border-color: var(--primary-400); box-shadow: 0 0 0 3px var(--primary-100); }
+  .tpl-search i {
+    position: absolute; left: 24px; top: 50%; transform: translateY(-50%);
+    color: var(--neutral-400); font-size: 14px;
+  }
+  .tpl-event-list-body {
+    flex: 1; overflow-y: auto; padding: 8px 8px 14px;
+  }
+  .tpl-module-label {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300; font-size: 11px;
+    color: var(--neutral-500);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    padding: 12px 10px 6px;
+  }
+  .tpl-event-row {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 100ms ease;
+  }
+  .tpl-event-row:hover { background: var(--neutral-50); }
+  .tpl-event-row.active { background: var(--primary-50); }
+  .tpl-event-row .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--neutral-300);
+    flex-shrink: 0; margin-top: 7px;
+  }
+  .tpl-event-row.active .dot { background: var(--primary-500); }
+  .tpl-event-row .name {
+    font-size: 13px; font-weight: 700;
+    color: var(--neutral-800);
+    line-height: 1.3;
+  }
+  .tpl-event-row.active .name { color: var(--primary-700); }
+  .tpl-event-row .code {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300; font-size: 10px;
+    color: var(--neutral-500);
+    margin-top: 2px;
+  }
+  .tpl-event-row .completeness {
+    margin-left: auto;
+    display: flex; gap: 2px;
+    align-self: center;
+  }
+  .tpl-event-row .completeness .pip {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--neutral-200);
+  }
+  .tpl-event-row .completeness .pip.filled { background: var(--success-500); }
+
+  .tpl-editor {
+    display: flex; flex-direction: column;
+    min-height: 0;
+  }
+  .tpl-editor-header {
+    padding: 18px 24px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tpl-event-title {
+    font-size: 18px; font-weight: 700;
+    color: var(--neutral-900);
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+  .tpl-event-meta {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--neutral-500);
+  }
+  .tpl-event-code {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300; font-size: 11px;
+    background: var(--neutral-100); color: var(--neutral-700);
+    padding: 2px 6px; border-radius: 4px;
+    text-transform: lowercase; letter-spacing: 0.2px;
+  }
+  .tpl-event-trigger { font-weight: 500; }
+
+  .tpl-tabs {
+    display: flex; align-items: center; gap: 4px;
+    padding: 12px 24px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .tpl-tab {
+    padding: 8px 14px;
+    border-bottom: 2px solid transparent;
+    font-size: 13px; font-weight: 700;
+    color: var(--neutral-500);
+    cursor: pointer;
+    transition: all 120ms ease;
+    margin-bottom: -1px;
+  }
+  .tpl-tab:hover { color: var(--neutral-800); }
+  .tpl-tab.active {
+    color: var(--primary-700);
+    border-bottom-color: var(--primary-500);
+  }
+  .tpl-tab.disabled {
+    color: var(--neutral-300);
+    cursor: not-allowed;
+  }
+  .tpl-tab .tab-dot {
+    display: inline-block;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--success-500);
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .tpl-tab.disabled .tab-dot { background: var(--neutral-200); }
+
+  .tpl-editor-body {
+    flex: 1; overflow-y: auto;
+    padding: 20px 24px 0;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 24px;
+    min-height: 0;
+  }
+  .tpl-form { display: flex; flex-direction: column; gap: 18px; }
+  .tpl-field-label {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300; font-size: 11px;
+    color: var(--neutral-500);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .tpl-input, .tpl-textarea {
+    width: 100%;
+    border: 1px solid var(--border-strong); border-radius: 8px;
+    padding: 10px 12px;
+    font-family: inherit; font-size: 14px; font-weight: 500;
+    color: var(--neutral-900);
+    background: var(--neutral-0);
+    line-height: 1.5;
+  }
+  .tpl-textarea { min-height: 110px; resize: vertical; }
+  .tpl-input:focus, .tpl-textarea:focus {
+    outline: none;
+    border-color: var(--primary-400);
+    box-shadow: 0 0 0 3px var(--primary-100);
+  }
+  .inline-code {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12px;
+    background: var(--neutral-100);
+    color: var(--primary-700);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+
+  .tpl-side {
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .tpl-side-panel {
+    background: var(--neutral-50);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .tpl-panel-title {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300; font-size: 11px;
+    color: var(--neutral-500);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .tpl-panel-title i { font-size: 12px; }
+  .tpl-var-list { display: flex; flex-direction: column; gap: 6px; }
+  .tpl-var-item {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 7px 10px;
+    border-radius: 6px;
+    background: var(--neutral-0);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 120ms ease;
+  }
+  .tpl-var-item:hover { border-color: var(--primary-300); background: var(--primary-50); }
+  .tpl-var-item .var-key {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px; font-weight: 700;
+    color: var(--primary-700);
+    flex-shrink: 0;
+    padding-top: 1px;
+  }
+  .tpl-var-item .var-desc {
+    font-size: 11px; color: var(--neutral-600); font-weight: 500;
+  }
+
+  .tpl-preview-card {
+    background: var(--neutral-0);
+    border: 1px solid var(--border-strong);
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .tpl-preview-to {
+    font-size: 12px; color: var(--neutral-500);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+  }
+  .tpl-preview-to strong { color: var(--neutral-900); font-weight: 700; }
+  .tpl-preview-subject {
+    font-weight: 700; font-size: 14px;
+    color: var(--neutral-900);
+    line-height: 1.35;
+    margin-bottom: 6px;
+  }
+  .tpl-preview-body {
+    font-size: 13px; color: var(--neutral-700);
+    line-height: 1.55;
+    margin-bottom: 12px;
+    white-space: pre-wrap;
+  }
+  .tpl-preview-cta {
+    display: inline-block;
+    background: var(--primary-500); color: white;
+    padding: 6px 12px; border-radius: 6px;
+    font-size: 12px; font-weight: 700;
+  }
+
+  .tpl-editor-footer {
+    padding: 14px 24px;
+    border-top: 1px solid var(--border);
+    background: var(--neutral-0);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .tpl-editor-footer .meta {
+    font-size: 12px; color: var(--neutral-500); margin-left: auto;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .tpl-editor-footer .meta .ok { color: var(--success-700); display: inline-flex; align-items: center; gap: 4px; }
+
+  /* ========== Inbox row expanded preview ========== */
+  tbody tr.notif-row { cursor: pointer; }
+  tbody tr.notif-row.expanded { background: var(--neutral-50); }
+  tbody tr.notif-expanded td { padding: 0 16px 16px; background: var(--neutral-0); border-bottom: 1px solid var(--border); }
+  .notif-preview-card {
+    margin-left: 130px;
+    max-width: 720px;
+    padding: 12px 0 4px;
+  }
+  .notif-preview-subject {
+    font-size: 15px; font-weight: 700;
+    color: var(--neutral-900);
+    line-height: 1.35;
+    margin-bottom: 6px;
+  }
+  .notif-preview-body {
+    font-size: 13px; font-weight: 500;
+    color: var(--neutral-700);
+    line-height: 1.55;
+    margin-bottom: 12px;
+  }
+  .notif-preview-actions {
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  /* Stacked avatars in the Recipient column */
+  .recipient-stack { display: flex; align-items: center; gap: 10px; }
+  .stack-avatars { display: flex; align-items: center; }
+  .avatar.stacked {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 11px; font-weight: 700;
+    color: white;
+    border: 2px solid var(--neutral-0);
+    box-sizing: content-box;
+    margin-left: -8px;
+    flex-shrink: 0;
+  }
+  .avatar.stacked:first-child { margin-left: 0; }
+  .avatar.stacked.client     { background: #1059BD; }
+  .avatar.stacked.manager    { background: #7B61FF; }
+  .avatar.stacked.worker     { background: #12B76A; }
+  .avatar.stacked.contractor { background: #F79009; }
+  .avatar.stacked.more {
+    background: var(--neutral-100);
+    color: var(--neutral-600);
+    font-size: 10px;
+  }
+  .stack-text { min-width: 0; }
+  .stack-lead { font-size: 13px; font-weight: 700; color: var(--neutral-900); }
+  .stack-count {
+    font-size: 11px; color: var(--neutral-500); font-weight: 500;
+    margin-top: 2px;
+  }
+
+  /* Recipients line (Gmail-style "To: name, name, name") */
+  .recipients-line {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+  .recipients-prefix {
+    font-weight: 500;
+    color: var(--neutral-500);
+    flex-shrink: 0;
+  }
+  .recipients-names {
+    color: var(--neutral-900);
+    font-weight: 500;
+  }
+  .notif-cta-btn {
+    background: var(--primary-500); color: white;
+    padding: 6px 12px; border-radius: 6px;
+    font-size: 12px; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .notif-cta-btn:hover { background: var(--primary-600); }
+  .notif-copy-btn {
+    background: var(--neutral-0); color: var(--neutral-700);
+    border: 1px solid var(--border-strong);
+    padding: 6px 10px; border-radius: 6px;
+    font-size: 12px; font-weight: 500;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .notif-copy-btn:hover { background: var(--neutral-50); color: var(--neutral-900); }
+  .notif-copy-btn i { font-size: 13px; }
+  .notif-meta-strip {
+    display: flex; align-items: center; gap: 6px;
+    margin-left: auto;
+    font-size: 11px; color: var(--neutral-500);
+  }
+  .notif-meta-strip span { display: inline-flex; align-items: center; gap: 4px; }
+  .notif-meta-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--neutral-300); }
+
   /* ========== Inbox ========== */
   .inbox-stats {
     display: grid;
@@ -599,35 +955,15 @@
   .role-mini.primary  { background: var(--primary-500); color: white; }
   .role-mini.informed { background: var(--primary-50);  color: var(--primary-700); }
 
-  .inbox-channel {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 3px 9px; border-radius: 6px;
+  .inbox-channel,
+  .inbox-status {
+    display: inline-flex; align-items: center;
+    padding: 3px 10px; border-radius: 6px;
     background: var(--neutral-100);
     font-size: 12px; font-weight: 700;
     color: var(--neutral-700);
   }
-  .inbox-channel i { font-size: 13px; }
-  .inbox-channel.slack { background: #F4ECFF; color: #5A3FD6; }
-  .inbox-channel.email { background: #FFF4E5; color: #B54708; }
-  .inbox-channel.inapp { background: var(--primary-50); color: var(--primary-700); }
-  .inbox-channel.sms   { background: var(--success-50); color: var(--success-700); }
-
-  .inbox-status {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 3px 10px; border-radius: 999px;
-    font-size: 12px; font-weight: 700;
-  }
-  .inbox-status::before {
-    content: ''; width: 6px; height: 6px; border-radius: 50%;
-  }
-  .inbox-status.read      { background: var(--success-50); color: var(--success-700); }
-  .inbox-status.read::before      { background: var(--success-500); }
-  .inbox-status.delivered { background: var(--primary-50); color: var(--primary-700); }
-  .inbox-status.delivered::before { background: var(--primary-500); }
-  .inbox-status.queued    { background: var(--warning-50); color: var(--warning-700); }
-  .inbox-status.queued::before    { background: var(--warning-500); }
-  .inbox-status.failed    { background: var(--danger-50); color: var(--danger-700); }
-  .inbox-status.failed::before    { background: var(--danger-500); }
+  .inbox-status { border-radius: 999px; }
 
   /* ========== Info banner ========== */
   .info-banner {
@@ -665,9 +1001,13 @@
           <i class="ph ph-users-three"></i> Owners
           <span class="nav-badge" id="owners-count">6</span>
         </a>
+        <a class="nav-item" data-view="templates" onclick="switchView('templates')">
+          <i class="ph ph-note-pencil"></i> Templates
+          <span class="nav-badge" id="templates-count">0</span>
+        </a>
         <a class="nav-item" data-view="inbox" onclick="switchView('inbox')">
           <i class="ph ph-tray"></i> Inbox
-          <span class="nav-badge" id="inbox-count">24</span>
+          <span class="nav-badge" id="inbox-count">13</span>
         </a>
       </nav>
     </div>
@@ -826,37 +1166,49 @@
       </section>
     </section>
 
+    <!-- ========== VIEW: TEMPLATES ========== -->
+    <section class="view" id="view-templates">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Notification templates</div>
+          <div class="page-subtitle">
+            Configure the message copy for each event, customised per recipient type. Use variables like <code class="inline-code">{client}</code> or <code class="inline-code">{employee}</code> to interpolate event data into the message.
+          </div>
+        </div>
+      </div>
+
+      <section class="card tpl-shell">
+        <!-- LEFT PANE: Event list -->
+        <aside class="tpl-event-list">
+          <div class="tpl-search">
+            <i class="ph ph-magnifying-glass"></i>
+            <input id="tpl-search-input" type="text" placeholder="Search events…" />
+          </div>
+          <div class="tpl-event-list-body" id="tpl-event-list-body"></div>
+        </aside>
+
+        <!-- RIGHT PANE: Editor -->
+        <main class="tpl-editor" id="tpl-editor">
+          <div class="empty-state" style="padding:60px 24px;">
+            <i class="ph ph-note-pencil"></i>
+            <h4>Pick an event to edit its template</h4>
+            <p>Select an event from the list on the left.</p>
+          </div>
+        </main>
+      </section>
+    </section>
+
     <!-- ========== VIEW: INBOX ========== -->
     <section class="view" id="view-inbox">
       <div class="page-header">
         <div>
           <div class="page-title">Notification inbox</div>
           <div class="page-subtitle">
-            Every notification the engine has dispatched in the last 30 days. Use the filters to debug who got what, when, and via which channel.
+            Every system notification the engine has dispatched in the last 30 days. Use the filters to debug who got what and when.
           </div>
         </div>
         <div style="display:flex; gap:8px;">
           <button class="btn btn-secondary" onclick="exportInbox()"><i class="ph ph-download-simple"></i> Export</button>
-        </div>
-      </div>
-
-      <!-- Stats strip -->
-      <div class="inbox-stats">
-        <div class="inbox-stat-card">
-          <div class="inbox-stat-label">Today</div>
-          <div class="inbox-stat-value" id="stat-today">0</div>
-        </div>
-        <div class="inbox-stat-card">
-          <div class="inbox-stat-label">Read</div>
-          <div class="inbox-stat-value" id="stat-read">0</div>
-        </div>
-        <div class="inbox-stat-card">
-          <div class="inbox-stat-label">Queued</div>
-          <div class="inbox-stat-value" id="stat-queued">0</div>
-        </div>
-        <div class="inbox-stat-card">
-          <div class="inbox-stat-label">Failed</div>
-          <div class="inbox-stat-value" id="stat-failed">0</div>
         </div>
       </div>
 
@@ -897,34 +1249,13 @@
             </select>
           </div>
           <div class="select-wrap">
-            <select id="inbox-channel-select" class="select">
-              <option value="">All channels</option>
-              <option value="slack">Slack</option>
-              <option value="email">Email</option>
-              <option value="inapp">In-app</option>
-              <option value="sms">SMS</option>
+            <select id="inbox-member-select" class="select">
+              <option value="">All team members</option>
             </select>
           </div>
           <div class="filter-spacer"></div>
           <button class="btn btn-ghost" id="reset-inbox-btn" onclick="resetInboxFilters()" style="display:none;">
             <i class="ph ph-arrow-counter-clockwise"></i> Reset
-          </button>
-        </div>
-
-        <!-- Status filter chips row -->
-        <div class="filter-bar" style="padding-top:12px; padding-bottom:12px; gap:6px;">
-          <span style="font-family:'Open Sans', sans-serif; font-weight:300; font-size:11px; color:var(--neutral-500); text-transform:uppercase; letter-spacing:0.5px; padding-right:6px;">Status</span>
-          <button class="chip status-chip active" data-status="read">
-            <span class="chip-dot" style="background:var(--success-500);"></span> Read
-          </button>
-          <button class="chip status-chip active" data-status="delivered">
-            <span class="chip-dot" style="background:var(--primary-500);"></span> Delivered
-          </button>
-          <button class="chip status-chip active" data-status="queued">
-            <span class="chip-dot" style="background:var(--warning-500);"></span> Queued
-          </button>
-          <button class="chip status-chip active" data-status="failed">
-            <span class="chip-dot" style="background:var(--danger-500);"></span> Failed
           </button>
         </div>
 
@@ -936,8 +1267,6 @@
                 <th>Event</th>
                 <th style="width:160px;">Client</th>
                 <th style="width:220px;">Recipient</th>
-                <th style="width:110px;">Channel</th>
-                <th style="width:120px;">Status</th>
                 <th style="width:40px;"></th>
               </tr>
             </thead>
@@ -1540,36 +1869,174 @@
   /* =============================================================
      INBOX
      ============================================================= */
+  // Each event firing fans out to one or more recipients based on the routing config.
   const notifications = [
     // Today
-    { id:'n1',  ts:'2026-06-05T11:42', module:'Payroll',     event:'Payroll inputs missing at cutoff', client:'Acme Inc.',    recipient:{ type:'internal', team:'cf', name:'Shashank',  initial:'S' }, role:'P', channel:'slack', status:'read' },
-    { id:'n2',  ts:'2026-06-05T11:42', module:'Payroll',     event:'Payroll inputs missing at cutoff', client:'Acme Inc.',    recipient:{ type:'internal', team:'cs', name:'Chandana', initial:'C' }, role:'I', channel:'email', status:'queued' },
-    { id:'n3',  ts:'2026-06-05T11:42', module:'Payroll',     event:'Payroll inputs missing at cutoff', client:'Acme Inc.',    recipient:{ type:'client',  name:'Acme HR Admin',     initial:'A' }, role:'P', channel:'email', status:'delivered' },
-    { id:'n4',  ts:'2026-06-05T10:15', module:'Invoicing',   event:'Invoice paid',                     client:'Beta Corp',    recipient:{ type:'internal', team:'cf', name:'Raj',       initial:'R' }, role:'P', channel:'slack', status:'read' },
-    { id:'n5',  ts:'2026-06-05T09:03', module:'Employees',   event:'BGV flagged (discrepancy)',        client:'Gamma Ltd',    recipient:{ type:'internal', team:'hr', name:'Sneha',     initial:'S' }, role:'P', channel:'slack', status:'read' },
-    { id:'n6',  ts:'2026-06-05T09:03', module:'Employees',   event:'BGV flagged (discrepancy)',        client:'Gamma Ltd',    recipient:{ type:'internal', team:'cs', name:'Aarav',     initial:'A' }, role:'P', channel:'slack', status:'delivered' },
-    { id:'n7',  ts:'2026-06-05T09:03', module:'Employees',   event:'BGV flagged (discrepancy)',        client:'Gamma Ltd',    recipient:{ type:'client',  name:'Gamma Compliance',  initial:'G' }, role:'P', channel:'email', status:'read' },
-    { id:'n8',  ts:'2026-06-05T08:15', module:'Leaves',      event:'Leave request approved',           client:'Acme Inc.',    recipient:{ type:'worker',  name:'Netan Mangal',      initial:'N' }, role:'P', channel:'inapp', status:'read' },
-    { id:'n9',  ts:'2026-06-05T07:45', module:'Account',     event:'KYC document expiring (T-30)',     client:'Gamma Ltd',    recipient:{ type:'client',  name:'Gamma HR',          initial:'G' }, role:'P', channel:'email', status:'delivered' },
+    { id:'e1', ts:'2026-06-05T11:42', module:'Payroll', event:'Payroll inputs missing at cutoff', client:'Acme Inc.', recipients:[
+      { type:'internal', team:'cf', name:'Shashank',       initial:'S', role:'P' },
+      { type:'internal', team:'cs', name:'Chandana',       initial:'C', role:'I' },
+      { type:'client',             name:'Acme HR Admin',   initial:'A', role:'P' },
+    ]},
+    { id:'e2', ts:'2026-06-05T10:15', module:'Invoicing', event:'Invoice paid', client:'Beta Corp', recipients:[
+      { type:'internal', team:'cf', name:'Raj',            initial:'R', role:'P' },
+    ]},
+    { id:'e3', ts:'2026-06-05T09:03', module:'Employees', event:'BGV flagged (discrepancy)', client:'Gamma Ltd', recipients:[
+      { type:'internal', team:'hr', name:'Sneha',          initial:'S', role:'P' },
+      { type:'internal', team:'cs', name:'Aarav',          initial:'A', role:'P' },
+      { type:'client',             name:'Gamma Compliance', initial:'G', role:'P' },
+    ]},
+    { id:'e4', ts:'2026-06-05T08:15', module:'Leaves', event:'Leave request approved', client:'Acme Inc.', recipients:[
+      { type:'worker', name:'Netan Mangal',                initial:'N', role:'P' },
+    ]},
+    { id:'e5', ts:'2026-06-05T07:45', module:'Account', event:'KYC document expiring (T-30)', client:'Gamma Ltd', recipients:[
+      { type:'client', name:'Gamma HR',                    initial:'G', role:'P' },
+    ]},
     // Yesterday
-    { id:'n10', ts:'2026-06-04T18:30', module:'Payroll',     event:'Payslips published',               client:'Acme Inc.',    recipient:{ type:'manager', name:'Acme line manager', initial:'A' }, role:'I', channel:'email', status:'delivered' },
-    { id:'n11', ts:'2026-06-04T18:30', module:'Payroll',     event:'Payslips published',               client:'Acme Inc.',    recipient:{ type:'worker',  name:'Netan Mangal',      initial:'N' }, role:'P', channel:'email', status:'read' },
-    { id:'n12', ts:'2026-06-04T18:30', module:'Payroll',     event:'Payslips published',               client:'Acme Inc.',    recipient:{ type:'worker',  name:'Rohit Sharma',      initial:'R' }, role:'P', channel:'email', status:'read' },
-    { id:'n13', ts:'2026-06-04T15:22', module:'Compliance',  event:'Form 16 ready to download',        client:'Delta LLC',    recipient:{ type:'worker',  name:'John Smith',        initial:'J' }, role:'P', channel:'email', status:'delivered' },
-    { id:'n14', ts:'2026-06-04T11:08', module:'Invoicing',   event:'Invoice overdue (T+7)',            client:'Epsilon GmbH', recipient:{ type:'internal', team:'cf', name:'Shashank', initial:'S' }, role:'P', channel:'slack', status:'read' },
-    { id:'n15', ts:'2026-06-04T11:08', module:'Invoicing',   event:'Invoice overdue (T+7)',            client:'Epsilon GmbH', recipient:{ type:'client',  name:'Epsilon Finance',   initial:'E' }, role:'P', channel:'email', status:'failed' },
-    { id:'n16', ts:'2026-06-04T09:50', module:'Employees',   event:'Reimbursement approved',           client:'Beta Corp',    recipient:{ type:'worker',  name:'Rajesh K',          initial:'R' }, role:'P', channel:'email', status:'read' },
+    { id:'e6', ts:'2026-06-04T18:30', module:'Payroll', event:'Payslips published', client:'Acme Inc.', recipients:[
+      { type:'manager', name:'Acme line manager',          initial:'A', role:'I' },
+      { type:'worker',  name:'Netan Mangal',               initial:'N', role:'P' },
+      { type:'worker',  name:'Rohit Sharma',               initial:'R', role:'P' },
+    ]},
+    { id:'e7', ts:'2026-06-04T15:22', module:'Compliance', event:'Form 16 ready to download', client:'Delta LLC', recipients:[
+      { type:'worker', name:'John Smith',                  initial:'J', role:'P' },
+    ]},
+    { id:'e8', ts:'2026-06-04T11:08', module:'Invoicing', event:'Invoice overdue (T+7)', client:'Epsilon GmbH', recipients:[
+      { type:'internal', team:'cf', name:'Shashank',       initial:'S', role:'P' },
+      { type:'client',             name:'Epsilon Finance', initial:'E', role:'P' },
+    ]},
+    { id:'e9', ts:'2026-06-04T09:50', module:'Employees', event:'Reimbursement approved', client:'Beta Corp', recipients:[
+      { type:'worker', name:'Rajesh K',                    initial:'R', role:'P' },
+    ]},
     // 2 days ago
-    { id:'n17', ts:'2026-06-03T19:00', module:'Contractors', event:'Contractor payment processed',     client:'Delta LLC',    recipient:{ type:'contractor', name:'Ahmed K',        initial:'A' }, role:'P', channel:'email', status:'read' },
-    { id:'n18', ts:'2026-06-03T16:45', module:'Contractors', event:'Contractor invoice submitted',     client:'Zeta Pvt Ltd', recipient:{ type:'internal', team:'cf', name:'Mira',     initial:'M' }, role:'P', channel:'slack', status:'read' },
-    { id:'n19', ts:'2026-06-03T16:45', module:'Contractors', event:'Contractor invoice submitted',     client:'Zeta Pvt Ltd', recipient:{ type:'contractor', name:'Priyansh K',     initial:'P' }, role:'I', channel:'email', status:'delivered' },
-    { id:'n20', ts:'2026-06-03T14:22', module:'Employees',   event:'Offer accepted',                   client:'Acme Inc.',    recipient:{ type:'internal', team:'cs', name:'Chandana', initial:'C' }, role:'P', channel:'slack', status:'read' },
-    { id:'n21', ts:'2026-06-03T14:22', module:'Employees',   event:'Offer accepted',                   client:'Acme Inc.',    recipient:{ type:'worker',  name:'Aditi Mehta',       initial:'A' }, role:'P', channel:'email', status:'read' },
+    { id:'e10', ts:'2026-06-03T19:00', module:'Contractors', event:'Contractor payment processed', client:'Delta LLC', recipients:[
+      { type:'contractor', name:'Ahmed K',                 initial:'A', role:'P' },
+    ]},
+    { id:'e11', ts:'2026-06-03T16:45', module:'Contractors', event:'Contractor invoice submitted', client:'Zeta Pvt Ltd', recipients:[
+      { type:'internal',   team:'cf', name:'Mira',         initial:'M', role:'P' },
+      { type:'contractor',           name:'Priyansh K',    initial:'P', role:'I' },
+    ]},
+    { id:'e12', ts:'2026-06-03T14:22', module:'Employees', event:'Offer accepted', client:'Acme Inc.', recipients:[
+      { type:'internal', team:'cs', name:'Chandana',       initial:'C', role:'P' },
+      { type:'worker',             name:'Aditi Mehta',     initial:'A', role:'P' },
+    ]},
     // 3 days ago
-    { id:'n22', ts:'2026-06-02T10:30', module:'Account',     event:'Contract renewal due (T-60)',      client:'Beta Corp',    recipient:{ type:'internal', team:'sales', name:'Vikram', initial:'V' }, role:'P', channel:'slack', status:'read' },
-    { id:'n23', ts:'2026-06-02T10:30', module:'Account',     event:'Contract renewal due (T-60)',      client:'Beta Corp',    recipient:{ type:'internal', team:'cs', name:'Priya',     initial:'P' }, role:'P', channel:'slack', status:'delivered' },
-    { id:'n24', ts:'2026-06-02T10:30', module:'Account',     event:'Contract renewal due (T-60)',      client:'Beta Corp',    recipient:{ type:'client',  name:'Beta CEO',          initial:'B' }, role:'I', channel:'email', status:'queued' },
+    { id:'e13', ts:'2026-06-02T10:30', module:'Account', event:'Contract renewal due (T-60)', client:'Beta Corp', recipients:[
+      { type:'internal', team:'sales', name:'Vikram',      initial:'V', role:'P' },
+      { type:'internal', team:'cs',    name:'Priya',       initial:'P', role:'P' },
+      { type:'client',                 name:'Beta CEO',    initial:'B', role:'I' },
+    ]},
   ];
+
+  const typePriority = ['internal','client','manager','worker','contractor'];
+  function dominantType(recipients) {
+    for (const t of typePriority) {
+      if (recipients.some(r => r.type === t)) return t;
+    }
+    return recipients[0]?.type || 'internal';
+  }
+  function recipientTypeLabel(type) {
+    if (type === 'internal')   return 'Internal team';
+    if (type === 'client')     return 'Client admin';
+    if (type === 'manager')    return "Client's manager";
+    if (type === 'worker')     return 'Employee';
+    if (type === 'contractor') return 'Contractor';
+    return '';
+  }
+  function recipientRoleLabelDetailed(r) {
+    const baseLabel = r.type === 'internal'
+      ? (teamName[r.team] || 'Internal')
+      : recipientTypeLabel(r.type);
+    const roleLabel = r.role === 'P' ? 'Primary' : r.role === 'I' ? 'Informed' : 'None';
+    return `${baseLabel} · ${roleLabel}`;
+  }
+
+  // Notification copy templates per event + recipient type
+  const eventCopy = {
+    'Payroll inputs missing at cutoff': {
+      internal: ['⚠️ {client} — payroll inputs not submitted', "{client} hasn't submitted May payroll inputs. Cutoff was today, 5:00 PM IST. 14 employees impacted if not received in 24h.", 'Open in portal'],
+      client:   ['Action required — submit May payroll inputs', "Your May payroll inputs are due. Please submit by EOD to avoid disbursement delays for your employees.", 'Submit inputs'],
+    },
+    'Invoice paid': {
+      internal: ['✅ {client} — invoice paid', 'Payment received from {client} and reconciled. Statement updated automatically.', 'View invoice'],
+      client:   ['Payment received — thank you!', "We've received your payment. The statement has been updated and a receipt is attached.", 'Download receipt'],
+    },
+    'BGV flagged (discrepancy)': {
+      internal: ['🚩 BGV discrepancy — {client}', 'Background verification has returned a discrepancy for one of {client}\'s candidates. Review the report and decide next steps with the client.', 'Open BGV report'],
+      client:   ['BGV requires review — action needed', "A background verification check has flagged a discrepancy for one of your candidates. Your input is needed before we proceed.", 'Review and decide'],
+    },
+    'Payslips published': {
+      manager: ['Payslips published — {client}', "Payslips for the month have been published for your team. You can review them in the portal.", 'View payslips'],
+      worker:  ['Your payslip is ready 💸', "Your payslip for the month is now available. View, download, or share securely from the employee portal.", 'View payslip'],
+    },
+    'Leave request approved': {
+      worker:  ['Leave approved ✅', "Your leave request has been approved. Have a great time off — see you when you\'re back!", 'View leave'],
+    },
+    'Form 16 ready to download': {
+      worker:  ['Your Form 16 is ready', "Your Form 16 for FY 2025-26 is now available to download. You'll need it for your income tax filing.", 'Download Form 16'],
+    },
+    'Invoice overdue (T+7)': {
+      internal: ['⚠️ Invoice overdue — {client}', 'Invoice for {client} is now 7 days past due. Recommend triggering the dunning sequence.', 'Open dunning'],
+      client:   ['Friendly reminder — invoice payment due', "Your invoice is 7 days past due. Please settle to keep services running smoothly for your team.", 'Pay invoice'],
+    },
+    'Reimbursement approved': {
+      worker:  ['Reimbursement approved 💸', "Your expense claim has been approved. The amount will be added to your next payroll cycle.", 'View claim'],
+    },
+    'Contractor payment processed': {
+      contractor: ['Payment processed ✅', "Your payment has been processed. It should reach your bank account within 2 business days.", 'View payment'],
+    },
+    'Contractor invoice submitted': {
+      internal:   ['Contractor invoice received — {client}', 'A contractor working with {client} has submitted an invoice. Review and approve to release payment.', 'Review invoice'],
+      contractor: ['Invoice received', "We've received your invoice. You'll be notified once it's been approved and payment is scheduled.", 'View invoice'],
+    },
+    'Offer accepted': {
+      internal: ['🎉 Offer accepted — {client}', 'Candidate has accepted the offer at {client}. Onboarding workflow has been triggered automatically.', 'View onboarding'],
+      worker:   ['Welcome aboard! 🎉', "Your offer has been accepted. We'll send your onboarding details and Day-1 checklist shortly.", 'Track onboarding'],
+    },
+    'Contract renewal due (T-60)': {
+      internal: ['Renewal due — {client}', 'Contract for {client} expires in 60 days. Worth scheduling a renewal conversation now.', 'Open renewal'],
+      client:   ["Let's chat about your renewal", 'Your Wisemonk contract expires in 60 days. We\'d love to align on the next term — pick a time that works.', 'Book a call'],
+    },
+    'KYC document expiring (T-30)': {
+      client: ['KYC document expiring soon', "One of your KYC documents will expire in 30 days. Please upload an updated copy to avoid any service interruption.", 'Upload document'],
+    },
+    'New employee onboarding initiated': {
+      internal: ['New hire — {client}', "{client} has added a new hire. Onboarding tasks have been assigned to HR Ops.", 'Open onboarding'],
+      client:   ['Onboarding kicked off', "We've started the onboarding workflow for your new hire. We'll keep you posted on each milestone.", 'Track onboarding'],
+      worker:   ['Welcome — let\'s get you set up!', "Welcome aboard! Click below to begin your onboarding tasks. We\'ll have you ready to go in no time.", 'Start onboarding'],
+    },
+  };
+
+  function getCopy(n, forType) {
+    const set = eventCopy[n.event];
+    const fallback = { subject: n.event, body: `Notification for ${n.client}.`, cta: 'Open in portal' };
+    if (!set) return fallback;
+    const type = forType || dominantType(n.recipients);
+    const tpl = set[type] || set.internal || Object.values(set)[0];
+    if (!tpl) return fallback;
+    return {
+      subject: (tpl[0] || n.event).replace(/{client}/g, n.client),
+      body:    (tpl[1] || '').replace(/{client}/g, n.client),
+      cta:     tpl[2] || 'Open in portal',
+    };
+  }
+
+  const expandedNotifs = new Set();
+  function toggleNotif(id) {
+    if (expandedNotifs.has(id)) expandedNotifs.delete(id);
+    else expandedNotifs.add(id);
+    renderInbox();
+  }
+
+  function copyNotif(id) {
+    const n = notifications.find(x => x.id === id);
+    if (!n) return;
+    const c = getCopy(n);
+    const text = `${c.subject}\n\n${c.body}\n\n${c.cta}`;
+    navigator.clipboard.writeText(text).then(
+      () => toast({ title:'Copied to clipboard', body:c.subject, type:'success' }),
+      () => toast({ title:'Copy failed', body:'Could not access clipboard.', type:'danger' })
+    );
+  }
 
   const NOW = new Date('2026-06-05T12:00:00');
   function timeAgo(ts) {
@@ -1598,38 +2065,47 @@
     return true;
   }
 
-  const channelIcon = { slack:'ph-chat-circle-dots', email:'ph-envelope', inapp:'ph-bell', sms:'ph-device-mobile' };
-  const channelLabel = { slack:'Slack', email:'Email', inapp:'In-app', sms:'SMS' };
-  const recipientRoleLabel = (n) => {
-    if (n.recipient.type === 'internal') return teamName[n.recipient.team] || 'Internal';
-    if (n.recipient.type === 'client')   return 'Client admin';
-    if (n.recipient.type === 'manager')  return "Client's manager";
-    if (n.recipient.type === 'worker')   return 'Employee';
-    if (n.recipient.type === 'contractor') return 'Contractor';
-    return '';
-  };
 
   const inboxFilters = {
-    search:'', range:'', module:'', audience:'', channel:'',
+    search:'', range:'', module:'', audience:'', channel:'', member:'',
     statuses: { read:true, delivered:true, queued:true, failed:true }
   };
 
+  // Populate team member dropdown from the `team` data, grouped by team
+  (function populateMemberSelect() {
+    const sel = document.getElementById('inbox-member-select');
+    if (!sel) return;
+    ['cs','cf','hr','sales'].forEach(t => {
+      const group = document.createElement('optgroup');
+      group.label = teamName[t];
+      team[t].forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.name;
+        opt.textContent = p.name;
+        group.appendChild(opt);
+      });
+      sel.appendChild(group);
+    });
+  })();
+
   function filteredInbox() {
     const s = inboxFilters.search.trim().toLowerCase();
-    const activeStatuses = Object.entries(inboxFilters.statuses).filter(([_,v]) => v).map(([k]) => k);
     return notifications.filter(n => {
       if (s) {
-        const hay = `${n.event} ${n.client} ${n.recipient.name}`.toLowerCase();
+        const hay = `${n.event} ${n.client} ${n.recipients.map(r => r.name).join(' ')}`.toLowerCase();
         if (!hay.includes(s)) return false;
       }
       if (inboxFilters.range  && !isWithin(n.ts, inboxFilters.range)) return false;
       if (inboxFilters.module && n.module !== inboxFilters.module)   return false;
       if (inboxFilters.audience) {
-        if (inboxFilters.audience === 'internal' && n.recipient.type !== 'internal') return false;
-        if (inboxFilters.audience !== 'internal' && n.recipient.type !== inboxFilters.audience) return false;
+        const audienceMatch = n.recipients.some(r =>
+          inboxFilters.audience === 'internal' ? r.type === 'internal' : r.type === inboxFilters.audience
+        );
+        if (!audienceMatch) return false;
       }
-      if (inboxFilters.channel && n.channel !== inboxFilters.channel) return false;
-      if (!activeStatuses.includes(n.status)) return false;
+      if (inboxFilters.member) {
+        if (!n.recipients.some(r => r.name === inboxFilters.member)) return false;
+      }
       return true;
     });
   }
@@ -1640,28 +2116,18 @@
       .slice()
       .sort((a, b) => new Date(b.ts) - new Date(a.ts));
 
-    // Stats (from full data, not filtered)
-    const today    = notifications.filter(n => isWithin(n.ts, 'today')).length;
-    const readCt   = notifications.filter(n => n.status === 'read').length;
-    const queuedCt = notifications.filter(n => n.status === 'queued').length;
-    const failedCt = notifications.filter(n => n.status === 'failed').length;
-    document.getElementById('stat-today').textContent  = today;
-    document.getElementById('stat-read').textContent   = readCt;
-    document.getElementById('stat-queued').textContent = queuedCt;
-    document.getElementById('stat-failed').textContent = failedCt;
     document.getElementById('inbox-count').textContent = notifications.length;
 
     document.getElementById('inbox-result-count').textContent = list.length;
 
     const resetBtn = document.getElementById('reset-inbox-btn');
     const dirty = inboxFilters.search || inboxFilters.range || inboxFilters.module ||
-                  inboxFilters.audience || inboxFilters.channel ||
-                  Object.values(inboxFilters.statuses).some(v => !v);
+                  inboxFilters.audience || inboxFilters.member;
     if (resetBtn) resetBtn.style.display = dirty ? 'inline-flex' : 'none';
 
     if (list.length === 0) {
       tbody.innerHTML = `
-        <tr><td colspan="7">
+        <tr><td colspan="5">
           <div class="empty-state">
             <i class="ph ph-tray"></i>
             <h4>No notifications match these filters</h4>
@@ -1672,17 +2138,24 @@
       return;
     }
 
+    const avatarClassFor = (r) => r.type === 'internal' ? 'internal' : r.type;
+    const avatarStyleFor = (r) => r.type === 'internal' ? 'background:var(--primary-500);' : '';
+
     tbody.innerHTML = list.map(n => {
-      const avatarClass = n.recipient.type === 'internal'
-        ? (n.recipient.team === 'cs' ? 'internal' : n.recipient.team === 'cf' ? 'internal' : 'internal')
-        : n.recipient.type;
-      const avatarColor = n.recipient.type === 'internal' ? 'background:var(--primary-500);' : '';
-      const role = recipientRoleLabel(n);
-      const roleMini = (n.role === 'P' || n.role === 'I')
-        ? `<span class="role-mini ${n.role === 'P' ? 'primary' : 'informed'}">${n.role === 'P' ? 'Primary' : 'Informed'}</span>`
-        : '';
-      return `
-        <tr>
+      const isExpanded = expandedNotifs.has(n.id);
+      const visibleAvatars = n.recipients.slice(0, 3);
+      const remaining = n.recipients.length - visibleAvatars.length;
+      const leadName = n.recipients[0]?.name || '';
+      const moreSuffix = n.recipients.length > 1 ? ` +${n.recipients.length - 1}` : '';
+
+      const avatarStack = visibleAvatars.map(r => `
+        <div class="avatar stacked ${avatarClassFor(r)}" style="${avatarStyleFor(r)}" title="${r.name}">${r.initial}</div>
+      `).join('') + (remaining > 0
+        ? `<div class="avatar stacked more">+${remaining}</div>`
+        : '');
+
+      const mainRow = `
+        <tr class="notif-row ${isExpanded ? 'expanded' : ''}" onclick="toggleNotif('${n.id}')">
           <td>
             <div class="inbox-time">
               <span class="relative">${timeAgo(n.ts)}</span>
@@ -1695,23 +2168,42 @@
           </td>
           <td><span style="font-weight:700; font-size:13px; color:var(--neutral-800);">${n.client}</span></td>
           <td>
-            <div class="inbox-recipient">
-              <div class="avatar ${avatarClass}" style="${avatarColor}">${n.recipient.initial}</div>
-              <div>
-                <div class="who">${n.recipient.name}</div>
-                <div class="role">${role}${roleMini}</div>
+            <div class="recipient-stack">
+              <div class="stack-avatars">${avatarStack}</div>
+              <div class="stack-text">
+                <div class="stack-lead">${leadName}${moreSuffix}</div>
+                <div class="stack-count">${n.recipients.length} recipient${n.recipients.length === 1 ? '' : 's'}</div>
               </div>
             </div>
           </td>
-          <td>
-            <span class="inbox-channel ${n.channel}">
-              <i class="ph ${channelIcon[n.channel]}"></i> ${channelLabel[n.channel]}
-            </span>
-          </td>
-          <td><span class="inbox-status ${n.status}">${n.status.charAt(0).toUpperCase() + n.status.slice(1)}</span></td>
-          <td><button class="icon-btn" title="View payload" onclick="inboxRowAction('${n.id}')"><i class="ph ph-dots-three-vertical"></i></button></td>
+          <td onclick="event.stopPropagation();"><button class="icon-btn" title="${isExpanded ? 'Collapse' : 'Expand'}" onclick="toggleNotif('${n.id}')"><i class="ph ph-${isExpanded ? 'caret-up' : 'caret-down'}"></i></button></td>
         </tr>
       `;
+
+      if (!isExpanded) return mainRow;
+
+      const copy = getCopy(n);
+      const recipientNames = n.recipients.map(r => r.name).join(', ');
+
+      const expandedRow = `
+        <tr class="notif-expanded">
+          <td colspan="5">
+            <div class="notif-preview-card">
+              <div class="recipients-line">
+                <span class="recipients-prefix">To</span>
+                <span class="recipients-names">${recipientNames}</span>
+              </div>
+              <div class="notif-preview-subject">${copy.subject}</div>
+              <div class="notif-preview-body">${copy.body}</div>
+              <div class="notif-preview-actions">
+                <a class="notif-cta-btn" onclick="event.stopPropagation();">${copy.cta} <i class="ph ph-arrow-right"></i></a>
+                <button class="notif-copy-btn" onclick="event.stopPropagation(); copyNotif('${n.id}')"><i class="ph ph-copy"></i> Copy</button>
+              </div>
+            </div>
+          </td>
+        </tr>
+      `;
+      return mainRow + expandedRow;
     }).join('');
   }
 
@@ -1720,38 +2212,27 @@
   document.getElementById('inbox-range-select').addEventListener('change', e => { inboxFilters.range    = e.target.value; renderInbox(); });
   document.getElementById('inbox-module-select').addEventListener('change',e => { inboxFilters.module   = e.target.value; renderInbox(); });
   document.getElementById('inbox-audience-select').addEventListener('change', e => { inboxFilters.audience = e.target.value; renderInbox(); });
-  document.getElementById('inbox-channel-select').addEventListener('change',  e => { inboxFilters.channel  = e.target.value; renderInbox(); });
-  document.querySelectorAll('.status-chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      const s = chip.dataset.status;
-      inboxFilters.statuses[s] = !inboxFilters.statuses[s];
-      chip.classList.toggle('active');
-      renderInbox();
-    });
-  });
+  document.getElementById('inbox-member-select').addEventListener('change',   e => { inboxFilters.member   = e.target.value; renderInbox(); });
 
   function resetInboxFilters() {
     inboxFilters.search = ''; inboxFilters.range = ''; inboxFilters.module = '';
-    inboxFilters.audience = ''; inboxFilters.channel = '';
-    inboxFilters.statuses = { read:true, delivered:true, queued:true, failed:true };
+    inboxFilters.audience = ''; inboxFilters.member = '';
     document.getElementById('inbox-search-input').value = '';
     document.getElementById('inbox-range-select').value = '';
     document.getElementById('inbox-module-select').value = '';
     document.getElementById('inbox-audience-select').value = '';
-    document.getElementById('inbox-channel-select').value = '';
-    document.querySelectorAll('.status-chip').forEach(c => c.classList.add('active'));
+    document.getElementById('inbox-member-select').value = '';
     renderInbox();
     toast({ title:'Filters reset', body:'Showing all notifications.', type:'success' });
   }
 
   function exportInbox() {
     const list = filteredInbox();
-    const header = ['Time','Module','Event','Client','Recipient','Recipient type','Role','Channel','Status'];
-    const rows = list.map(n => [
-      n.ts, n.module, n.event, n.client, n.recipient.name,
-      n.recipient.type, n.role === 'P' ? 'Primary' : n.role === 'I' ? 'Informed' : 'None',
-      channelLabel[n.channel], n.status
-    ]);
+    const header = ['Time','Module','Event','Client','Recipient','Recipient type','Role'];
+    const rows = list.flatMap(n => n.recipients.map(r => [
+      n.ts, n.module, n.event, n.client, r.name, r.type,
+      r.role === 'P' ? 'Primary' : r.role === 'I' ? 'Informed' : 'None'
+    ]));
     const csv = [header, ...rows].map(row => row.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
     const blob = new Blob([csv], { type:'text/csv' });
     const url = URL.createObjectURL(blob);
@@ -1759,14 +2240,379 @@
     a.href = url; a.download = `notifications-${new Date().toISOString().slice(0,10)}.csv`;
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    toast({ title:'Export started', body:`${list.length} notification${list.length === 1 ? '' : 's'} downloaded.`, type:'success' });
+    toast({ title:'Export started', body:`${rows.length} delivery row${rows.length === 1 ? '' : 's'} from ${list.length} event firing${list.length === 1 ? '' : 's'}.`, type:'success' });
   }
 
-  function inboxRowAction(id) {
-    const n = notifications.find(x => x.id === id);
-    if (!n) return;
-    toast({ title:'View notification', body:`${n.event} → ${n.recipient.name} (${n.status})`, type:'success' });
+  /* =============================================================
+     TEMPLATES
+     ============================================================= */
+  // Available variables per event. Used in the editor panel + preview.
+  const variableCatalog = {
+    common: [
+      { key:'client',   desc:'Client company name',   sample:'Acme Inc.' },
+      { key:'date',     desc:"Today's date",          sample:'08 Jun 2026' },
+    ],
+    'New employee onboarding initiated': [
+      { key:'employee',     desc:'Employee full name',     sample:'Aditi Mehta' },
+      { key:'start_date',   desc:'Planned start date',     sample:'01 Jul 2026' },
+      { key:'role',         desc:'Job title',              sample:'Senior Engineer' },
+    ],
+    'BGV completed (clear)': [
+      { key:'employee',     desc:'Employee full name',     sample:'Aditi Mehta' },
+      { key:'vendor',       desc:'BGV vendor name',        sample:'AuthBridge' },
+      { key:'report_url',   desc:'Link to BGV report',     sample:'/bgv/r/8451' },
+    ],
+    'BGV flagged (discrepancy)': [
+      { key:'employee',     desc:'Employee full name',     sample:'Aditi Mehta' },
+      { key:'vendor',       desc:'BGV vendor name',        sample:'AuthBridge' },
+      { key:'flag_count',   desc:'Number of flagged checks', sample:'2' },
+      { key:'report_url',   desc:'Link to BGV report',     sample:'/bgv/r/8451' },
+    ],
+    'Offer accepted': [
+      { key:'employee',     desc:'Candidate full name',    sample:'Aditi Mehta' },
+      { key:'start_date',   desc:'Planned start date',     sample:'01 Jul 2026' },
+    ],
+    'Reimbursement approved': [
+      { key:'employee',     desc:'Employee full name',     sample:'Rajesh K' },
+      { key:'amount',       desc:'Approved amount',        sample:'₹ 12,400' },
+      { key:'category',     desc:'Expense category',       sample:'Travel' },
+    ],
+    'Probation completed': [
+      { key:'employee',     desc:'Employee full name',     sample:'Netan Mangal' },
+      { key:'join_date',    desc:'Original join date',     sample:'09 Mar 2026' },
+    ],
+    'Payroll inputs missing at cutoff': [
+      { key:'cutoff',       desc:'Configured cutoff time', sample:'08 Jun, 5:00 PM IST' },
+      { key:'headcount',    desc:'Employees impacted',     sample:'14' },
+    ],
+    'Payroll run completed': [
+      { key:'month',        desc:'Payroll month',          sample:'May 2026' },
+      { key:'headcount',    desc:'Employees processed',    sample:'24' },
+      { key:'total',        desc:'Total disbursed',        sample:'₹ 32,40,000' },
+    ],
+    'Payslips published': [
+      { key:'employee',     desc:'Employee full name',     sample:'Netan Mangal' },
+      { key:'month',        desc:'Payroll month',          sample:'May 2026' },
+      { key:'net_pay',      desc:'Net pay (post tax)',     sample:'₹ 1,46,200' },
+    ],
+    'Salary credited to employees': [
+      { key:'employee',     desc:'Employee full name',     sample:'Netan Mangal' },
+      { key:'amount',       desc:'Amount credited',        sample:'₹ 1,46,200' },
+      { key:'bank_last4',   desc:'Last 4 of account',      sample:'4521' },
+    ],
+    'Invoice paid': [
+      { key:'invoice_no',   desc:'Invoice number',         sample:'INV-2426' },
+      { key:'amount',       desc:'Amount paid',            sample:'₹ 4,82,000' },
+    ],
+    'Invoice overdue (T+7)': [
+      { key:'invoice_no',   desc:'Invoice number',         sample:'INV-2401' },
+      { key:'amount',       desc:'Amount due',             sample:'₹ 4,82,000' },
+      { key:'days_overdue', desc:'Days past due',          sample:'7' },
+    ],
+    'Statement of account ready': [
+      { key:'month',        desc:'Statement month',        sample:'May 2026' },
+      { key:'balance',      desc:'Outstanding balance',    sample:'₹ 4,82,000' },
+    ],
+    'Form 16 ready to download': [
+      { key:'employee',     desc:'Employee full name',     sample:'John Smith' },
+      { key:'fiscal_year',  desc:'Fiscal year',            sample:'FY 2025-26' },
+    ],
+    'Leave request approved': [
+      { key:'employee',     desc:'Employee full name',     sample:'Netan Mangal' },
+      { key:'leave_type',   desc:'Type of leave',          sample:'Annual leave' },
+      { key:'start_date',   desc:'Leave start',            sample:'15 Jun 2026' },
+      { key:'days',         desc:'Number of leave days',   sample:'5' },
+    ],
+    'Contractor agreement signed': [
+      { key:'contractor',   desc:'Contractor full name',   sample:'Priyansh K' },
+      { key:'term',         desc:'Contract term',          sample:'12 months' },
+    ],
+    'Contractor invoice submitted': [
+      { key:'contractor',   desc:'Contractor full name',   sample:'Priyansh K' },
+      { key:'invoice_no',   desc:'Invoice number',         sample:'INV-PK-0042' },
+      { key:'amount',       desc:'Invoice amount',         sample:'$ 4,200' },
+    ],
+    'Contractor 1099 / W-8 BEN ready': [
+      { key:'contractor',   desc:'Contractor full name',   sample:'Ahmed K' },
+      { key:'fiscal_year',  desc:'Fiscal year',            sample:'TY 2025' },
+    ],
+    'Contractor payment processed': [
+      { key:'contractor',   desc:'Contractor full name',   sample:'Ahmed K' },
+      { key:'amount',       desc:'Amount paid',            sample:'$ 4,200' },
+    ],
+    'Contract renewal due (T-60)': [
+      { key:'expires_on',   desc:'Contract expiry date',   sample:'07 Aug 2026' },
+      { key:'tier',         desc:'Current contract tier',  sample:'Standard' },
+    ],
+    'KYC document expiring (T-30)': [
+      { key:'doc_name',     desc:'Document name',          sample:'PAN copy' },
+      { key:'expires_on',   desc:'Document expiry date',   sample:'08 Jul 2026' },
+    ],
+  };
+
+  // Flat list of event entries derived from modules
+  function getAllEvents() {
+    const out = [];
+    modules.forEach(m => {
+      m.events.forEach(e => {
+        out.push({ ...e, module: m.name, icon: m.icon });
+      });
+    });
+    return out;
   }
+
+  // Which recipient types have a template defined for this event?
+  function templatesForEvent(eventName) {
+    return eventCopy[eventName] || {};
+  }
+  const recipientTypeTabs = ['internal', 'client', 'manager', 'worker', 'contractor'];
+  const recipientTypeTabLabel = {
+    internal: 'Internal team',
+    client: 'Client',
+    manager: 'Manager',
+    worker: 'Worker',
+    contractor: 'Contractor',
+  };
+
+  // Editor state
+  let selectedEvent = null;
+  let selectedType = null;
+
+  function getVariablesFor(eventName) {
+    const common = variableCatalog.common || [];
+    const specific = variableCatalog[eventName] || [];
+    return [...common, ...specific];
+  }
+
+  function interpolate(text, vars) {
+    if (!text) return '';
+    let out = String(text);
+    Object.entries(vars).forEach(([k, v]) => {
+      out = out.replace(new RegExp(`{${k}}`, 'g'), v);
+    });
+    return out;
+  }
+
+  function sampleValuesFor(eventName) {
+    const obj = {};
+    getVariablesFor(eventName).forEach(v => { obj[v.key] = v.sample; });
+    return obj;
+  }
+
+  function renderTemplatesEventList(query = '') {
+    const q = query.trim().toLowerCase();
+    const container = document.getElementById('tpl-event-list-body');
+    container.innerHTML = '';
+
+    let visibleCount = 0;
+    modules.forEach(m => {
+      const matched = m.events.filter(e => !q || e.name.toLowerCase().includes(q) || m.name.toLowerCase().includes(q));
+      if (!matched.length) return;
+
+      const label = document.createElement('div');
+      label.className = 'tpl-module-label';
+      label.textContent = m.name;
+      container.appendChild(label);
+
+      matched.forEach(e => {
+        visibleCount++;
+        const templates = templatesForEvent(e.name);
+        const definedTypes = Object.keys(templates);
+        const pips = recipientTypeTabs.map(t => `<span class="pip ${definedTypes.includes(t) ? 'filled' : ''}"></span>`).join('');
+
+        const row = document.createElement('div');
+        row.className = 'tpl-event-row' + (selectedEvent?.name === e.name ? ' active' : '');
+        row.innerHTML = `
+          <span class="dot"></span>
+          <div style="flex:1; min-width:0;">
+            <div class="name">${e.name}</div>
+            <div class="code">${m.name.toLowerCase()}.${e.name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '')}</div>
+          </div>
+          <div class="completeness" title="Templates defined">${pips}</div>
+        `;
+        row.addEventListener('click', () => selectTemplate({ ...e, module: m.name, icon: m.icon }));
+        container.appendChild(row);
+      });
+    });
+
+    document.getElementById('templates-count').textContent = getAllEvents().length;
+  }
+
+  function selectTemplate(ev) {
+    selectedEvent = ev;
+    const available = Object.keys(templatesForEvent(ev.name));
+    selectedType = available[0] || 'internal';
+    renderTemplatesEventList(document.getElementById('tpl-search-input').value);
+    renderTemplateEditor();
+  }
+
+  function renderTemplateEditor() {
+    const editor = document.getElementById('tpl-editor');
+    if (!selectedEvent) {
+      editor.innerHTML = `
+        <div class="empty-state" style="padding:60px 24px;">
+          <i class="ph ph-note-pencil"></i>
+          <h4>Pick an event to edit its template</h4>
+          <p>Select an event from the list on the left.</p>
+        </div>`;
+      return;
+    }
+
+    const tpls = templatesForEvent(selectedEvent.name);
+    const tpl = tpls[selectedType] || ['', '', ''];
+    const subject = tpl[0] || '';
+    const body    = tpl[1] || '';
+    const cta     = tpl[2] || '';
+
+    const variables = getVariablesFor(selectedEvent.name);
+    const samples = sampleValuesFor(selectedEvent.name);
+
+    const eventCode = `${selectedEvent.module.toLowerCase()}.${selectedEvent.name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '')}`;
+    const recipientPreview = {
+      internal: 'Shashank',
+      client: 'Acme HR Admin',
+      manager: 'Acme line manager',
+      worker: samples.employee || 'Aditi Mehta',
+      contractor: samples.contractor || 'Priyansh K',
+    }[selectedType];
+
+    const definedTypes = Object.keys(tpls);
+
+    editor.innerHTML = `
+      <div class="tpl-editor-header">
+        <div class="tpl-event-title">${selectedEvent.name}</div>
+        <div class="tpl-event-meta">
+          <span class="tpl-event-code">${eventCode}</span>
+          <span class="tpl-event-trigger">${selectedEvent.trigger}</span>
+        </div>
+      </div>
+
+      <div class="tpl-tabs">
+        ${recipientTypeTabs.map(t => {
+          const enabled = definedTypes.includes(t);
+          const active = selectedType === t;
+          return `<div class="tpl-tab ${active ? 'active' : ''} ${enabled ? '' : 'disabled'}" data-type="${t}">
+            ${recipientTypeTabLabel[t]}<span class="tab-dot"></span>
+          </div>`;
+        }).join('')}
+      </div>
+
+      <div class="tpl-editor-body">
+        <!-- LEFT: Form -->
+        <div class="tpl-form">
+          <div>
+            <div class="tpl-field-label">Subject</div>
+            <input class="tpl-input" id="tpl-subject" type="text" value="${escapeAttr(subject)}" />
+          </div>
+          <div>
+            <div class="tpl-field-label">Body</div>
+            <textarea class="tpl-textarea" id="tpl-body" rows="5">${escapeText(body)}</textarea>
+          </div>
+          <div>
+            <div class="tpl-field-label">CTA label</div>
+            <input class="tpl-input" id="tpl-cta" type="text" value="${escapeAttr(cta)}" style="max-width:280px;" />
+          </div>
+        </div>
+
+        <!-- RIGHT: Side panels -->
+        <div class="tpl-side">
+          <div class="tpl-side-panel">
+            <div class="tpl-panel-title"><i class="ph ph-code"></i> Variables — click to insert</div>
+            <div class="tpl-var-list">
+              ${variables.map(v => `
+                <div class="tpl-var-item" data-key="${v.key}" title="Insert into focused field">
+                  <span class="var-key">{${v.key}}</span>
+                  <span class="var-desc">${v.desc}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="tpl-side-panel" style="background:var(--neutral-0);">
+            <div class="tpl-panel-title"><i class="ph ph-eye"></i> Live preview</div>
+            <div class="tpl-preview-card" id="tpl-preview">
+              <div class="tpl-preview-to">To <strong>${recipientPreview}</strong></div>
+              <div class="tpl-preview-subject" id="preview-subject">${escapeText(interpolate(subject, samples))}</div>
+              <div class="tpl-preview-body"    id="preview-body">${escapeText(interpolate(body, samples))}</div>
+              <div class="tpl-preview-cta"     id="preview-cta">${escapeText(interpolate(cta, samples))}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tpl-editor-footer">
+        <button class="btn btn-secondary" onclick="testSendTemplate()"><i class="ph ph-paper-plane-tilt"></i> Send test</button>
+        <button class="btn btn-primary" onclick="saveTemplate()"><i class="ph ph-check"></i> Save changes</button>
+        <div class="meta">
+          <span class="ok"><i class="ph ph-check-circle"></i> Saved 2 days ago</span>
+        </div>
+      </div>
+    `;
+
+    // Wire up tab clicks
+    editor.querySelectorAll('.tpl-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        if (tab.classList.contains('disabled')) return;
+        selectedType = tab.dataset.type;
+        renderTemplateEditor();
+      });
+    });
+
+    // Variable insertion
+    let lastFocused = document.getElementById('tpl-subject');
+    ['tpl-subject', 'tpl-body', 'tpl-cta'].forEach(id => {
+      document.getElementById(id).addEventListener('focus', e => { lastFocused = e.target; });
+    });
+    editor.querySelectorAll('.tpl-var-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const key = `{${item.dataset.key}}`;
+        const el = lastFocused;
+        const start = el.selectionStart || 0;
+        const end   = el.selectionEnd   || 0;
+        el.value = el.value.slice(0, start) + key + el.value.slice(end);
+        el.focus();
+        el.selectionStart = el.selectionEnd = start + key.length;
+        updatePreview();
+      });
+    });
+
+    ['tpl-subject', 'tpl-body', 'tpl-cta'].forEach(id => {
+      document.getElementById(id).addEventListener('input', updatePreview);
+    });
+
+    function updatePreview() {
+      const sVal = document.getElementById('tpl-subject').value;
+      const bVal = document.getElementById('tpl-body').value;
+      const cVal = document.getElementById('tpl-cta').value;
+      document.getElementById('preview-subject').textContent = interpolate(sVal, samples);
+      document.getElementById('preview-body').textContent    = interpolate(bVal, samples);
+      document.getElementById('preview-cta').textContent     = interpolate(cVal, samples);
+    }
+  }
+
+  function escapeAttr(s) { return String(s ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function escapeText(s) { return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+  function saveTemplate() {
+    if (!selectedEvent || !selectedType) return;
+    if (!eventCopy[selectedEvent.name]) eventCopy[selectedEvent.name] = {};
+    eventCopy[selectedEvent.name][selectedType] = [
+      document.getElementById('tpl-subject').value,
+      document.getElementById('tpl-body').value,
+      document.getElementById('tpl-cta').value,
+    ];
+    toast({ title:'Template saved', body:`${selectedEvent.name} · ${recipientTypeTabLabel[selectedType]}`, type:'success' });
+    renderTemplatesEventList(document.getElementById('tpl-search-input').value);
+  }
+
+  function testSendTemplate() {
+    if (!selectedEvent || !selectedType) return;
+    toast({ title:'Test sent', body:`A test of "${selectedEvent.name}" was queued for ${recipientTypeTabLabel[selectedType]}.`, type:'success' });
+  }
+
+  document.getElementById('tpl-search-input').addEventListener('input', e => {
+    renderTemplatesEventList(e.target.value);
+  });
 
   /* =============================================================
      INIT
@@ -1774,6 +2620,7 @@
   renderModules();
   renderOwners();
   renderInbox();
+  renderTemplatesEventList();
 </script>
 
 </body>
