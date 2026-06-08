@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload or Sign Form 16 — Wisemonk</title>
+  <!-- fonts -->
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+  <!-- wisemonk-ui design system -->
+  <link rel="stylesheet" href="wisemonk-signup-portal/wisemonk-ui/wisemonk-ui.css">
+  <script src="wisemonk-signup-portal/wisemonk-ui/wisemonk-ui.js" defer></script>
+  <style>
+    /* App shell only — everything else comes from wisemonk-ui */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: var(--wm-font); background: var(--wm-bg-subtle); color: var(--wm-text-primary); min-height: 100vh; }
+    a { text-decoration: none; color: inherit; }
+
+    .app { display: flex; min-height: 100vh; }
+    .sidebar { width: 240px; flex-shrink: 0; background: var(--wm-neutral-0); border-right: 1px solid var(--wm-border); padding: 30px 20px; display: flex; flex-direction: column; gap: 32px; }
+    .sidebar-logo { display: flex; align-items: center; gap: 10px; height: 26px; overflow: hidden; }
+    .sidebar-logo img { height: 56px; width: auto; margin-top: -30px; display: block; }
+    .nav-title { font-family: var(--wm-font-tag); font-weight: 300; font-size: 13px; letter-spacing: 0.5px; color: var(--wm-neutral-300); padding: 8px; margin-bottom: 2px; text-transform: uppercase; }
+    .nav-link { display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 8px; border-radius: 8px; font-weight: 500; font-size: 15px; color: var(--wm-text-secondary); transition: background .15s; }
+    .nav-link:hover { background: var(--wm-neutral-50); }
+    .nav-link.active { background: rgba(38,132,255,0.10); color: var(--wm-primary-500); }
+    .nav-link svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+    .main-col { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+    .header { display: flex; align-items: center; justify-content: space-between; height: 80px; padding: 0 40px; background: var(--wm-bg-subtle); }
+    .header h1 { font-weight: 700; font-size: 23px; color: var(--wm-text-primary); }
+    .header-right { display: flex; align-items: center; gap: 16px; }
+    .user-chip { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 4px 8px 4px 4px; border-radius: 100px; }
+    .user-name { font-weight: 500; font-size: 16px; color: var(--wm-text-secondary); white-space: nowrap; }
+    .user-chev { width: 16px; height: 16px; color: var(--wm-text-muted); }
+
+    .content { flex: 1; padding: 8px 40px 56px; display: flex; flex-direction: column; gap: 20px; }
+
+    /* Page head */
+    .page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    .page-head p { color: var(--wm-text-muted); font-size: 14px; font-weight: 500; margin-top: 4px; }
+    .head-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+    /* Context selectors */
+    .ctx-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .ctx-row .wm-field-float { margin-bottom: 0; min-width: 240px; }
+
+    /* Stat strip */
+    .f16-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .f16-stats .wm-card { padding: 18px 20px; }
+    .f16-stat-split { display: flex; align-items: center; gap: 20px; }
+    .f16-chip { display: inline-flex; align-items: center; gap: 7px; font-size: 24px; font-weight: 700; letter-spacing: -0.4px; }
+    .f16-chip svg { width: 19px; height: 19px; }
+    .f16-chip.ok { color: var(--wm-success-700); }
+    .f16-chip.bad { color: var(--wm-danger-700); }
+    .wm-stat-value .small { font-size: 15px; color: var(--wm-text-muted); font-weight: 600; }
+    .wm-stat-title { display: flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 0.3px; font-size: 12px; color: var(--wm-text-muted); }
+    .wm-stat-title svg { width: 14px; height: 14px; }
+
+    /* Bulk toolbar (second toolbar row) */
+    .bulk-toolbar { display: flex; align-items: center; gap: 14px; padding: 14px 20px; border-top: 1px solid var(--wm-border); background: var(--wm-neutral-50); }
+    .bulk-count { font-size: 13px; font-weight: 600; color: var(--wm-text-secondary); }
+    .bulk-total { margin-left: auto; font-size: 13px; font-weight: 500; color: var(--wm-text-muted); }
+
+    /* Checkbox (app-level, uses wm tokens) */
+    .wm-check { width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid var(--wm-border-strong); appearance: none; -webkit-appearance: none; cursor: pointer; position: relative; background: #fff; transition: all .15s; flex-shrink: 0; vertical-align: middle; }
+    .wm-check:hover { border-color: var(--wm-primary-500); }
+    .wm-check:checked { background: var(--wm-primary-500); border-color: var(--wm-primary-500); }
+    .wm-check:checked::after { content: ""; position: absolute; left: 5px; top: 2px; width: 5px; height: 9px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+    .col-check { width: 44px; }
+
+    /* Table cell helpers */
+    .pan { font-family: 'Courier New', monospace; font-weight: 600; color: var(--wm-text-secondary); letter-spacing: .4px; }
+    .sub-time { display: block; color: var(--wm-text-muted); font-size: 12px; font-weight: 500; margin-top: 3px; }
+    .status-dl { display: inline-flex; align-items: center; gap: 6px; }
+    .status-dl .dl { width: 15px; height: 15px; color: var(--wm-primary-500); cursor: pointer; }
+    .ynm { font-weight: 700; }
+    .ynm.yes { color: var(--wm-text-primary); }
+    .ynm.no { color: var(--wm-danger-700); }
+    .ynm.na { color: var(--wm-neutral-400); }
+    .th-info { display: inline-flex; align-items: center; gap: 5px; }
+    .th-info svg { width: 13px; height: 13px; color: var(--wm-neutral-300); }
+
+    /* Upload Form 16 modal */
+    .f16-upload-modal { max-width: 1000px; }
+    .f16-up-grid { display: grid; grid-template-columns: 1fr 320px; gap: 32px; }
+    .f16-up-meta { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin-bottom: 20px; }
+    .f16-meta-label { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--wm-text-muted); font-weight: 600; }
+    .f16-meta-val { font-size: 14.5px; font-weight: 600; color: var(--wm-text-primary); margin-top: 3px; }
+    .f16-up-stats { display: flex; gap: 30px; }
+    .f16-up-stat .lbl { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--wm-text-muted); font-weight: 600; }
+    .f16-up-stat .nums { display: flex; align-items: center; gap: 16px; margin-top: 6px; }
+    .f16-stat-num { display: inline-flex; align-items: center; gap: 5px; font-size: 14px; font-weight: 600; }
+    .f16-stat-num svg { width: 16px; height: 16px; }
+    .f16-stat-num.ok { color: var(--wm-success-700); }
+    .f16-stat-num.bad { color: var(--wm-danger-700); }
+
+    .f16-up-card { border: 1px solid var(--wm-border-strong); border-radius: var(--wm-radius-md); overflow: hidden; }
+    .f16-up-card-head { padding: 14px 18px; border-bottom: 1px solid var(--wm-border); font-weight: 700; font-size: 14.5px; color: var(--wm-text-primary); display: flex; align-items: center; gap: 10px; }
+    .f16-up-card-body { padding: 20px; }
+    .f16-dz-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .f16-dz { border: 1.5px dashed var(--wm-primary-300); border-radius: var(--wm-radius-md); background: var(--wm-neutral-0); padding: 28px 18px; text-align: center; }
+    .f16-dz.drag { border-color: var(--wm-primary-500); background: var(--wm-primary-50); }
+    .f16-dz.done { border-color: var(--wm-success-500); background: var(--wm-success-50); }
+    .f16-dz-title { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; color: var(--wm-text-secondary); margin-bottom: 16px; }
+    .f16-dz-title svg { width: 18px; height: 18px; color: var(--wm-text-muted); }
+    .f16-dz-title strong { color: var(--wm-text-primary); font-weight: 700; }
+    .f16-dz-hint { font-size: 12.5px; color: var(--wm-text-muted); margin-top: 14px; }
+    .f16-dz-done { display: none; }
+    .f16-dz.done .f16-dz-done { display: block; }
+    .f16-dz.done .f16-dz-pick { display: none; }
+    .f16-dz-ok { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--wm-success-700); font-weight: 500; }
+    .f16-dz-ok svg { width: 16px; height: 16px; }
+    .f16-dz-again { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; background: none; border: none; cursor: pointer; color: var(--wm-primary-600); font-size: 13px; font-weight: 600; font-family: inherit; }
+    .f16-dz-again svg { width: 15px; height: 15px; }
+    .f16-up-foot-note { padding: 13px 18px; border-top: 1px solid var(--wm-border); font-size: 13px; color: var(--wm-text-muted); }
+    .f16-up-foot-note a { color: var(--wm-primary-600); font-weight: 600; text-decoration: none; }
+
+    .f16-steps-title { font-weight: 700; font-size: 15px; color: var(--wm-text-primary); margin-bottom: 20px; }
+    .f16-step { display: flex; gap: 14px; padding-bottom: 24px; position: relative; }
+    .f16-step:not(:last-of-type)::before { content: ''; position: absolute; left: 17px; top: 38px; bottom: 2px; border-left: 1px dashed var(--wm-border-strong); }
+    .f16-step-ic { width: 35px; height: 35px; flex-shrink: 0; border-radius: 50%; border: 1px solid var(--wm-primary-200); background: var(--wm-neutral-0); color: var(--wm-primary-600); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13.5px; z-index: 1; }
+    .f16-step-text { font-size: 13px; color: var(--wm-text-secondary); line-height: 1.55; padding-top: 8px; }
+    .f16-step-text a { color: var(--wm-primary-600); font-weight: 600; text-decoration: none; }
+    .f16-tip { display: flex; gap: 12px; align-items: flex-start; background: var(--wm-neutral-50); border-radius: var(--wm-radius-md); padding: 14px 16px; font-size: 13px; color: var(--wm-text-secondary); line-height: 1.5; margin-top: 6px; }
+    .f16-tip svg { width: 18px; height: 18px; flex-shrink: 0; color: var(--wm-primary-500); margin-top: 1px; }
+    .f16-tip a { color: var(--wm-primary-600); font-weight: 600; text-decoration: none; }
+    .f16-annexure { display: flex; align-items: center; gap: 9px; font-size: 13.5px; color: var(--wm-text-secondary); cursor: pointer; }
+
+    @media (max-width: 1100px) { .f16-stats { grid-template-columns: 1fr; } }
+    @media (max-width: 860px) { .f16-up-grid { grid-template-columns: 1fr; } .f16-dz-row { grid-template-columns: 1fr; } }
+    @media (max-width: 980px) {
+      .sidebar { display: none; }
+      .header { padding: 16px 20px; }
+      .content { padding: 8px 20px 56px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- icon sprite (inline; referenced with bare #ic-) -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+    <symbol id="ic-home-2" viewBox="0 0 24 24" fill="none"><path d="M9.02 2.84L3.63 7.04C2.73 7.74 2 9.23 2 10.36V17.77C2 20.09 3.89 21.99 6.21 21.99H17.79C20.11 21.99 22 20.09 22 17.78V10.5C22 9.29 21.19 7.74 20.2 7.05L14.02 2.72C12.62 1.74 10.37 1.79 9.02 2.84Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 17.99V14.99" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-profile-2user" viewBox="0 0 24 24" fill="none"><path d="M9.16 10.87C9.06 10.86 8.94 10.86 8.83 10.87C6.45 10.79 4.56 8.84 4.56 6.44C4.56 3.99 6.54 2 9 2C11.45 2 13.44 3.99 13.44 6.44C13.43 8.84 11.54 10.79 9.16 10.87Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.41 4C18.35 4 19.91 5.57 19.91 7.5C19.91 9.39 18.41 10.93 16.54 11C16.46 10.99 16.37 10.99 16.28 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.16 14.56C1.74 16.18 1.74 18.82 4.16 20.43C6.91 22.27 11.42 22.27 14.17 20.43C16.59 18.81 16.59 16.17 14.17 14.56C11.43 12.73 6.92 12.73 4.16 14.56Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.34 20C19.06 19.85 19.74 19.56 20.3 19.13C21.86 17.96 21.86 16.03 20.3 14.86C19.75 14.44 19.08 14.16 18.37 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-receipt-text" viewBox="0 0 24 24" fill="none"><path d="M22 6V8.42C22 10 21 11 19.42 11H16V4.01C16 2.9 16.91 2 18.02 2C19.11 2.01 20.11 2.45 20.83 3.17C21.55 3.9 22 4.9 22 6Z" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 7V21C2 21.83 2.94 22.3 3.6 21.8L5.31 20.52C5.71 20.22 6.27 20.26 6.63 20.62L8.29 22.29C8.68 22.68 9.32 22.68 9.71 22.29L11.39 20.61C11.74 20.26 12.3 20.22 12.69 20.52L14.4 21.8C15.06 22.29 16 21.82 16 21V4C16 2.9 16.9 2 18 2H7H6C3 2 2 3.79 2 6V7Z" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 9H12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.75 13H11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-wallet" viewBox="0 0 24 24" fill="none"><path d="M2 8.5V15.5C2 18.5 4 20.5 7 20.5H17C20 20.5 22 18.5 22 15.5V8.5C22 5.5 20 3.5 17 3.5H7C4 3.5 2 5.5 2 8.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 10.5H19C17.9 10.5 17 11.4 17 12.5C17 13.6 17.9 14.5 19 14.5H22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-shield-tick" viewBox="0 0 24 24" fill="none"><path d="M10.49 2.23L5.5 4.11C4.35 4.54 3.41 5.9 3.41 7.12V14.55C3.41 15.73 4.19 17.28 5.14 17.99L9.44 21.2C10.85 22.26 13.17 22.26 14.58 21.2L18.88 17.99C19.83 17.28 20.61 15.73 20.61 14.55V7.12C20.61 5.89 19.67 4.53 18.52 4.1L13.53 2.23C12.68 1.92 11.32 1.92 10.49 2.23Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.05 11.87L10.66 13.48L14.96 9.18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-notification" viewBox="0 0 24 24" fill="none"><path d="M12.02 2.91C8.71 2.91 6.02 5.6 6.02 8.91V11.8C6.02 12.41 5.76 13.34 5.45 13.86L4.3 15.77C3.59 16.95 4.08 18.26 5.38 18.7C9.69 20.14 14.34 20.14 18.65 18.7C19.86 18.3 20.39 16.87 19.73 15.77L18.58 13.86C18.28 13.34 18.02 12.41 18.02 11.8V8.91C18.02 5.61 15.32 2.91 12.02 2.91Z" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"/><path d="M15.02 19.06C15.02 20.71 13.67 22.06 12.02 22.06C11.2 22.06 10.44 21.72 9.9 21.18C9.36 20.64 9.02 19.88 9.02 19.06" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10"/></symbol>
+    <symbol id="ic-arrow-down" viewBox="0 0 24 24" fill="none"><path d="M19.92 8.95L13.4 15.47C12.63 16.24 11.37 16.24 10.6 15.47L4.08 8.95" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-close" viewBox="0 0 24 24" fill="none"><path d="M6 6L18 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-tick-circle" viewBox="0 0 24 24" fill="none"><path d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.75 12L10.58 14.83L16.25 9.17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-close-circle" viewBox="0 0 24 24" fill="none"><path d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.17 14.83L14.83 9.17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.83 14.83L9.17 9.17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-more" viewBox="0 0 24 24" fill="none"><circle cx="5" cy="12" r="2" fill="currentColor"/><circle cx="12" cy="12" r="2" fill="currentColor"/><circle cx="19" cy="12" r="2" fill="currentColor"/></symbol>
+    <symbol id="ic-info-circle" viewBox="0 0 24 24" fill="none"><path d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 8V13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M11.995 16H12.004" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-document-download" viewBox="0 0 24 24" fill="none"><path d="M9 11V17L11 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 17L7 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 10V15C22 20 20 22 15 22H9C4 22 2 20 2 15V9C2 4 4 2 9 2H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 10H18C15 10 14 9 14 6V2L22 10Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-document-upload" viewBox="0 0 24 24" fill="none"><path d="M9 17L11 15L9 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 15H7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 10V15C22 20 20 22 15 22H9C4 22 2 20 2 15V9C2 4 4 2 9 2H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 10H18C15 10 14 9 14 6V2L22 10Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-sms" viewBox="0 0 24 24" fill="none"><path d="M17 20.5H7C4 20.5 2 19 2 15.5V8.5C2 5 4 3.5 7 3.5H17C20 3.5 22 5 22 8.5V15.5C22 19 20 20.5 17 20.5Z" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 9L13.87 11.5C12.84 12.32 11.15 12.32 10.12 11.5L7 9" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-history" viewBox="0 0 24 24" fill="none"><path d="M12 8V13L15 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.05 11C3.27 7.13 6.13 3.84 10 3.18C14.7 2.38 19.16 5.54 19.96 10.24C20.76 14.94 17.6 19.4 12.9 20.2C9.03 20.86 5.3 18.86 3.6 15.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 20V15.5H7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </svg>
+
+  <div class="app">
+    <aside class="sidebar">
+      <a href="home.html" class="sidebar-logo"><img src="wisemonk_logo_final.png" alt="Wisemonk"></a>
+      <nav>
+        <div class="nav-title">Workspace</div>
+        <a href="home.html" class="nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-home-2"/></svg>Home</a>
+        <a href="employee-onboarding.html" class="nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-profile-2user"/></svg>Employees</a>
+        <a href="invoices.html" class="nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-receipt-text"/></svg>Invoices</a>
+        <a href="#" class="nav-link active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-wallet"/></svg>Payroll</a>
+        <a href="compliance.html" class="nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-shield-tick"/></svg>Compliance</a>
+      </nav>
+    </aside>
+
+    <div class="main-col">
+      <header class="header">
+        <h1>Payroll Admin</h1>
+        <div class="header-right">
+          <button class="wm-icon-btn" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-notification"/></svg></button>
+          <div class="user-chip">
+            <span class="wm-avatar wm-avatar--sm">AS</span>
+            <span class="user-name">Aman Singh</span>
+            <svg class="user-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#ic-arrow-down"/></svg>
+          </div>
+        </div>
+      </header>
+
+      <div class="content">
+
+        <div class="page-head">
+          <div>
+            <h1 class="wm-h1">Upload or Sign Form 16</h1>
+            <p>Upload, sign or attach Form 16 files and email them to employees.</p>
+          </div>
+          <div class="head-actions">
+            <button class="wm-btn wm-btn--primary" data-wm-open="#uploadModal">
+              Upload Form 16
+            </button>
+          </div>
+        </div>
+
+        <div class="ctx-row">
+          <div class="wm-field-float">
+            <select class="wm-select" id="fySel">
+              <option>APR 2025 – MAR 2026</option>
+              <option>APR 2024 – MAR 2025</option>
+              <option>APR 2023 – MAR 2024</option>
+            </select>
+            <label>Financial year</label>
+          </div>
+        </div>
+
+        <div class="f16-stats">
+          <div class="wm-card">
+            <div class="wm-stat-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-profile-2user"/></svg>Employees in legal entity</div>
+            <div class="wm-stat-value">3,141</div>
+          </div>
+          <div class="wm-card">
+            <div class="wm-stat-title">Form 16 available <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-info-circle"/></svg></div>
+            <div class="wm-stat-value f16-stat-split">
+              <span class="f16-chip ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-tick-circle"/></svg>2</span>
+              <span class="f16-chip bad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-close-circle"/></svg>3,139</span>
+            </div>
+          </div>
+          <div class="wm-card">
+            <div class="wm-stat-title">Form 16 sent</div>
+            <div class="wm-stat-value">2 <span class="small">/ 3,141</span></div>
+          </div>
+        </div>
+
+        <div class="wm-table-card">
+          <div class="wm-toolbar">
+            <div class="wm-search">
+              <input type="text" placeholder="Search employee by name, emp no. or PAN" data-wm-table-search="#f16Table">
+            </div>
+            <div class="wm-toolbar-actions">
+              <div class="wm-dropdown" data-wm-filter="#f16Table" data-wm-filter-key="employment">
+                <button class="wm-dd-trigger"><span class="wm-dd-label">All employment</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+                <div class="wm-dd-menu" role="listbox">
+                  <button class="wm-dd-item selected" data-value="all" data-label="All employment"><span>All</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                  <button class="wm-dd-item" data-value="working" data-label="Working"><span>Working</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                  <button class="wm-dd-item" data-value="relieved" data-label="Relieved"><span>Relieved</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                </div>
+              </div>
+              <div class="wm-dropdown" data-wm-filter="#f16Table" data-wm-filter-key="f16">
+                <button class="wm-dd-trigger"><span class="wm-dd-label">Form 16 status</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+                <div class="wm-dd-menu" role="listbox">
+                  <button class="wm-dd-item selected" data-value="all" data-label="Form 16 status"><span>All</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                  <button class="wm-dd-item" data-value="available" data-label="Available"><span>Available</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                  <button class="wm-dd-item" data-value="partial" data-label="Partially available"><span>Partially available</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                  <button class="wm-dd-item" data-value="none" data-label="Not available"><span>Not available</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                </div>
+              </div>
+              <div class="wm-dropdown" data-wm-filter="#f16Table" data-wm-filter-key="release">
+                <button class="wm-dd-trigger"><span class="wm-dd-label">Release status</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+                <div class="wm-dd-menu" role="listbox">
+                  <button class="wm-dd-item selected" data-value="all" data-label="Release status"><span>All</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                  <button class="wm-dd-item" data-value="yes" data-label="Released"><span>Released</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                  <button class="wm-dd-item" data-value="no" data-label="Not released"><span>Not released</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bulk-toolbar">
+            <input type="checkbox" class="wm-check" id="checkAll">
+            <span class="bulk-count" id="bulkCount">0 selected</span>
+            <button class="wm-btn wm-btn--primary wm-btn--sm" id="sendBtn" disabled>Send Form 16</button>
+            <button class="wm-btn wm-btn--outline wm-btn--sm" id="downloadBtn" disabled>Download Form 16</button>
+            <span class="bulk-total">Total: 3,141</span>
+          </div>
+
+          <table class="wm-table" id="f16Table">
+            <thead>
+              <tr>
+                <th class="col-check"></th>
+                <th>Employee</th>
+                <th>Employment status</th>
+                <th>PAN</th>
+                <th>Form 16 status</th>
+                <th><span class="th-info">Form 16 released <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-info-circle"/></svg></span></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-employment="working" data-f16="available" data-release="yes">
+                <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
+                <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">MP</span><span class="wm-cell-text"><strong>Matthew Perry</strong><small>EMP 003</small></span></div></td>
+                <td><span class="wm-pill wm-pill--success">Working</span></td>
+                <td><span class="pan">IEPCA2332A</span></td>
+                <td><span class="status-dl"><span class="wm-pill wm-pill--success">Available</span><svg class="dl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-document-download"/></svg></span><span class="sub-time">19 Jun 2025, 6:17 pm</span></td>
+                <td><span class="ynm yes">Yes</span><span class="sub-time">08 Jan 2026, 5:32 pm</span></td>
+                <td><button class="wm-icon-btn"><svg><use href="#ic-more"/></svg></button></td>
+              </tr>
+              <tr data-employment="working" data-f16="none" data-release="na">
+                <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
+                <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">SR</span><span class="wm-cell-text"><strong>Samriddhi Rao</strong><small>EMP 004</small></span></div></td>
+                <td><span class="wm-pill wm-pill--success">Working</span></td>
+                <td><span class="pan">ABCPD1111P</span></td>
+                <td><span class="wm-pill wm-pill--neutral">Not available</span></td>
+                <td><span class="ynm na">NA</span></td>
+                <td><button class="wm-icon-btn"><svg><use href="#ic-more"/></svg></button></td>
+              </tr>
+              <tr data-employment="relieved" data-f16="partial" data-release="no">
+                <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
+                <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm wm-avatar--muted">DP</span><span class="wm-cell-text"><strong>Daryl Pulikken</strong><small>EMP 005</small></span></div></td>
+                <td><span class="wm-pill wm-pill--neutral">Relieved · 23 Jun 2025</span></td>
+                <td><span class="pan">ABCPD9087P</span></td>
+                <td><span class="status-dl"><span class="wm-pill wm-pill--warning">Partially available</span><svg class="dl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-document-download"/></svg></span><span class="sub-time">04 Jun 2025, 7:40 pm</span></td>
+                <td><span class="ynm no">No</span></td>
+                <td><button class="wm-icon-btn"><svg><use href="#ic-more"/></svg></button></td>
+              </tr>
+              <tr data-employment="relieved" data-f16="none" data-release="na">
+                <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
+                <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm wm-avatar--muted">ML</span><span class="wm-cell-text"><strong>Matt LeBlanc</strong><small>EMP 007</small></span></div></td>
+                <td><span class="wm-pill wm-pill--neutral">Relieved · 09 Apr 2025</span></td>
+                <td><span class="pan wm-text-muted">Not available</span></td>
+                <td><span class="wm-pill wm-pill--neutral">Not available</span></td>
+                <td><span class="ynm na">NA</span></td>
+                <td><button class="wm-icon-btn"><svg><use href="#ic-more"/></svg></button></td>
+              </tr>
+              <tr data-employment="working" data-f16="none" data-release="na">
+                <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
+                <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">PS</span><span class="wm-cell-text"><strong>Priya Sharma</strong><small>EMP 2347</small></span></div></td>
+                <td><span class="wm-pill wm-pill--success">Working</span></td>
+                <td><span class="pan wm-text-muted">Not available</span></td>
+                <td><span class="wm-pill wm-pill--neutral">Not available</span></td>
+                <td><span class="ynm na">NA</span></td>
+                <td><button class="wm-icon-btn"><svg><use href="#ic-more"/></svg></button></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="wm-table-empty">No employees match your search.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upload modal -->
+  <div class="wm-modal-overlay" id="uploadModal">
+    <div class="wm-modal f16-upload-modal">
+      <div class="wm-modal-head">
+        <div>
+          <h2>Upload Form 16 for FY APR 2025 – MAR 2026</h2>
+        </div>
+        <button class="wm-close" data-wm-close><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><use href="#ic-close"/></svg></button>
+      </div>
+      <div class="wm-modal-body">
+        <div class="f16-up-grid">
+          <div>
+            <div class="f16-up-meta">
+              <div>
+                <div class="f16-meta-label">Legal entity</div>
+                <div class="f16-meta-val">Wisemonk Technologies</div>
+              </div>
+              <div class="f16-up-stats">
+                <div class="f16-up-stat">
+                  <div class="lbl">Part A uploaded</div>
+                  <div class="nums">
+                    <span class="f16-stat-num ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-tick-circle"/></svg>2</span>
+                    <span class="f16-stat-num bad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-close-circle"/></svg>3,139</span>
+                  </div>
+                </div>
+                <div class="f16-up-stat">
+                  <div class="lbl">Part B uploaded</div>
+                  <div class="nums">
+                    <span class="f16-stat-num ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-tick-circle"/></svg>3</span>
+                    <span class="f16-stat-num bad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-close-circle"/></svg>3,138</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="f16-up-card">
+              <div class="f16-up-card-head">Upload signed Part A and Part B</div>
+              <div class="f16-up-card-body">
+                <div class="f16-dz-row">
+                  <div class="f16-dz" id="dzA" data-part="A">
+                    <div class="f16-dz-pick">
+                      <div class="f16-dz-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-document-upload"/></svg>Upload <strong>Part A</strong></div>
+                      <button type="button" class="wm-btn wm-btn--primary wm-btn--sm dz-browse">Browse your Files</button>
+                      <div class="f16-dz-hint">or drag and drop your zip file here</div>
+                    </div>
+                    <div class="f16-dz-done">
+                      <div class="f16-dz-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-tick-circle"/></svg><span class="dz-okmsg">Part A uploaded</span></div>
+                      <button type="button" class="f16-dz-again"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-document-upload"/></svg>Upload again</button>
+                    </div>
+                    <input type="file" class="dz-input" accept=".zip" hidden>
+                  </div>
+                  <div class="f16-dz" id="dzB" data-part="B">
+                    <div class="f16-dz-pick">
+                      <div class="f16-dz-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-document-upload"/></svg>Upload <strong>Part B</strong></div>
+                      <button type="button" class="wm-btn wm-btn--primary wm-btn--sm dz-browse">Browse your Files</button>
+                      <div class="f16-dz-hint">or drag and drop your zip file here</div>
+                    </div>
+                    <div class="f16-dz-done">
+                      <div class="f16-dz-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-tick-circle"/></svg><span class="dz-okmsg">Part B uploaded</span></div>
+                      <button type="button" class="f16-dz-again"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-document-upload"/></svg>Upload again</button>
+                    </div>
+                    <input type="file" class="dz-input" accept=".zip" hidden>
+                  </div>
+                </div>
+              </div>
+              <div class="f16-up-foot-note">To merge Part A and Part B into a single file and to attach signature, please use <a href="#">Document Signer</a>.</div>
+            </div>
+
+            <label class="f16-annexure" style="margin-top:18px;">
+              <input type="checkbox" class="wm-check" id="annexureChk">
+              Attach Annexure to Form 16 and Form 12BA with the uploaded files
+            </label>
+          </div>
+
+          <div>
+            <div class="f16-steps-title">Steps to upload Form 16</div>
+            <div class="f16-step">
+              <div class="f16-step-ic">1</div>
+              <div class="f16-step-text">Download the Part A and the Part B zip files for the selected Legal Entity from <a href="#">TRACES</a>.</div>
+            </div>
+            <div class="f16-step">
+              <div class="f16-step-ic">2</div>
+              <div class="f16-step-text">Convert the downloaded files into PDFs and sign them using the PDF converter utility in TRACES.</div>
+            </div>
+            <div class="f16-step">
+              <div class="f16-step-ic">3</div>
+              <div class="f16-step-text">Compress the Part A PDF files and Part B PDF files into 2 separate zip files.</div>
+            </div>
+            <div class="f16-step">
+              <div class="f16-step-ic">4</div>
+              <div class="f16-step-text">Upload the Part A and Part B zip files to save them for the respective employees.</div>
+            </div>
+            <div class="f16-tip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-info-circle"/></svg>
+              <span>For detailed instructions on how to upload Form 16, <a href="#">click here</a></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="wm-modal-foot">
+        <button class="wm-btn wm-btn--outline" data-wm-close>Cancel</button>
+        <button class="wm-btn wm-btn--primary" id="uploadConfirm" disabled>Save uploaded files</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var checkAll = document.getElementById('checkAll');
+      var sendBtn = document.getElementById('sendBtn');
+      var downloadBtn = document.getElementById('downloadBtn');
+      var bulkCount = document.getElementById('bulkCount');
+      var rows = function () { return Array.prototype.slice.call(document.querySelectorAll('.row-check')); };
+
+      function refreshBulk() {
+        var checked = rows().filter(function (c) { return c.checked; });
+        var n = checked.length;
+        bulkCount.textContent = n + ' selected';
+        sendBtn.disabled = n === 0;
+        downloadBtn.disabled = n === 0;
+        checkAll.checked = n > 0 && n === rows().length;
+        checkAll.indeterminate = n > 0 && n < rows().length;
+      }
+      checkAll.addEventListener('change', function () {
+        rows().forEach(function (c) { c.checked = checkAll.checked; });
+        refreshBulk();
+      });
+      rows().forEach(function (c) { c.addEventListener('change', refreshBulk); });
+
+      sendBtn.addEventListener('click', function () {
+        if (sendBtn.disabled) return;
+        var n = rows().filter(function (c) { return c.checked; }).length;
+        WMUI.toast('Form 16 emailed to ' + n + ' employee' + (n === 1 ? '' : 's'), { type: 'success' });
+      });
+      downloadBtn.addEventListener('click', function () {
+        if (downloadBtn.disabled) return;
+        WMUI.toast('Preparing download…');
+      });
+
+      // Upload modal — Part A / Part B dropzones
+      var uploadConfirm = document.getElementById('uploadConfirm');
+      var zones = Array.prototype.slice.call(document.querySelectorAll('.f16-dz'));
+
+      function refreshSave() {
+        var any = zones.some(function (z) { return z.classList.contains('done'); });
+        uploadConfirm.disabled = !any;
+      }
+      function markDone(zone, file) {
+        zone.classList.add('done');
+        var part = zone.getAttribute('data-part');
+        zone.querySelector('.dz-okmsg').textContent = file ? file.name : 'Part ' + part + ' uploaded';
+        refreshSave();
+      }
+      function resetZone(zone) {
+        zone.classList.remove('done');
+        zone.querySelector('.dz-input').value = '';
+        refreshSave();
+      }
+
+      zones.forEach(function (zone) {
+        var input = zone.querySelector('.dz-input');
+        zone.querySelector('.dz-browse').addEventListener('click', function () { input.click(); });
+        zone.querySelector('.f16-dz-again').addEventListener('click', function () { resetZone(zone); });
+        input.addEventListener('change', function () { if (input.files[0]) markDone(zone, input.files[0]); });
+        ['dragenter', 'dragover'].forEach(function (ev) {
+          zone.addEventListener(ev, function (e) { e.preventDefault(); zone.classList.add('drag'); });
+        });
+        ['dragleave', 'drop'].forEach(function (ev) {
+          zone.addEventListener(ev, function (e) { e.preventDefault(); zone.classList.remove('drag'); });
+        });
+        zone.addEventListener('drop', function (e) { if (e.dataTransfer.files[0]) markDone(zone, e.dataTransfer.files[0]); });
+      });
+
+      uploadConfirm.addEventListener('click', function () {
+        if (uploadConfirm.disabled) return;
+        WMUI.close('#uploadModal');
+        WMUI.toast('Form 16 files saved — matching to employees', { type: 'success' });
+        zones.forEach(resetZone);
+        var ann = document.getElementById('annexureChk'); if (ann) ann.checked = false;
+      });
+    });
+  </script>
+</body>
+</html>
