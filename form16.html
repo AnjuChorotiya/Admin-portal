@@ -125,7 +125,6 @@
     .f16-tip { display: flex; gap: 12px; align-items: flex-start; background: var(--wm-neutral-50); border-radius: var(--wm-radius-md); padding: 14px 16px; font-size: 13px; color: var(--wm-text-secondary); line-height: 1.5; margin-top: 6px; }
     .f16-tip svg { width: 18px; height: 18px; flex-shrink: 0; color: var(--wm-primary-500); margin-top: 1px; }
     .f16-tip a { color: var(--wm-primary-600); font-weight: 600; text-decoration: none; }
-    .f16-annexure { display: flex; align-items: center; gap: 9px; font-size: 13.5px; color: var(--wm-text-secondary); cursor: pointer; }
 
     @media (max-width: 1100px) { .f16-stats { grid-template-columns: 1fr; } }
     @media (max-width: 860px) { .f16-up-grid { grid-template-columns: 1fr; } .f16-dz-row { grid-template-columns: 1fr; } }
@@ -396,11 +395,6 @@
               </div>
               <div class="f16-up-foot-note">To merge Part A and Part B into a single file and to attach signature, please use <a href="#">Document Signer</a>.</div>
             </div>
-
-            <label class="f16-annexure" style="margin-top:18px;">
-              <input type="checkbox" class="wm-check" id="annexureChk">
-              Attach Annexure to Form 16 and Form 12BA with the uploaded files
-            </label>
           </div>
 
           <div>
@@ -507,7 +501,6 @@
         WMUI.close('#uploadModal');
         WMUI.toast('Form 16 files saved — matching to employees', { type: 'success' });
         zones.forEach(resetZone);
-        var ann = document.getElementById('annexureChk'); if (ann) ann.checked = false;
       });
     });
   </script>
