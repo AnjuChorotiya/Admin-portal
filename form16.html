@@ -27,7 +27,7 @@
     .nav-link svg { width: 20px; height: 20px; flex-shrink: 0; }
 
     .main-col { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-    .header { display: flex; align-items: center; justify-content: space-between; height: 80px; padding: 0 40px; background: var(--wm-bg-subtle); }
+    .header { display: flex; align-items: center; justify-content: flex-end; height: 80px; padding: 0 40px; background: var(--wm-bg-subtle); }
     .header h1 { font-weight: 700; font-size: 23px; color: var(--wm-text-primary); }
     .header-right { display: flex; align-items: center; gap: 16px; }
     .user-chip { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 4px 8px 4px 4px; border-radius: 100px; }
@@ -162,17 +162,12 @@
       <a href="home.html" class="sidebar-logo"><img src="wisemonk_logo_final.png" alt="Wisemonk"></a>
       <nav>
         <div class="nav-title">Workspace</div>
-        <a href="home.html" class="nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-home-2"/></svg>Home</a>
-        <a href="employee-onboarding.html" class="nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-profile-2user"/></svg>Employees</a>
-        <a href="invoices.html" class="nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-receipt-text"/></svg>Invoices</a>
-        <a href="#" class="nav-link active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-wallet"/></svg>Payroll</a>
-        <a href="compliance.html" class="nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-shield-tick"/></svg>Compliance</a>
+        <a href="#" class="nav-link active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-receipt-text"/></svg>Form 16</a>
       </nav>
     </aside>
 
     <div class="main-col">
       <header class="header">
-        <h1>Payroll Admin</h1>
         <div class="header-right">
           <button class="wm-icon-btn" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-notification"/></svg></button>
           <div class="user-chip">
@@ -210,11 +205,11 @@
 
         <div class="f16-stats">
           <div class="wm-card">
-            <div class="wm-stat-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-profile-2user"/></svg>Employees in legal entity</div>
+            <div class="wm-stat-title">Employees in legal entity</div>
             <div class="wm-stat-value">3,141</div>
           </div>
           <div class="wm-card">
-            <div class="wm-stat-title">Form 16 available <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-info-circle"/></svg></div>
+            <div class="wm-stat-title">Form 16 available</div>
             <div class="wm-stat-value f16-stat-split">
               <span class="f16-chip ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-tick-circle"/></svg>2</span>
               <span class="f16-chip bad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-close-circle"/></svg>3,139</span>
@@ -236,7 +231,7 @@
                 <button class="wm-dd-trigger"><span class="wm-dd-label">All employment</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
                 <div class="wm-dd-menu" role="listbox">
                   <button class="wm-dd-item selected" data-value="all" data-label="All employment"><span>All</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
-                  <button class="wm-dd-item" data-value="working" data-label="Working"><span>Working</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                  <button class="wm-dd-item" data-value="working" data-label="Active"><span>Active</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
                   <button class="wm-dd-item" data-value="relieved" data-label="Relieved"><span>Relieved</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
                 </div>
               </div>
@@ -284,7 +279,7 @@
               <tr data-employment="working" data-f16="available" data-release="yes">
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">MP</span><span class="wm-cell-text"><strong>Matthew Perry</strong><small>EMP 003</small></span></div></td>
-                <td><span class="wm-pill wm-pill--success">Working</span></td>
+                <td><span class="wm-pill wm-pill--info">Active</span></td>
                 <td><span class="pan">IEPCA2332A</span></td>
                 <td><span class="status-dl"><span class="wm-pill wm-pill--success">Available</span><svg class="dl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-document-download"/></svg></span><span class="sub-time">19 Jun 2025, 6:17 pm</span></td>
                 <td><span class="ynm yes">Yes</span><span class="sub-time">08 Jan 2026, 5:32 pm</span></td>
@@ -293,7 +288,7 @@
               <tr data-employment="working" data-f16="none" data-release="na">
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">SR</span><span class="wm-cell-text"><strong>Samriddhi Rao</strong><small>EMP 004</small></span></div></td>
-                <td><span class="wm-pill wm-pill--success">Working</span></td>
+                <td><span class="wm-pill wm-pill--info">Active</span></td>
                 <td><span class="pan">ABCPD1111P</span></td>
                 <td><span class="wm-pill wm-pill--neutral">Not available</span></td>
                 <td><span class="ynm na">NA</span></td>
@@ -320,7 +315,7 @@
               <tr data-employment="working" data-f16="none" data-release="na">
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">PS</span><span class="wm-cell-text"><strong>Priya Sharma</strong><small>EMP 2347</small></span></div></td>
-                <td><span class="wm-pill wm-pill--success">Working</span></td>
+                <td><span class="wm-pill wm-pill--info">Active</span></td>
                 <td><span class="pan wm-text-muted">Not available</span></td>
                 <td><span class="wm-pill wm-pill--neutral">Not available</span></td>
                 <td><span class="ynm na">NA</span></td>
