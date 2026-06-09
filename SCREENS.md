@@ -15,6 +15,12 @@ Purpose and flow for each screen in this repo. Live pages:
 3. Selecting rows enables the **Send Form 16** and **Download Form 16** bulk actions.
 4. The **Upload Form 16** button opens a modal where the admin uploads signed **Part A** and **Part B** via drag-and-drop / "Browse your Files" drop zones, with per-part "uploaded" confirmation and an "Upload again" option.
 
+**Validations:**
+- Part A / Part B file inputs: accept `.zip` only (`accept=".zip"` on both `<input type="file">` drop zones).
+- "Save uploaded files" button: disabled by default; enabled only once at least one drop zone is marked `done` (file selected or dropped) — see `refreshSave()`.
+- Bulk "Send Form 16" / "Download Form 16" buttons: disabled until at least one employee row checkbox is selected (`refreshBulk()`).
+- No text-field constraints (no `required`, `pattern`, email/number/date types) — the only enforced rule is the `.zip` file-type filter and the selection-gated buttons.
+
 **Notes:** Status pills use success/warning styling (e.g. "Available", "Partially available"). Built on the wisemonk-ui design system.
 
 ---
