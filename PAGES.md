@@ -2,7 +2,9 @@
 
 Master index of designed pages and their GitHub hosting. Update this whenever a new page is designed and pushed to git.
 
-> Excludes the `gridwise-site` repo by request. `contractor-legal-ai` is a Next.js app (not static GitHub Pages) and has no live preview until deployed.
+**Last verified:** 2026-06-09 — all live-preview links below return HTTP 200.
+
+> Excludes the `gridwise-site` repo by request. `contractor-legal-ai` is the Next.js source app (no Pages preview until deployed); its onboarding pages are deployed live via the **EOR** repo (static export below).
 
 ## EOR
 Repo: https://github.com/AnjuChorotiya/EOR · Pages base: `https://anjuchorotiya.github.io/EOR/` · Next.js static export (`output: 'export'`), served from `/docs`. Source pages live in `src/app/onboarding/`.
