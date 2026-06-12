@@ -365,6 +365,11 @@
     border-color: var(--primary-500);
   }
   .rcpt-tag.on:hover { background: var(--primary-600); border-color: var(--primary-600); }
+  /* Read-only variant — non-interactive display of preconfigured recipients */
+  .rcpt-tag.readonly { cursor: default; }
+  .rcpt-tag.readonly:hover { filter: none; }
+  .rcpt-tag.readonly.off:hover { background: var(--neutral-100); color: var(--neutral-400); border-color: var(--neutral-200); }
+  .rcpt-tag.readonly.on:hover { background: var(--primary-500); border-color: var(--primary-500); }
 
   /* ========== Generic dropdown menu ========== */
   .menu {
@@ -1328,18 +1333,14 @@
     </div>
 
     <div class="field-row">
-      <label class="field-label">Notify by default</label>
+      <label class="field-label">Notify internal teams</label>
       <div class="route-checkbox-grid" id="new-rule-routing">
         <label class="route-check-item"><span class="route-checkbox checked"><i class="ph ph-check"></i></span> <span>Customer Success</span></label>
         <label class="route-check-item"><span class="route-checkbox checked"><i class="ph ph-check"></i></span> <span>Customer Finance</span></label>
         <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>HR Ops</span></label>
         <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>Sales</span></label>
-        <label class="route-check-item"><span class="route-checkbox checked"><i class="ph ph-check"></i></span> <span>Client</span></label>
-        <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>Employee</span></label>
-        <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>Contractor</span></label>
-        <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>Manager</span></label>
       </div>
-      <div class="field-hint">These defaults will be saved at the module level. You can fine-tune later.</div>
+      <div class="field-hint">External recipients (Client, Employee, Contractor, Manager) are configured automatically by the engine based on the event type.</div>
     </div>
   </div>
 
@@ -1576,7 +1577,7 @@
     const recipientsCell = (ev) => {
       const tags = externalKeys.map(t => {
         const isOn = ev.routing[t] === 'P' || ev.routing[t] === 'I';
-        return `<span class="rcpt-tag ${isOn ? 'on' : 'off'}" onclick="toggleRouting('${ev.name.replace(/'/g, "\\'")}', '${t}', this);" title="${isOn ? 'Notifying ' + teamName[t] : 'Click to add ' + teamName[t]}">${teamName[t]}</span>`;
+        return `<span class="rcpt-tag readonly ${isOn ? 'on' : 'off'}" title="${isOn ? teamName[t] + ' will be notified' : teamName[t] + ' is not notified'}">${teamName[t]}</span>`;
       }).join('');
       return `<td class="col-ext-start"><div class="recipient-tags">${tags}</div></td>`;
     };
@@ -1635,9 +1636,9 @@
     document.getElementById('new-module-name').value = '';
     document.getElementById('new-module-name-row').style.display = 'none';
 
-    // Reset checkboxes to a sensible default
-    const ruleKeys = ['cs','cf','hr','sales','client','employee','contractor','manager'];
-    const defaults = { cs:true, cf:true, hr:false, sales:false, client:true, employee:false, contractor:false, manager:false };
+    // Reset internal-team checkboxes to a sensible default
+    const ruleKeys = ['cs','cf','hr','sales'];
+    const defaults = { cs:true, cf:true, hr:false, sales:false };
     document.querySelectorAll('#new-rule-routing .route-check-item').forEach((item, i) => {
       const cb = item.querySelector('.route-checkbox');
       cb.classList.toggle('checked', defaults[ruleKeys[i]]);
@@ -1681,9 +1682,12 @@
     if (!eventName) { toast({ title:'Event name required', body:'Add a name like "Payslip download requested".', type:'warning' }); return; }
     if (!trigger)   { toast({ title:'Trigger description required', body:'Describe when the event fires.', type:'warning' }); return; }
 
-    // Read routing checkboxes
-    const keys = ['cs','cf','hr','sales','client','employee','contractor','manager'];
-    const routing = {};
+    // Read internal-team checkboxes; external recipients are auto-configured.
+    const keys = ['cs','cf','hr','sales'];
+    const routing = {
+      // Sensible engine-configured defaults for external recipients
+      client: 'P', employee: 'P', contractor: '-', manager: '-',
+    };
     document.querySelectorAll('#new-rule-routing .route-checkbox').forEach((cb, i) => {
       routing[keys[i]] = cb.classList.contains('checked') ? 'P' : '-';
     });
