@@ -206,11 +206,8 @@
   .client-name { font-weight: 700; color: var(--neutral-900); line-height: 1.2; }
   .client-legal { font-size: 12px; color: var(--neutral-500); margin-top: 2px; }
 
-  /* Required-info cell */
-  .req-cell { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 13px; }
-  .req-cell i { font-size: 16px; }
-  .req-cell.ok   { color: var(--success-700); }
-  .req-cell.miss { color: var(--danger-700); }
+  /* Clickable rows */
+  tbody tr[data-id] { cursor: pointer; }
 
   /* Risk pill */
   .risk-pill {
@@ -250,6 +247,98 @@
     font-family: 'Open Sans', sans-serif; font-weight: 300;
     font-size: 12px; color: var(--neutral-400);
     padding: 14px 20px; border-top: 1px solid var(--border);
+  }
+
+  /* ========== Onboarding detail view ========== */
+  .detail-view { display: none; }
+  body.detail-open .list-view { display: none; }
+  body.detail-open .detail-view { display: block; }
+
+  .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-weight: 700; font-size: 13px; color: var(--neutral-600);
+    padding: 8px 12px; border-radius: 8px; margin-bottom: 16px;
+  }
+  .back-link:hover { background: var(--neutral-100); color: var(--neutral-900); }
+  .back-link i { font-size: 16px; }
+
+  .summary-card {
+    background: var(--neutral-0);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+    display: flex; align-items: flex-start; gap: 16px;
+  }
+  .summary-card .avatar { width: 48px; height: 48px; font-size: 16px; }
+  .summary-eyebrow {
+    font-family: 'Open Sans', sans-serif; font-weight: 300;
+    font-size: 11px; color: var(--primary-600);
+    text-transform: uppercase; letter-spacing: 0.6px;
+    margin-bottom: 4px;
+  }
+  .summary-name { font-size: 20px; font-weight: 700; color: var(--neutral-900); line-height: 1.2; }
+  .summary-sub { font-size: 13px; color: var(--neutral-500); margin-top: 4px; }
+  .summary-signatory { font-size: 13px; color: var(--neutral-600); margin-top: 8px; }
+  .summary-signatory strong { color: var(--neutral-900); font-weight: 700; }
+  .summary-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+  .detail-section {
+    background: var(--neutral-0);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .detail-section-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 16px 20px; border-bottom: 1px solid var(--border);
+  }
+  .detail-section-title { font-size: 15px; font-weight: 700; color: var(--neutral-900); }
+  .missing-pill {
+    margin-left: auto;
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 700;
+    background: var(--warning-50); color: var(--warning-700);
+  }
+  .missing-pill i { font-size: 13px; }
+  .complete-pill {
+    margin-left: auto;
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 700;
+    background: var(--success-50); color: var(--success-700);
+  }
+  .complete-pill i { font-size: 13px; }
+  .field-grid { padding: 6px 20px 14px; }
+  .field-row {
+    display: grid; grid-template-columns: 240px 1fr; gap: 16px;
+    padding: 12px 0; border-bottom: 1px solid var(--border);
+  }
+  .field-row:last-child { border-bottom: none; }
+  .field-label { font-size: 13px; color: var(--neutral-500); font-weight: 500; }
+  .field-value { font-size: 14px; color: var(--neutral-900); font-weight: 500; word-break: break-word; }
+  .field-value.missing { color: var(--danger-700); font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
+  .field-value.missing i { font-size: 15px; }
+  .field-value a { color: var(--primary-600); font-weight: 700; }
+  .field-value a:hover { text-decoration: underline; }
+  .field-file {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 5px 10px; border-radius: 8px;
+    background: var(--neutral-50); border: 1px solid var(--border-strong);
+    font-size: 13px; font-weight: 700; color: var(--neutral-700);
+  }
+  .field-file i { font-size: 15px; color: var(--primary-600); }
+  .chip-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    display: inline-flex; align-items: center;
+    padding: 3px 10px; border-radius: 999px;
+    background: var(--primary-50); color: var(--primary-700);
+    font-size: 12px; font-weight: 700;
+  }
+  @media (max-width: 720px) {
+    .field-row { grid-template-columns: 1fr; gap: 4px; }
   }
 
   /* ========== AI report modal ========== */
@@ -353,6 +442,8 @@
 
   <!-- ========== MAIN ========== -->
   <main class="main">
+   <!-- ===== LIST VIEW ===== -->
+   <div class="list-view">
     <div class="page-header">
       <div>
         <div class="page-title"><i class="ph ph-shield-check"></i> Client verification</div>
@@ -423,7 +514,6 @@
             <tr>
               <th>Client</th>
               <th>Country</th>
-              <th>Required info</th>
               <th>AI risk</th>
               <th>Submitted</th>
               <th>Status</th>
@@ -431,65 +521,80 @@
             </tr>
           </thead>
           <tbody id="rows">
-            <tr data-id="acme" data-status="verified" data-risk="low" data-text="acme tech pvt ltd acme technologies pvt ltd india">
+            <tr data-id="acme" data-status="verified" data-risk="low" data-text="acme tech pvt ltd acme technologies pvt ltd india" onclick="openDetail('acme')">
               <td><div class="cell-client"><div class="avatar" style="background:#1059BD">AT</div><div><div class="client-name">Acme Tech Pvt Ltd</div><div class="client-legal">Acme Technologies Pvt Ltd</div></div></div></td>
               <td>India</td>
-              <td><span class="req-cell ok"><i class="ph ph-check-circle"></i> Complete</span></td>
               <td><span class="risk-pill low">Low</span></td>
               <td>8 Jun 2026</td>
               <td><span class="pill verified">Verified</span></td>
-              <td><button class="view-report" onclick="openAi('acme')"><i class="ph ph-file-text"></i> View report</button></td>
+              <td><button class="view-report" onclick="event.stopPropagation();openAi('acme')"><i class="ph ph-file-text"></i> View report</button></td>
             </tr>
-            <tr data-id="bright" data-status="pending" data-risk="med" data-text="bright labs llc united states">
+            <tr data-id="bright" data-status="pending" data-risk="med" data-text="bright labs llc united states" onclick="openDetail('bright')">
               <td><div class="cell-client"><div class="avatar" style="background:#12B76A">BL</div><div><div class="client-name">Bright Labs LLC</div><div class="client-legal">Bright Labs LLC</div></div></div></td>
               <td>United States</td>
-              <td><span class="req-cell ok"><i class="ph ph-check-circle"></i> Complete</span></td>
               <td><span class="risk-pill med">Medium</span></td>
               <td>9 Jun 2026</td>
               <td><span class="pill">Pending</span></td>
-              <td><button class="view-report" onclick="openAi('bright')"><i class="ph ph-file-text"></i> View report</button></td>
+              <td><button class="view-report" onclick="event.stopPropagation();openAi('bright')"><i class="ph ph-file-text"></i> View report</button></td>
             </tr>
-            <tr data-id="nordic" data-status="pending" data-risk="low" data-text="nordic design ab sweden">
+            <tr data-id="nordic" data-status="pending" data-risk="low" data-text="nordic design ab sweden" onclick="openDetail('nordic')">
               <td><div class="cell-client"><div class="avatar" style="background:#7B61FF">ND</div><div><div class="client-name">Nordic Design AB</div><div class="client-legal">Nordic Design AB</div></div></div></td>
               <td>Sweden</td>
-              <td><span class="req-cell ok"><i class="ph ph-check-circle"></i> Complete</span></td>
               <td><span class="risk-pill low">Low</span></td>
               <td>9 Jun 2026</td>
               <td><span class="pill">Pending</span></td>
-              <td><button class="view-report" onclick="openAi('nordic')"><i class="ph ph-file-text"></i> View report</button></td>
+              <td><button class="view-report" onclick="event.stopPropagation();openAi('nordic')"><i class="ph ph-file-text"></i> View report</button></td>
             </tr>
-            <tr data-id="zenith" data-status="review" data-risk="high" data-text="zenith trading fze united arab emirates uae">
+            <tr data-id="zenith" data-status="review" data-risk="high" data-text="zenith trading fze united arab emirates uae" onclick="openDetail('zenith')">
               <td><div class="cell-client"><div class="avatar" style="background:#F79009">ZT</div><div><div class="client-name">Zenith Trading FZE</div><div class="client-legal">Zenith Trading FZE</div></div></div></td>
               <td>United Arab Emirates</td>
-              <td><span class="req-cell miss"><i class="ph ph-warning-circle"></i> Missing UBO</span></td>
               <td><span class="risk-pill high">High</span></td>
               <td>7 Jun 2026</td>
               <td><span class="pill review">Needs review</span></td>
-              <td><button class="view-report" onclick="openAi('zenith')"><i class="ph ph-file-text"></i> View report</button></td>
+              <td><button class="view-report" onclick="event.stopPropagation();openAi('zenith')"><i class="ph ph-file-text"></i> View report</button></td>
             </tr>
-            <tr data-id="maple" data-status="verified" data-risk="low" data-text="maple studios inc canada">
+            <tr data-id="maple" data-status="verified" data-risk="low" data-text="maple studios inc canada" onclick="openDetail('maple')">
               <td><div class="cell-client"><div class="avatar" style="background:#1059BD">MS</div><div><div class="client-name">Maple Studios Inc</div><div class="client-legal">Maple Studios Inc</div></div></div></td>
               <td>Canada</td>
-              <td><span class="req-cell ok"><i class="ph ph-check-circle"></i> Complete</span></td>
               <td><span class="risk-pill low">Low</span></td>
               <td>6 Jun 2026</td>
               <td><span class="pill verified">Verified</span></td>
-              <td><button class="view-report" onclick="openAi('maple')"><i class="ph ph-file-text"></i> View report</button></td>
+              <td><button class="view-report" onclick="event.stopPropagation();openAi('maple')"><i class="ph ph-file-text"></i> View report</button></td>
             </tr>
-            <tr data-id="orchid" data-status="pending" data-risk="med" data-text="orchid media pte ltd singapore">
+            <tr data-id="orchid" data-status="pending" data-risk="med" data-text="orchid media pte ltd singapore" onclick="openDetail('orchid')">
               <td><div class="cell-client"><div class="avatar" style="background:#12B76A">OM</div><div><div class="client-name">Orchid Media Pte Ltd</div><div class="client-legal">Orchid Media Pte Ltd</div></div></div></td>
               <td>Singapore</td>
-              <td><span class="req-cell ok"><i class="ph ph-check-circle"></i> Complete</span></td>
               <td><span class="risk-pill med">Medium</span></td>
               <td>10 Jun 2026</td>
               <td><span class="pill">Pending</span></td>
-              <td><button class="view-report" onclick="openAi('orchid')"><i class="ph ph-file-text"></i> View report</button></td>
+              <td><button class="view-report" onclick="event.stopPropagation();openAi('orchid')"><i class="ph ph-file-text"></i> View report</button></td>
             </tr>
           </tbody>
         </table>
       </div>
       <div class="table-disclaimer">AI screening results are automated indicators for demonstration only and do not constitute a compliance determination.</div>
     </section>
+   </div><!-- /.list-view -->
+
+   <!-- ===== DETAIL VIEW ===== -->
+   <div class="detail-view">
+     <a class="back-link" onclick="backToList()"><i class="ph ph-arrow-left"></i> All submissions</a>
+     <div class="summary-card">
+       <div class="avatar" id="dvAvatar">--</div>
+       <div>
+         <div class="summary-eyebrow">Onboarding verification</div>
+         <div class="summary-name" id="dvName">--</div>
+         <div class="summary-sub" id="dvSub">--</div>
+         <div class="summary-signatory" id="dvSignatory"></div>
+       </div>
+       <div class="summary-actions">
+         <span class="pill" id="dvStatus">Pending</span>
+         <button class="btn btn-secondary" id="dvReportBtn"><i class="ph ph-sparkle"></i> AI report</button>
+       </div>
+     </div>
+     <div id="dvSections"></div>
+     <div class="table-disclaimer" style="border:none;padding:8px 4px 0;">Submitted onboarding details are shown as captured from the client. Verify against source documents before activation.</div>
+   </div>
   </main>
 </div>
 
@@ -537,7 +642,7 @@
       if (!empty) {
         var tr = document.createElement('tr');
         tr.id = 'emptyRow'; tr.className = 'empty-row';
-        tr.innerHTML = '<td colspan="7">No clients match these filters.</td>';
+        tr.innerHTML = '<td colspan="6">No clients match these filters.</td>';
         document.getElementById('rows').appendChild(tr);
       }
     } else if (empty) {
@@ -639,6 +744,187 @@
   var RISK_TEXT = { low: 'Low risk', med: 'Medium risk', high: 'High risk' };
   var CHECK_IC = { pass: 'ph-check-circle', warn: 'ph-warning-circle', flag: 'ph-warning-octagon' };
 
+  /* ===== Onboarding submissions (simulated) ===== */
+  var SECTION_DEFS = [
+    { title: 'Signatory & organization', fields: [
+      { k: 'signatoryName', l: 'Authorized signatory' },
+      { k: 'designation', l: 'Job title' },
+      { k: 'legalCompanyName', l: 'Legal company name' },
+      { k: 'entityType', l: 'Entity type' },
+      { k: 'industry', l: 'Industry' },
+      { k: 'teamSize', l: 'Team size' },
+      { k: 'countryOfIncorporation', l: 'Country of incorporation' },
+      { k: 'companyWebsite', l: 'Company website', kind: 'url' }
+    ] },
+    { title: 'Tax & registration', fields: [
+      { k: 'registrationNo', l: 'Registration number' },
+      { k: 'taxId', l: 'Tax identifier' },
+      { k: 'incorporationDate', l: 'Incorporation date' },
+      { k: 'registeredAddress', l: 'Registered address' }
+    ] },
+    { title: 'Beneficial ownership', fields: [
+      { k: 'uboName', l: 'Ultimate beneficial owner(s)' },
+      { k: 'uboHolding', l: 'Shareholding' },
+      { k: 'uboIdDoc', l: 'Ownership / ID document', kind: 'file' }
+    ] },
+    { title: 'Banking & payout', fields: [
+      { k: 'bankName', l: 'Bank' },
+      { k: 'accountHolder', l: 'Account holder' },
+      { k: 'payoutCurrency', l: 'Payout currency' }
+    ] },
+    { title: 'Compliance & documents', fields: [
+      { k: 'regulatoryLicenses', l: 'Regulatory licences', kind: 'multi' },
+      { k: 'dataHandling', l: 'Data handling' },
+      { k: 'incorporationCert', l: 'Certificate of incorporation', kind: 'file' },
+      { k: 'addressProof', l: 'Proof of address', kind: 'file' }
+    ] }
+  ];
+
+  var ONBOARDING = {
+    acme: {
+      signatoryName: 'Rohan Mehta', designation: 'Director & Co-founder',
+      legalCompanyName: 'Acme Technologies Pvt Ltd', entityType: 'Private Limited Company',
+      industry: 'Software & SaaS', teamSize: '51–200', countryOfIncorporation: 'India',
+      companyWebsite: 'https://acmetech.in',
+      registrationNo: 'CIN U72900KA2018PTC112233', taxId: 'PAN AACCA1234F · GSTIN 29AACCA1234F1Z5',
+      incorporationDate: '14 Mar 2018', registeredAddress: '4th Floor, Prestige Tower, MG Road, Bengaluru 560001',
+      uboName: 'Rohan Mehta', uboHolding: '100%', uboIdDoc: 'rohan-mehta-passport.pdf',
+      bankName: 'HDFC Bank', accountHolder: 'Acme Technologies Pvt Ltd', payoutCurrency: 'INR',
+      regulatoryLicenses: ['None applicable'], dataHandling: 'Standard — no sensitive personal data',
+      incorporationCert: 'certificate-of-incorporation.pdf', addressProof: 'utility-bill.pdf'
+    },
+    bright: {
+      signatoryName: 'Jordan Blake', designation: 'Chief Executive Officer',
+      legalCompanyName: 'Bright Labs LLC', entityType: 'Limited Liability Company (LLC)',
+      industry: 'Hardware & IoT', teamSize: '11–50', countryOfIncorporation: 'United States (Delaware)',
+      companyWebsite: 'https://brightlabs.io',
+      registrationNo: 'Delaware File No. 7654321', taxId: 'EIN 84-1234567',
+      incorporationDate: '2 Sep 2020', registeredAddress: '251 Little Falls Drive, Wilmington, DE 19808',
+      uboName: 'Jordan Blake (72%), Alex Rivera (28%)', uboHolding: '72% / 28%', uboIdDoc: '',
+      bankName: 'Silicon Valley Bank', accountHolder: 'Bright Labs LLC', payoutCurrency: 'USD',
+      regulatoryLicenses: ['None applicable'], dataHandling: 'Standard',
+      incorporationCert: 'de-certificate-of-formation.pdf', addressProof: 'lease-agreement.pdf'
+    },
+    nordic: {
+      signatoryName: 'Elsa Lindqvist', designation: 'Managing Director',
+      legalCompanyName: 'Nordic Design AB', entityType: 'Aktiebolag (AB)',
+      industry: 'Design & Creative', teamSize: '11–50', countryOfIncorporation: 'Sweden',
+      companyWebsite: 'https://nordicdesign.se',
+      registrationNo: 'Org.nr 556677-8899', taxId: 'VAT SE556677889901',
+      incorporationDate: '19 Jan 2016', registeredAddress: 'Kungsgatan 12, 111 43 Stockholm',
+      uboName: 'Elsa Lindqvist (60%), Magnus Holm (40%)', uboHolding: '60% / 40%', uboIdDoc: 'ownership-register.pdf',
+      bankName: 'SEB', accountHolder: 'Nordic Design AB', payoutCurrency: 'SEK',
+      regulatoryLicenses: ['None applicable'], dataHandling: 'GDPR-compliant',
+      incorporationCert: 'bolagsverket-registration.pdf', addressProof: 'bank-statement.pdf'
+    },
+    zenith: {
+      signatoryName: 'Omar Al-Farsi', designation: 'General Manager',
+      legalCompanyName: 'Zenith Trading FZE', entityType: 'Free Zone Establishment (FZE)',
+      industry: 'Trading & Commodities', teamSize: '1–10', countryOfIncorporation: 'United Arab Emirates',
+      companyWebsite: '',
+      registrationNo: 'Licence No. FZE-2019-44821', taxId: 'TRN 100123456700003 (unverified)',
+      incorporationDate: '5 Nov 2019', registeredAddress: 'Office 214, JAFZA One, Jebel Ali, Dubai',
+      uboName: '', uboHolding: '', uboIdDoc: '',
+      bankName: 'Emirates NBD', accountHolder: 'Zenith Trading FZE', payoutCurrency: 'AED',
+      regulatoryLicenses: [], dataHandling: '',
+      incorporationCert: 'trade-licence.pdf', addressProof: ''
+    },
+    maple: {
+      signatoryName: 'Claire Tremblay', designation: 'President',
+      legalCompanyName: 'Maple Studios Inc', entityType: 'Federal Corporation',
+      industry: 'Media & Entertainment', teamSize: '11–50', countryOfIncorporation: 'Canada',
+      companyWebsite: 'https://maplestudios.ca',
+      registrationNo: 'Corporation No. 1234567-8', taxId: 'BN 123456789 RC0001',
+      incorporationDate: '22 Jul 2017', registeredAddress: '1200 Rue Sainte-Catherine O, Montréal, QC H3B 1A4',
+      uboName: 'Claire Tremblay (55%), Daniel Roy (45%)', uboHolding: '55% / 45%', uboIdDoc: 'shareholder-ledger.pdf',
+      bankName: 'Royal Bank of Canada', accountHolder: 'Maple Studios Inc', payoutCurrency: 'CAD',
+      regulatoryLicenses: ['None applicable'], dataHandling: 'PIPEDA-compliant',
+      incorporationCert: 'certificate-of-incorporation.pdf', addressProof: 'utility-bill.pdf'
+    },
+    orchid: {
+      signatoryName: 'Wei Lin Tan', designation: 'Director',
+      legalCompanyName: 'Orchid Media Pte Ltd', entityType: 'Private Limited Company',
+      industry: 'Marketing & Media', teamSize: '11–50', countryOfIncorporation: 'Singapore',
+      companyWebsite: 'https://orchidmedia.sg',
+      registrationNo: 'UEN 201812345K', taxId: 'GST M9-1234567-8',
+      incorporationDate: '11 Apr 2018', registeredAddress: '8 Marina Blvd, #05-02, Singapore 018981',
+      uboName: 'Wei Lin Tan (51%), Investment Holdings Pte Ltd (49%)', uboHolding: '51% / 49%', uboIdDoc: 'shareholder-register.pdf',
+      bankName: 'DBS Bank', accountHolder: 'Orchid Media Pte Ltd', payoutCurrency: 'SGD',
+      regulatoryLicenses: ['None applicable'], dataHandling: 'PDPA-compliant',
+      incorporationCert: 'acra-bizfile.pdf', addressProof: 'tenancy-agreement.pdf'
+    }
+  };
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function isEmpty(v) { return v === undefined || v === null || v === '' || (Array.isArray(v) && v.length === 0); }
+
+  function renderField(f, v) {
+    if (isEmpty(v)) {
+      return '<div class="field-value missing"><i class="ph ph-warning-circle"></i> Not provided</div>';
+    }
+    if (f.kind === 'url') {
+      return '<div class="field-value"><a href="' + esc(v) + '" target="_blank" rel="noopener">' + esc(v) + '</a></div>';
+    }
+    if (f.kind === 'file') {
+      return '<div class="field-value"><span class="field-file"><i class="ph ph-paperclip"></i> ' + esc(v) + '</span></div>';
+    }
+    if (f.kind === 'multi') {
+      return '<div class="field-value"><div class="chip-list">' +
+        v.map(function (x) { return '<span class="chip">' + esc(x) + '</span>'; }).join('') + '</div></div>';
+    }
+    return '<div class="field-value">' + esc(v) + '</div>';
+  }
+
+  function openDetail(id) {
+    var data = ONBOARDING[id];
+    var c = CLIENTS[id];
+    if (!data || !c) return;
+    var row = document.querySelector('#rows tr[data-id="' + id + '"]');
+    var av = row.querySelector('.avatar');
+    var pill = row.querySelector('.pill');
+
+    var dvAvatar = document.getElementById('dvAvatar');
+    dvAvatar.textContent = av.textContent;
+    dvAvatar.style.background = av.style.background;
+    document.getElementById('dvName').textContent = c.name;
+    document.getElementById('dvSub').textContent = c.meta;
+    document.getElementById('dvSignatory').innerHTML =
+      'Signed by <strong>' + esc(data.signatoryName || '—') + '</strong>' +
+      (data.designation ? ', ' + esc(data.designation) : '');
+    var dvStatus = document.getElementById('dvStatus');
+    dvStatus.className = pill.className;
+    dvStatus.textContent = pill.textContent;
+    document.getElementById('dvReportBtn').onclick = function () { openAi(id); };
+
+    var html = SECTION_DEFS.map(function (sec) {
+      var missing = 0;
+      var rows = sec.fields.map(function (f) {
+        var v = data[f.k];
+        if (isEmpty(v)) missing++;
+        return '<div class="field-row"><div class="field-label">' + esc(f.l) + '</div>' +
+          renderField(f, v) + '</div>';
+      }).join('');
+      var pillHtml = missing > 0
+        ? '<span class="missing-pill"><i class="ph ph-warning-circle"></i> ' + missing + ' missing</span>'
+        : '<span class="complete-pill"><i class="ph ph-check-circle"></i> Complete</span>';
+      return '<div class="detail-section">' +
+        '<div class="detail-section-head"><div class="detail-section-title">' + esc(sec.title) + '</div>' +
+        pillHtml + '</div><div class="field-grid">' + rows + '</div></div>';
+    }).join('');
+    document.getElementById('dvSections').innerHTML = html;
+
+    document.body.classList.add('detail-open');
+    window.scrollTo(0, 0);
+  }
+
+  function backToList() {
+    document.body.classList.remove('detail-open');
+  }
+
   var currentId = null;
 
   function openAi(id) {
@@ -679,16 +965,18 @@
 
   function verifyClient() {
     if (!currentId) return;
-    var row = document.querySelector('#rows tr[data-id="' + currentId + '"]');
+    var id = currentId;
+    var row = document.querySelector('#rows tr[data-id="' + id + '"]');
     if (row) {
       row.setAttribute('data-status', 'verified');
       var pill = row.querySelector('.pill');
       pill.className = 'pill verified';
       pill.textContent = 'Verified';
     }
-    CLIENTS[currentId].verified = true;
+    CLIENTS[id].verified = true;
     closeAi();
     applyFilters();
+    if (document.body.classList.contains('detail-open')) openDetail(id);
   }
 
   function requestInfo() {
