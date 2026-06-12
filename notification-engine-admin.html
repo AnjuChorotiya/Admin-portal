@@ -173,10 +173,7 @@
     font-size: 14px; font-weight: 500;
     appearance: none; cursor: pointer;
   }
-  .select-wrap::after {
-    content: '\25BC'; position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
-    font-size: 9px; color: var(--neutral-500); pointer-events: none;
-  }
+  /* wm-select carries its own chevron via background-image; no ::after needed. */
   .chip {
     height: 32px; padding: 0 12px;
     display: inline-flex; align-items: center; gap: 6px;
@@ -1174,18 +1171,17 @@
           </div>
         </div>
         <div style="display:flex; gap:8px;">
-          <button class="btn btn-primary" onclick="newRule()"><i class="ph ph-plus"></i> New rule</button>
+          <button class="wm-btn wm-btn--primary" onclick="newRule()"><i class="ph ph-plus"></i> New rule</button>
         </div>
       </div>
 
-      <section class="card">
-        <div class="filter-bar">
-          <div class="search">
-            <i class="ph ph-magnifying-glass"></i>
+      <section class="wm-table-card">
+        <div class="wm-toolbar filter-bar">
+          <div class="wm-search">
             <input id="search-input" type="text" placeholder="Search events or triggers…" />
           </div>
           <div class="select-wrap">
-            <select id="module-select" class="select">
+            <select id="module-select" class="wm-select">
               <option value="">All modules</option>
               <option>Employees</option>
               <option>Payroll</option>
@@ -1200,7 +1196,7 @@
             </select>
           </div>
           <div class="select-wrap">
-            <select id="audience-select" class="select">
+            <select id="audience-select" class="wm-select">
               <option value="">All audiences</option>
               <option value="internal">Internal only</option>
               <option value="client">Client only</option>
@@ -1210,7 +1206,7 @@
             </select>
           </div>
           <div class="select-wrap">
-            <select id="team-select" class="select">
+            <select id="team-select" class="wm-select">
               <option value="">All teams</option>
               <option value="cs">Customer Success</option>
               <option value="cf">Customer Finance</option>
@@ -1219,7 +1215,7 @@
             </select>
           </div>
           <div class="filter-spacer"></div>
-          <button class="btn btn-ghost" id="reset-filters-btn" onclick="resetFilters()" style="display:none;">
+          <button class="wm-btn wm-btn--ghost" id="reset-filters-btn" onclick="resetFilters()" style="display:none;">
             <i class="ph ph-arrow-counter-clockwise"></i> Reset
           </button>
         </div>
@@ -1296,18 +1292,17 @@
           </div>
         </div>
         <div style="display:flex; gap:8px;">
-          <button class="btn btn-secondary" onclick="exportInbox()"><i class="ph ph-download-simple"></i> Export</button>
+          <button class="wm-btn wm-btn--outline" onclick="exportInbox()"><i class="ph ph-download-simple"></i> Export</button>
         </div>
       </div>
 
-      <section class="card">
-        <div class="filter-bar">
-          <div class="search">
-            <i class="ph ph-magnifying-glass"></i>
+      <section class="wm-table-card">
+        <div class="wm-toolbar filter-bar">
+          <div class="wm-search">
             <input id="inbox-search-input" type="text" placeholder="Search event, recipient, or client…" />
           </div>
           <div class="select-wrap">
-            <select id="inbox-range-select" class="select">
+            <select id="inbox-range-select" class="wm-select">
               <option value="">All time</option>
               <option value="today">Today</option>
               <option value="7d">Last 7 days</option>
@@ -1315,7 +1310,7 @@
             </select>
           </div>
           <div class="select-wrap">
-            <select id="inbox-module-select" class="select">
+            <select id="inbox-module-select" class="wm-select">
               <option value="">All modules</option>
               <option>Employees</option>
               <option>Payroll</option>
@@ -1327,7 +1322,7 @@
             </select>
           </div>
           <div class="select-wrap">
-            <select id="inbox-audience-select" class="select">
+            <select id="inbox-audience-select" class="wm-select">
               <option value="">All recipients</option>
               <option value="internal">Internal team</option>
               <option value="client">Client</option>
@@ -1337,12 +1332,12 @@
             </select>
           </div>
           <div class="select-wrap">
-            <select id="inbox-member-select" class="select">
+            <select id="inbox-member-select" class="wm-select">
               <option value="">All team members</option>
             </select>
           </div>
           <div class="filter-spacer"></div>
-          <button class="btn btn-ghost" id="reset-inbox-btn" onclick="resetInboxFilters()" style="display:none;">
+          <button class="wm-btn wm-btn--ghost" id="reset-inbox-btn" onclick="resetInboxFilters()" style="display:none;">
             <i class="ph ph-arrow-counter-clockwise"></i> Reset
           </button>
         </div>
@@ -1386,7 +1381,7 @@
     <div class="field-row">
       <label class="field-label">Module</label>
       <div class="select-wrap" style="width:100%;">
-        <select id="new-rule-module" class="select" style="width:100%;">
+        <select id="new-rule-module" class="wm-select" style="width:100%;">
           <option value="">Pick a module…</option>
           <option value="__new__">+ Create new module…</option>
         </select>
@@ -1441,8 +1436,8 @@
   </div>
 
   <div class="modal-footer">
-    <button class="btn btn-ghost" onclick="hideNewRuleModal()">Cancel</button>
-    <button class="btn btn-primary" onclick="createNewRule()"><i class="ph ph-check"></i> Create rule</button>
+    <button class="wm-btn wm-btn--ghost" onclick="hideNewRuleModal()">Cancel</button>
+    <button class="wm-btn wm-btn--primary" onclick="createNewRule()"><i class="ph ph-check"></i> Create rule</button>
   </div>
 </div>
 
@@ -1654,7 +1649,7 @@
             <i class="ph ph-bell-slash"></i>
             <h4>No events match these filters</h4>
             <p>Try clearing filters or creating a new rule.</p>
-            <button class="btn btn-secondary" onclick="resetFilters()"><i class="ph ph-arrow-counter-clockwise"></i> Reset filters</button>
+            <button class="wm-btn wm-btn--outline" onclick="resetFilters()"><i class="ph ph-arrow-counter-clockwise"></i> Reset filters</button>
           </div>
         </td></tr>`;
       return;
@@ -2270,7 +2265,7 @@
             <i class="ph ph-tray"></i>
             <h4>No notifications match these filters</h4>
             <p>Try clearing filters or widening the date range.</p>
-            <button class="btn btn-secondary" onclick="resetInboxFilters()"><i class="ph ph-arrow-counter-clockwise"></i> Reset filters</button>
+            <button class="wm-btn wm-btn--outline" onclick="resetInboxFilters()"><i class="ph ph-arrow-counter-clockwise"></i> Reset filters</button>
           </div>
         </td></tr>`;
       return;
@@ -2679,8 +2674,8 @@
       </div>
 
       <div class="tpl-editor-footer">
-        <button class="btn btn-secondary" onclick="testSendTemplate()"><i class="ph ph-paper-plane-tilt"></i> Send test</button>
-        <button class="btn btn-primary" onclick="saveTemplate()"><i class="ph ph-check"></i> Save changes</button>
+        <button class="wm-btn wm-btn--outline" onclick="testSendTemplate()"><i class="ph ph-paper-plane-tilt"></i> Send test</button>
+        <button class="wm-btn wm-btn--primary" onclick="saveTemplate()"><i class="ph ph-check"></i> Save changes</button>
         <div class="meta">
           <span class="ok"><i class="ph ph-check-circle"></i> Saved 2 days ago</span>
         </div>
