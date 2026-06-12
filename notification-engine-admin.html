@@ -1145,11 +1145,14 @@
               <option value="mixed">Mixed</option>
             </select>
           </div>
-          <div style="display:flex; gap:6px;">
-            <button class="chip active" data-team="cs"><span class="chip-dot"></span> Customer Success</button>
-            <button class="chip active" data-team="cf"><span class="chip-dot"></span> Customer Finance</button>
-            <button class="chip active" data-team="hr"><span class="chip-dot"></span> HR Ops</button>
-            <button class="chip active" data-team="sales"><span class="chip-dot"></span> Sales</button>
+          <div class="select-wrap">
+            <select id="team-select" class="select">
+              <option value="">All teams</option>
+              <option value="cs">Customer Success</option>
+              <option value="cf">Customer Finance</option>
+              <option value="hr">HR Ops</option>
+              <option value="sales">Sales</option>
+            </select>
           </div>
           <div class="filter-spacer"></div>
           <button class="btn btn-ghost" id="reset-filters-btn" onclick="resetFilters()" style="display:none;">
@@ -1517,7 +1520,7 @@
   const internalKeys = ['cs','cf','hr','sales'];
   const externalKeys = ['client','employee','contractor','freelancer','manager'];
 
-  const filters = { search:'', module:'', audience:'', teams:{ cs:true, cf:true, hr:true, sales:true } };
+  const filters = { search:'', module:'', audience:'', team:'' };
 
   function computeAudience(item) {
     const r = item.routing;
@@ -1553,7 +1556,6 @@
 
   function filteredEvents() {
     const s = filters.search.trim().toLowerCase();
-    const activeTeams = Object.entries(filters.teams).filter(([_,v]) => v).map(([k]) => k);
     return allEvents().filter(ev => {
       if (s) {
         const hay = `${ev.name} ${ev.trigger} ${ev.module}`.toLowerCase();
@@ -1561,10 +1563,9 @@
       }
       if (filters.module && ev.module !== filters.module) return false;
       if (filters.audience && computeAudience(ev) !== filters.audience) return false;
-      const audience = computeAudience(ev);
-      if (audience === 'internal' || audience === 'mixed') {
-        const involves = activeTeams.some(t => ev.routing[t] === 'P' || ev.routing[t] === 'I');
-        if (!involves) return false;
+      if (filters.team) {
+        const r = ev.routing[filters.team];
+        if (r !== 'P' && r !== 'I') return false;
       }
       return true;
     });
@@ -1578,7 +1579,7 @@
     document.getElementById('defaults-count').textContent = totalEvents;
 
     const resetBtn = document.getElementById('reset-filters-btn');
-    const dirty = filters.search || filters.module || filters.audience || Object.values(filters.teams).some(v => !v);
+    const dirty = filters.search || filters.module || filters.audience || filters.team;
     if (resetBtn) resetBtn.style.display = dirty ? 'inline-flex' : 'none';
 
     if (list.length === 0) {
@@ -1636,21 +1637,13 @@
   document.getElementById('search-input').addEventListener('input', e => { filters.search = e.target.value; renderEvents(); });
   document.getElementById('module-select').addEventListener('change', e => { filters.module = e.target.value; renderEvents(); });
   document.getElementById('audience-select').addEventListener('change', e => { filters.audience = e.target.value; renderEvents(); });
-  document.querySelectorAll('.chip[data-team]').forEach(chip => {
-    chip.addEventListener('click', () => {
-      const team = chip.dataset.team;
-      filters.teams[team] = !filters.teams[team];
-      chip.classList.toggle('active');
-      renderEvents();
-    });
-  });
+  document.getElementById('team-select').addEventListener('change',     e => { filters.team     = e.target.value; renderEvents(); });
   function resetFilters() {
-    filters.search = ''; filters.module = ''; filters.audience = '';
-    filters.teams = { cs:true, cf:true, hr:true, sales:true };
+    filters.search = ''; filters.module = ''; filters.audience = ''; filters.team = '';
     document.getElementById('search-input').value = '';
     document.getElementById('module-select').value = '';
     document.getElementById('audience-select').value = '';
-    document.querySelectorAll('#view-defaults .chip[data-team]').forEach(c => c.classList.add('active'));
+    document.getElementById('team-select').value = '';
     renderEvents();
     toast({ title:'Filters reset', body:'Showing all rules.', type:'success' });
   }
