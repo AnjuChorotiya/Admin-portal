@@ -5,7 +5,7 @@ Master index of designed pages and their GitHub hosting. Update this whenever a 
 **Last verified:** 2026-06-09 — all live-preview links below return HTTP 200.
 
 ## Wisemonk UI — Universal Design System
-The shared, framework-free design system for **every** Wisemonk project — design tokens, components, and behaviors in plain HTML/CSS/JS (no build step). CSS classes prefixed `wm-`, tokens `--wm-`, JS global `WMUI`. Follows the official palette (Satoshi + Open Sans Light type; Iconsax Vuesax linear icons). Source lives in the Client-freelancer repo under `wisemonk-ui/`. **Current version: `v1.1.0`** — see the [CHANGELOG](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/wisemonk-ui/CHANGELOG.md).
+The shared, framework-free design system for **every** Wisemonk project — design tokens, components, and behaviors in plain HTML/CSS/JS (no build step). CSS classes prefixed `wm-`, tokens `--wm-`, JS global `WMUI`. Follows the official palette (Satoshi + Open Sans Light type; Iconsax Vuesax linear icons). Source lives in the Client-freelancer repo under `wisemonk-ui/`. **Current version: `v1.2.0`** — see the [CHANGELOG](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/wisemonk-ui/CHANGELOG.md).
 
 | Page | Source | Live Preview | Docs |
 |---|---|---| --- |
@@ -119,6 +119,7 @@ Dated log of registry changes (pages added, removed, renamed, promoted). Newest 
 
 | Date | Version | Change |
 |---|---|---|
+| 2026-06-12 | UI v1.2.0 | Aligned the Wisemonk UI app shell with the **live freelancer portal** — added collapsible nav groups (`.wm-nav-chev` + `.wm-nav-children`) and a header **user chip** (`.wm-appbar-user`). Bumped to v1.2.0. |
 | 2026-06-12 | UI v1.1.0 | Added an **app shell** to Wisemonk UI — a header (`.wm-appbar`) and collapsible left **sidebar navigation** (`.wm-sidebar`: icon-rail collapse + off-canvas mobile drawer, single-active items, badges, user footer). Bumped the design system to v1.1.0. |
 | 2026-06-12 | — | Moved **client-verification.html** from Client-freelancer to **Admin-portal** — client verification is an internal admin task; rebuilt on the admin portal chrome (Phosphor icons, shared tokens) with the sidebar linked to Form 16 & Notification engine. Removed the page and its tab from the client/freelancer portal. |
 | 2026-06-12 | — | Added **client-verification.html** to Client-freelancer — an admin dashboard to review/verify client onboarding submissions before activation (status + risk filters, simulated AI risk-report modal). |
