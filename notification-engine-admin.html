@@ -448,6 +448,40 @@
   .menu-item.selected .menu-check { opacity: 1; }
   .menu-empty { padding: 14px; text-align: center; color: var(--neutral-500); font-size: 13px; }
 
+  /* ========== Row action (three-dots) menu ========== */
+  .row-action-cell { width: 48px; text-align: center; }
+  .row-action-btn {
+    width: 30px; height: 30px; border-radius: 8px;
+    display: inline-grid; place-items: center;
+    color: var(--neutral-500); font-size: 18px;
+    transition: all 120ms ease;
+  }
+  .row-action-btn:hover,
+  .row-action-btn.active { background: var(--neutral-100); color: var(--neutral-800); }
+  .row-action-menu {
+    position: fixed; z-index: 300;
+    min-width: 204px;
+    background: var(--neutral-0);
+    border: 1px solid var(--border-strong);
+    border-radius: 10px;
+    box-shadow: 0 12px 32px rgba(18,22,32,0.16);
+    padding: 6px;
+    display: none;
+  }
+  .row-action-menu.open { display: block; }
+  .row-action-menu button {
+    display: flex; align-items: center; gap: 10px; width: 100%;
+    padding: 9px 10px; border-radius: 7px;
+    font-size: 13px; font-weight: 500; color: var(--neutral-700);
+    text-align: left;
+  }
+  .row-action-menu button:hover { background: var(--neutral-50); color: var(--neutral-900); }
+  .row-action-menu button i { font-size: 16px; color: var(--neutral-500); }
+  .row-action-menu button.danger { color: var(--danger-700); }
+  .row-action-menu button.danger i { color: var(--danger-500); }
+  .row-action-menu button.danger:hover { background: var(--danger-50); }
+  .row-action-menu .menu-sep { height: 1px; background: var(--border); margin: 6px 4px; }
+
   /* ========== Table footer ========== */
   .table-footer {
     padding: 12px 20px;
@@ -1170,6 +1204,7 @@
                 <th style="width:88px; text-align:center;">HR Ops</th>
                 <th style="width:88px; text-align:center;">Sales</th>
                 <th class="col-ext-start">Recipients</th>
+                <th style="width:48px;"></th>
               </tr>
             </thead>
             <tbody id="rules-body"></tbody>
@@ -1584,7 +1619,7 @@
 
     if (list.length === 0) {
       tbody.innerHTML = `
-        <tr><td colspan="6">
+        <tr><td colspan="7">
           <div class="empty-state">
             <i class="ph ph-bell-slash"></i>
             <h4>No events match these filters</h4>
@@ -1629,6 +1664,11 @@
         </td>
         ${internalKeys.map(t => chipCell(ev, t)).join('')}
         ${recipientsCell(ev)}
+        <td class="row-action-cell">
+          <button class="row-action-btn" title="More actions" onclick="openRowMenu(event, '${ev.name.replace(/'/g, "\\'")}')">
+            <i class="ph ph-dots-three-vertical"></i>
+          </button>
+        </td>
       </tr>
     `).join('');
   }
@@ -1814,7 +1854,111 @@
     menuEl.style.top  = `${top}px`;
   }
 
-  function closeAllMenus() { /* nothing to close yet — placeholder for future menus */ }
+  /* =============================================================
+     ROW ACTION (three-dots) MENU
+     ============================================================= */
+  let rowMenuEvent = null;
+  let rowMenuBtn = null;
+
+  function getRowActionMenu() {
+    let menu = document.getElementById('row-action-menu');
+    if (menu) return menu;
+    menu = document.createElement('div');
+    menu.id = 'row-action-menu';
+    menu.className = 'row-action-menu';
+    menu.innerHTML =
+      '<button onclick="editRule()"><i class="ph ph-pencil-simple"></i> Edit rule</button>' +
+      '<button onclick="duplicateRule()"><i class="ph ph-copy"></i> Duplicate rule</button>' +
+      '<button onclick="testEvent()"><i class="ph ph-paper-plane-tilt"></i> Send test notification</button>' +
+      '<div class="menu-sep"></div>' +
+      '<button class="danger" onclick="deleteRule()"><i class="ph ph-trash"></i> Delete rule</button>';
+    document.body.appendChild(menu);
+    return menu;
+  }
+
+  function openRowMenu(e, eventName) {
+    e.stopPropagation();
+    const menu = getRowActionMenu();
+    const btn = e.currentTarget;
+    // Toggle off if same row clicked again
+    if (menu.classList.contains('open') && rowMenuEvent === eventName) {
+      closeAllMenus();
+      return;
+    }
+    closeAllMenus();
+    rowMenuEvent = eventName;
+    rowMenuBtn = btn;
+    btn.classList.add('active');
+
+    // Show first to measure, then position (right-aligned under the button)
+    menu.classList.add('open');
+    const r = btn.getBoundingClientRect();
+    const mw = menu.offsetWidth;
+    const mh = menu.offsetHeight;
+    let left = r.right - mw;
+    let top = r.bottom + 6;
+    if (left + mw > window.innerWidth - 8) left = window.innerWidth - mw - 8; // keep right edge on-screen
+    if (left < 8) left = 8;
+    if (top + mh > window.innerHeight - 8) top = r.top - mh - 6; // flip up if no room
+    menu.style.left = left + 'px';
+    menu.style.top = top + 'px';
+  }
+
+  function closeAllMenus() {
+    const menu = document.getElementById('row-action-menu');
+    if (menu) menu.classList.remove('open');
+    if (rowMenuBtn) rowMenuBtn.classList.remove('active');
+    rowMenuBtn = null;
+    rowMenuEvent = null;
+  }
+
+  // Dismiss the menu on outside click, scroll or Escape
+  document.addEventListener('click', e => {
+    const menu = document.getElementById('row-action-menu');
+    if (menu && menu.classList.contains('open') && !menu.contains(e.target)) closeAllMenus();
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAllMenus(); });
+  window.addEventListener('scroll', () => closeAllMenus(), true);
+
+  function editRule() {
+    const ev = rowMenuEvent && findEvent(rowMenuEvent);
+    closeAllMenus();
+    if (!ev) return;
+    toast({ title:'Edit rule', body:`Opening the editor for “${ev.name}”.`, type:'info' });
+  }
+
+  function duplicateRule() {
+    const name = rowMenuEvent;
+    closeAllMenus();
+    if (!name) return;
+    const mod = modules.find(m => m.events.some(e => e.name === name));
+    const src = mod && mod.events.find(e => e.name === name);
+    if (!mod || !src) return;
+    const copy = { ...src, name: src.name + ' (copy)', routing: { ...src.routing } };
+    const idx = mod.events.indexOf(src);
+    mod.events.splice(idx + 1, 0, copy);
+    renderEvents();
+    toast({ title:'Rule duplicated', body:`“${copy.name}” added to ${mod.name}.`, type:'success' });
+  }
+
+  function testEvent() {
+    const ev = rowMenuEvent && findEvent(rowMenuEvent);
+    closeAllMenus();
+    if (!ev) return;
+    toast({ title:'Test notification sent', body:`A sample “${ev.name}” notification was dispatched to the configured recipients.`, type:'success' });
+  }
+
+  function deleteRule() {
+    const name = rowMenuEvent;
+    closeAllMenus();
+    if (!name) return;
+    const mod = modules.find(m => m.events.some(e => e.name === name));
+    const src = mod && mod.events.find(e => e.name === name);
+    if (!mod || !src) return;
+    mod.events.splice(mod.events.indexOf(src), 1);
+    renderEvents();
+    toast({ title:'Rule deleted', body:`“${name}” was removed from ${mod.name}.`, type:'warning' });
+  }
 
   /* =============================================================
      TOAST
