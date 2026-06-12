@@ -48,9 +48,10 @@ Purpose and flow for each screen in this repo. Live pages:
 1. A left sidebar (**Operations**) links across the admin pages — **Client verification** (active), **Form 16**, and **Notification engine**.
 2. The header offers a **Run AI check again** action and shows when all clients were last re-screened.
 3. Four stat cards summarise the queue — **Total clients**, **Pending review**, **Verified**, and **High risk** — each clickable to filter the table; the Total card resets all filters.
-4. A submissions table lists each client with columns **Client** (company + legal name), **Country**, **Required info** (Complete / Missing UBO etc.), **AI risk** (Low / Medium / High pill), **Submitted**, **Status** (Pending / Verified / Needs review), and a **View report** action.
+4. A submissions table lists each client with columns **Client** (company + legal name), **Country**, **AI risk** (Low / Medium / High pill), **Submitted**, **Status** (Pending / Verified / Needs review), and a **View report** action.
 5. The table is filterable by free-text search (company, legal name, country) and by **Status** and **Risk** dropdowns; a **Clear filters** control appears while any filter is active.
-6. **View report** opens an AI verification modal with per-check results (legal entity, beneficial ownership, sanctions & PEP, tax registration, adverse media), each marked pass / warn / flag with detail. From the modal the admin can **Request more info** or **Mark as verified** (disabled when already verified).
+6. **Clicking a client row** opens an onboarding detail view: a back link ("All submissions"), a summary card (company, country/submitted meta, signatory line, status pill, **AI report** action), and field sections — **Signatory & organization**, **Tax & registration**, **Beneficial ownership**, **Banking & payout**, **Compliance & documents** — each rendered as label/value rows with file, URL and chip values, and a per-section **Complete** / **N missing** pill (missing fields show "Not provided").
+7. **View report** (table button or the detail view's **AI report** action) opens an AI verification modal with per-check results (legal entity, beneficial ownership, sanctions & PEP, tax registration, adverse media), each marked pass / warn / flag with detail. From the modal the admin can **Request more info** or **Mark as verified** (disabled when already verified).
 
 **Validations:**
 - No form inputs — this is a review surface. Filters are non-blocking; an empty-result state is shown when no rows match.
