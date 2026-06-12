@@ -201,19 +201,27 @@
     display: flex; align-items: flex-start; gap: 12px;
   }
   .event-module-tag {
-    display: inline-flex; align-items: center; gap: 5px;
+    display: inline-block;
     flex-shrink: 0;
     padding: 4px 9px;
     border-radius: 6px;
-    background: var(--primary-50);
-    color: var(--primary-700);
     font-family: 'Open Sans', sans-serif;
     font-weight: 300; font-size: 11px;
     text-transform: uppercase; letter-spacing: 0.4px;
     margin-top: 2px;
     align-self: flex-start;
+    background: var(--neutral-100);
+    color: var(--neutral-700);
+    min-width: 92px;
+    text-align: center;
   }
-  .event-module-tag i { font-size: 12px; }
+  .event-module-tag.mod-employees   { background: #E8F2FF; color: #1059BD; }
+  .event-module-tag.mod-payroll     { background: #FFF4E5; color: #B54708; }
+  .event-module-tag.mod-invoicing   { background: #F2EBFF; color: #5A3FD6; }
+  .event-module-tag.mod-compliance  { background: #FFE9E8; color: #B42318; }
+  .event-module-tag.mod-leaves      { background: #E6F9F0; color: #027A48; }
+  .event-module-tag.mod-contractors { background: #FFF7E1; color: #8A4400; }
+  .event-module-tag.mod-account     { background: #E8E9FF; color: #2A1F8C; }
   .event-cell-text { min-width: 0; flex: 1; }
 
   /* Module row (legacy — kept for any leftover references, safe to remove later) */
@@ -543,6 +551,11 @@
     padding: 4px 0;
   }
   .route-check-item .route-checkbox { flex-shrink: 0; }
+  .modal-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 4px -22px 4px;
+  }
 
   /* ========== Toast ========== */
   .toast-host {
@@ -1147,11 +1160,6 @@
         <div class="table-wrap">
           <table>
             <thead>
-              <tr class="group-row">
-                <th colspan="1"></th>
-                <th colspan="4" class="group-internal">Internal teams</th>
-                <th colspan="1">External recipients</th>
-              </tr>
               <tr>
                 <th>Event</th>
                 <th style="width:88px; text-align:center;">CS</th>
@@ -1340,7 +1348,22 @@
         <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>HR Ops</span></label>
         <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>Sales</span></label>
       </div>
-      <div class="field-hint">External recipients (Client, Employee, Contractor, Manager) are configured automatically by the engine based on the event type.</div>
+      <div class="field-hint">External recipients (Client, Employee, Contractor, Manager) are configured automatically by the engine.</div>
+    </div>
+
+    <div class="modal-divider"></div>
+
+    <div class="field-row">
+      <label class="field-label">Notification template</label>
+      <div class="field-hint" style="margin-top:0; margin-bottom:10px;">Write the message recipients will see. You can fine-tune per recipient type in the Templates tab later.</div>
+
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <input class="tpl-input" id="new-rule-subject" type="text" placeholder="Subject — e.g. ⚠️ {client} — payslip ready" />
+        <textarea class="tpl-textarea" id="new-rule-body" rows="3" placeholder="Body — e.g. The payslip for {month} is ready to download for {employee}."></textarea>
+        <input class="tpl-input" id="new-rule-cta" type="text" placeholder="CTA — e.g. Download payslip" style="max-width:280px;" />
+      </div>
+
+      <div class="field-hint">Use <code class="inline-code">{client}</code>, <code class="inline-code">{employee}</code>, <code class="inline-code">{amount}</code>, etc. to interpolate event data. Leave blank to author copy later in the Templates tab.</div>
     </div>
   </div>
 
@@ -1582,11 +1605,13 @@
       return `<td class="col-ext-start"><div class="recipient-tags">${tags}</div></td>`;
     };
 
+    const moduleSlug = (name) => name.toLowerCase().replace(/\s+/g, '-');
+
     tbody.innerHTML = list.map(ev => `
       <tr>
         <td>
           <div class="event-cell">
-            <span class="event-module-tag" title="Module"><i class="ph ${ev.icon}"></i>${ev.module}</span>
+            <span class="event-module-tag mod-${moduleSlug(ev.module)}" title="Module">${ev.module}</span>
             <div class="event-cell-text">
               <span class="event-name">${ev.name}</span>
               <span class="event-trigger">${ev.trigger}</span>
@@ -1635,6 +1660,9 @@
     document.getElementById('new-rule-trigger').value = '';
     document.getElementById('new-module-name').value = '';
     document.getElementById('new-module-name-row').style.display = 'none';
+    document.getElementById('new-rule-subject').value = '';
+    document.getElementById('new-rule-body').value = '';
+    document.getElementById('new-rule-cta').value = '';
 
     // Reset internal-team checkboxes to a sensible default
     const ruleKeys = ['cs','cf','hr','sales'];
@@ -1719,6 +1747,16 @@
       module: mod.name,
       icon: mod.icon,
     });
+
+    // If the user filled in template copy, register it under the 'internal' recipient
+    // (the most common variant). They can fine-tune per recipient type in the Templates tab.
+    const subject = document.getElementById('new-rule-subject').value.trim();
+    const body    = document.getElementById('new-rule-body').value.trim();
+    const cta     = document.getElementById('new-rule-cta').value.trim();
+    if (subject || body || cta) {
+      if (!eventCopy[eventName]) eventCopy[eventName] = {};
+      eventCopy[eventName].internal = [subject, body, cta];
+    }
 
     renderEvents();
     renderTemplatesEventList(document.getElementById('tpl-search-input').value);
