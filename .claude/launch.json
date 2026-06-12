@@ -1,0 +1,33 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "static-server",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "."],
+      "port": 3000,
+      "autoPort": true
+    },
+    {
+      "name": "static-py",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "3005"],
+      "port": 3005,
+      "autoPort": true
+    },
+    {
+      "name": "contractor-legal-ai",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "contractor-legal-ai/frontend"],
+      "port": 3001,
+      "autoPort": true
+    },
+    {
+      "name": "eor",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "EOR"],
+      "port": 3002,
+      "autoPort": true
+    }
+  ]
+}

@@ -1,5 +1,7 @@
-// Build an encrypted, password-gated registry.html from PAGES.html.
-// Usage: node _build_registry.js <password> <outfile>
+// Build an encrypted, password-gated registry.html.
+// PAGES.md is the single source of truth: its content is mirrored into the
+// local PAGES.html viewer's <script id="md"> block (keeping them in sync), then
+// encrypted into the published registry. Usage: node build-registry.js <password> <outfile>
 const fs = require('fs');
 const crypto = require('crypto');
 
@@ -7,12 +9,18 @@ const password = process.argv[2];
 const outfile = process.argv[3];
 if (!password || !outfile) { console.error('need password + outfile'); process.exit(1); }
 
+// 0. PAGES.md is canonical — mirror it into PAGES.html so the viewer never drifts.
+const md = '\n' + fs.readFileSync('PAGES.md', 'utf8').replace(/\s*$/, '') + '\n';
 let html = fs.readFileSync('PAGES.html', 'utf8');
-
-// 1. Extract the markdown payload.
-const m = html.match(/<script id="md" type="text\/plain">([\s\S]*?)<\/script>/);
-if (!m) { console.error('md block not found'); process.exit(1); }
-const md = m[1];
+if (!/<script id="md" type="text\/plain">[\s\S]*?<\/script>/.test(html)) {
+  console.error('md block not found in PAGES.html'); process.exit(1);
+}
+const syncedHtml = html.replace(
+  /<script id="md" type="text\/plain">[\s\S]*?<\/script>/,
+  '<script id="md" type="text/plain">' + md + '</script>'
+);
+if (syncedHtml !== html) { fs.writeFileSync('PAGES.html', syncedHtml); console.log('synced PAGES.html <- PAGES.md'); }
+html = syncedHtml;
 
 // 2. Encrypt with PBKDF2-SHA256 -> AES-256-GCM (Web Crypto compatible).
 const salt = crypto.randomBytes(16);
