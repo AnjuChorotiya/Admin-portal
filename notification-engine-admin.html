@@ -2850,25 +2850,28 @@
     }
   });
 
-  // Apply to every static wm-select in the page
-  document.querySelectorAll('select.wm-select').forEach(enhanceSelectAsDropdown);
+  // Run our dropdown enhancement AFTER wisemonk-ui.js's init, otherwise
+  // both libraries bind click handlers to the same .wm-dropdown elements
+  // and the trigger toggle ends up cancelled out. Defer to the next
+  // microtask after DOMContentLoaded so wisemonk-ui (deferred script)
+  // has already run its $all('.wm-dropdown').forEach(initDropdown).
+  function enhanceAllSelects() {
+    document.querySelectorAll('select.wm-select').forEach(enhanceSelectAsDropdown);
 
-  // Hook into modal/inbox flows that rebuild select options dynamically
-  // so the dropdown menu stays in sync.
-  const moduleSelectInModal = document.getElementById('new-rule-module');
-  if (moduleSelectInModal) {
-    // Observe attribute / child changes via MutationObserver
-    const obs = new MutationObserver(() => {
-      if (moduleSelectInModal._wmRebuild) moduleSelectInModal._wmRebuild();
-    });
-    obs.observe(moduleSelectInModal, { childList: true });
+    // Re-build dynamically populated dropdowns when their options change.
+    const moduleSelectInModal = document.getElementById('new-rule-module');
+    if (moduleSelectInModal) {
+      new MutationObserver(() => moduleSelectInModal._wmRebuild?.()).observe(moduleSelectInModal, { childList: true });
+    }
+    const memberSelect = document.getElementById('inbox-member-select');
+    if (memberSelect) {
+      new MutationObserver(() => memberSelect._wmRebuild?.()).observe(memberSelect, { childList: true, subtree: true });
+    }
   }
-  const memberSelect = document.getElementById('inbox-member-select');
-  if (memberSelect) {
-    const obs = new MutationObserver(() => {
-      if (memberSelect._wmRebuild) memberSelect._wmRebuild();
-    });
-    obs.observe(memberSelect, { childList: true, subtree: true });
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(enhanceAllSelects, 0));
+  } else {
+    setTimeout(enhanceAllSelects, 0);
   }
 
   /* =============================================================
