@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" />
 <link rel="stylesheet" href="https://anjuchorotiya.github.io/Client-freelancer/wisemonk-ui/wisemonk-ui.css" />
+<script defer src="https://anjuchorotiya.github.io/Client-freelancer/wisemonk-ui/wisemonk-ui.js"></script>
 <style>
   /* Local tokens aliased from the central Wisemonk UI design system.
      Hex values are identical; sourcing them via --wm-* means upstream
@@ -2746,6 +2747,129 @@
   document.getElementById('tpl-search-input').addEventListener('input', e => {
     renderTemplatesEventList(e.target.value);
   });
+
+  /* =============================================================
+     wm-dropdown enhancement
+     Wraps every native <select class="wm-select"> with a custom
+     wm-dropdown so the open menu is themed by the design system.
+     The native <select> stays in the DOM (hidden) and its 'change'
+     event fires whenever the user picks an item, so existing filter
+     handlers keep working unchanged.
+     ============================================================= */
+  function enhanceSelectAsDropdown(selectEl) {
+    if (!selectEl || selectEl.dataset.wmEnhanced === '1') return;
+    selectEl.dataset.wmEnhanced = '1';
+
+    const dd = document.createElement('div');
+    dd.className = 'wm-dropdown';
+
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.className = 'wm-dd-trigger';
+    const label = document.createElement('span');
+    label.className = 'wm-dd-label';
+    label.textContent = selectEl.options[selectEl.selectedIndex]?.textContent || '';
+    trigger.appendChild(label);
+    trigger.insertAdjacentHTML('beforeend',
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>'
+    );
+    dd.appendChild(trigger);
+
+    const menu = document.createElement('div');
+    menu.className = 'wm-dd-menu';
+    dd.appendChild(menu);
+
+    function rebuildMenu() {
+      menu.innerHTML = '';
+      Array.from(selectEl.children).forEach(child => {
+        if (child.tagName === 'OPTGROUP') {
+          const header = document.createElement('div');
+          header.style.cssText = "font-family:'Open Sans',sans-serif;font-weight:300;font-size:11px;color:var(--wm-text-muted);text-transform:uppercase;letter-spacing:.5px;padding:8px 12px 4px;";
+          header.textContent = child.label;
+          menu.appendChild(header);
+          Array.from(child.children).forEach(opt => appendItem(opt));
+        } else if (child.tagName === 'OPTION') {
+          appendItem(child);
+        }
+      });
+    }
+    function appendItem(opt) {
+      const item = document.createElement('button');
+      item.type = 'button';
+      item.className = 'wm-dd-item' + (opt.value === selectEl.value ? ' selected' : '');
+      item.dataset.value = opt.value;
+      item.dataset.label = opt.textContent;
+      item.innerHTML = `<span>${escapeText(opt.textContent)}</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+      item.addEventListener('click', e => {
+        e.stopPropagation();
+        Array.from(menu.querySelectorAll('.wm-dd-item')).forEach(i => i.classList.remove('selected'));
+        item.classList.add('selected');
+        label.textContent = item.dataset.label;
+        dd.classList.remove('is-open');
+        if (selectEl.value !== item.dataset.value) {
+          selectEl.value = item.dataset.value;
+          selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      });
+      menu.appendChild(item);
+    }
+
+    rebuildMenu();
+    selectEl._wmRebuild = rebuildMenu;
+
+    trigger.addEventListener('click', e => {
+      e.stopPropagation();
+      const wasOpen = dd.classList.contains('is-open');
+      document.querySelectorAll('.wm-dropdown.is-open').forEach(o => o.classList.remove('is-open'));
+      if (!wasOpen) dd.classList.add('is-open');
+    });
+
+    // Insert the dropdown after the select and hide the native control
+    selectEl.parentNode.insertBefore(dd, selectEl.nextSibling);
+    selectEl.style.display = 'none';
+
+    // Keep the visible label in sync if something else changes the select.value programmatically
+    selectEl.addEventListener('change', () => {
+      label.textContent = selectEl.options[selectEl.selectedIndex]?.textContent || '';
+      Array.from(menu.querySelectorAll('.wm-dd-item')).forEach(i => {
+        i.classList.toggle('selected', i.dataset.value === selectEl.value);
+      });
+    });
+  }
+
+  // Close any open wm-dropdown on outside click
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.wm-dropdown')) {
+      document.querySelectorAll('.wm-dropdown.is-open').forEach(o => o.classList.remove('is-open'));
+    }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.wm-dropdown.is-open').forEach(o => o.classList.remove('is-open'));
+    }
+  });
+
+  // Apply to every static wm-select in the page
+  document.querySelectorAll('select.wm-select').forEach(enhanceSelectAsDropdown);
+
+  // Hook into modal/inbox flows that rebuild select options dynamically
+  // so the dropdown menu stays in sync.
+  const moduleSelectInModal = document.getElementById('new-rule-module');
+  if (moduleSelectInModal) {
+    // Observe attribute / child changes via MutationObserver
+    const obs = new MutationObserver(() => {
+      if (moduleSelectInModal._wmRebuild) moduleSelectInModal._wmRebuild();
+    });
+    obs.observe(moduleSelectInModal, { childList: true });
+  }
+  const memberSelect = document.getElementById('inbox-member-select');
+  if (memberSelect) {
+    const obs = new MutationObserver(() => {
+      if (memberSelect._wmRebuild) memberSelect._wmRebuild();
+    });
+    obs.observe(memberSelect, { childList: true, subtree: true });
+  }
 
   /* =============================================================
      INIT
