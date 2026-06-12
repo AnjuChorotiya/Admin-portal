@@ -196,7 +196,27 @@
   thead th.col-ext-start { border-left: 1px solid var(--border); }
   tbody td.col-ext-start { border-left: 1px solid var(--border); }
 
-  /* Module row */
+  /* Event cell (flat layout) */
+  .event-cell {
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .event-module-tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    flex-shrink: 0;
+    padding: 4px 9px;
+    border-radius: 6px;
+    background: var(--primary-50);
+    color: var(--primary-700);
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.4px;
+    margin-top: 2px;
+    align-self: flex-start;
+  }
+  .event-module-tag i { font-size: 12px; }
+  .event-cell-text { min-width: 0; flex: 1; }
+
+  /* Module row (legacy — kept for any leftover references, safe to remove later) */
   tbody tr.module-row { cursor: pointer; }
   tbody tr.module-row:hover { background: var(--neutral-50); }
   .module-header-content {
@@ -315,6 +335,36 @@
   }
   .route-checkbox.checked:hover { background: var(--primary-600); border-color: var(--primary-600); }
   .route-checkbox.checked i { opacity: 1; }
+
+  /* ========== Recipient tags (single-column external recipients) ========== */
+  .recipient-tags {
+    display: inline-flex; gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .rcpt-tag {
+    display: inline-flex; align-items: center;
+    height: 26px; padding: 0 11px;
+    border-radius: 999px;
+    font-size: 11px; font-weight: 700;
+    cursor: pointer; user-select: none;
+    transition: all 120ms ease;
+    border: 1px solid transparent;
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+  }
+  .rcpt-tag.off {
+    background: var(--neutral-100);
+    color: var(--neutral-400);
+    border-color: var(--neutral-200);
+  }
+  .rcpt-tag.off:hover { background: var(--neutral-200); color: var(--neutral-700); border-color: var(--neutral-300); }
+  .rcpt-tag.on {
+    background: var(--primary-500);
+    color: white;
+    border-color: var(--primary-500);
+  }
+  .rcpt-tag.on:hover { background: var(--primary-600); border-color: var(--primary-600); }
 
   /* ========== Generic dropdown menu ========== */
   .menu {
@@ -1095,17 +1145,15 @@
               <tr class="group-row">
                 <th colspan="1"></th>
                 <th colspan="4" class="group-internal">Internal teams</th>
-                <th colspan="3" class="group-external">External recipients</th>
+                <th colspan="1">External recipients</th>
               </tr>
               <tr>
                 <th>Event</th>
-                <th style="width:108px; text-align:center;">CS</th>
-                <th style="width:108px; text-align:center;">CF</th>
-                <th style="width:108px; text-align:center;">HR Ops</th>
-                <th style="width:108px; text-align:center;">Sales</th>
-                <th style="width:108px; text-align:center;" class="col-ext-start">Client</th>
-                <th style="width:108px; text-align:center;">Manager</th>
-                <th style="width:108px; text-align:center;">Worker</th>
+                <th style="width:88px; text-align:center;">CS</th>
+                <th style="width:88px; text-align:center;">CF</th>
+                <th style="width:88px; text-align:center;">HR Ops</th>
+                <th style="width:88px; text-align:center;">Sales</th>
+                <th class="col-ext-start">Recipients</th>
               </tr>
             </thead>
             <tbody id="rules-body"></tbody>
@@ -1375,6 +1423,25 @@
   ];
   const findModule = (name) => modules.find(m => m.name === name);
 
+  // Give each event its own routing (initially copied from the parent module).
+  modules.forEach(m => {
+    m.events.forEach(e => {
+      if (!e.routing) e.routing = { ...m.routing };
+      e.module = m.name;
+      e.icon   = m.icon;
+    });
+  });
+  function allEvents() {
+    return modules.flatMap(m => m.events);
+  }
+  function findEvent(eventName) {
+    for (const m of modules) {
+      const hit = m.events.find(e => e.name === eventName);
+      if (hit) return hit;
+    }
+    return null;
+  }
+
   // Team members per team (used by Inbox member dropdown)
   const team = {
     cs:    [ { id:'u_chandana', name:'Chandana', avatar:'#2684FF' },
@@ -1417,8 +1484,8 @@
 
   const filters = { search:'', module:'', audience:'', teams:{ cs:true, cf:true, hr:true, sales:true } };
 
-  function computeAudience(mod) {
-    const r = mod.routing;
+  function computeAudience(item) {
+    const r = item.routing;
     const hasInternal   = internalKeys.some(k => r[k] === 'P' || r[k] === 'I');
     const hasClient     = r.client     === 'P' || r.client     === 'I';
     const hasEmployee   = r.employee   === 'P' || r.employee   === 'I';
@@ -1449,39 +1516,29 @@
     mixed:      'ph-share-network',
   };
 
-  function filteredModules() {
+  function filteredEvents() {
     const s = filters.search.trim().toLowerCase();
     const activeTeams = Object.entries(filters.teams).filter(([_,v]) => v).map(([k]) => k);
-    return modules.filter(mod => {
-      // Module-name + event search
+    return allEvents().filter(ev => {
       if (s) {
-        const hitModule = mod.name.toLowerCase().includes(s);
-        const hitEvent = mod.events.some(e => e.name.toLowerCase().includes(s) || e.trigger.toLowerCase().includes(s));
-        if (!hitModule && !hitEvent) return false;
+        const hay = `${ev.name} ${ev.trigger} ${ev.module}`.toLowerCase();
+        if (!hay.includes(s)) return false;
       }
-      if (filters.module && mod.name !== filters.module) return false;
-      if (filters.audience && computeAudience(mod) !== filters.audience) return false;
-      const audience = computeAudience(mod);
+      if (filters.module && ev.module !== filters.module) return false;
+      if (filters.audience && computeAudience(ev) !== filters.audience) return false;
+      const audience = computeAudience(ev);
       if (audience === 'internal' || audience === 'mixed') {
-        const involves = activeTeams.some(t => mod.routing[t] === 'P' || mod.routing[t] === 'I');
+        const involves = activeTeams.some(t => ev.routing[t] === 'P' || ev.routing[t] === 'I');
         if (!involves) return false;
       }
       return true;
     });
   }
 
-  const expandedModules = new Set();
-
-  function toggleModule(name) {
-    if (expandedModules.has(name)) expandedModules.delete(name);
-    else expandedModules.add(name);
-    renderModules();
-  }
-
-  function renderModules() {
+  function renderEvents() {
     const tbody = document.getElementById('rules-body');
-    const list = filteredModules();
-    const totalEvents = modules.reduce((s, m) => s + m.events.length, 0);
+    const list = filteredEvents();
+    const totalEvents = allEvents().length;
     document.getElementById('result-count').textContent = list.length;
     document.getElementById('defaults-count').textContent = totalEvents;
 
@@ -1491,10 +1548,10 @@
 
     if (list.length === 0) {
       tbody.innerHTML = `
-        <tr><td colspan="8">
+        <tr><td colspan="6">
           <div class="empty-state">
             <i class="ph ph-bell-slash"></i>
-            <h4>No features match these filters</h4>
+            <h4>No events match these filters</h4>
             <p>Try clearing filters or creating a new rule.</p>
             <button class="btn btn-secondary" onclick="resetFilters()"><i class="ph ph-arrow-counter-clockwise"></i> Reset filters</button>
           </div>
@@ -1502,59 +1559,51 @@
       return;
     }
 
-    const chipCell = (mod, t, isFirstExt = false) => {
-      const isOn = mod.routing[t] === 'P' || mod.routing[t] === 'I';
+    const chipCell = (ev, t) => {
+      const isOn = ev.routing[t] === 'P' || ev.routing[t] === 'I';
       return `
-      <td style="text-align:center;" class="${isFirstExt ? 'col-ext-start' : ''}" onclick="event.stopPropagation();">
-        <span class="route-checkbox ${isOn ? 'checked' : ''}" onclick="event.stopPropagation(); toggleRouting('${mod.name.replace(/'/g, "\\'")}', '${t}', this);" title="${isOn ? 'Notify ' + teamName[t] : 'Skip ' + teamName[t]}">
+      <td style="text-align:center;">
+        <span class="route-checkbox ${isOn ? 'checked' : ''}" onclick="toggleRouting('${ev.name.replace(/'/g, "\\'")}', '${t}', this);" title="${isOn ? 'Notify ' + teamName[t] : 'Skip ' + teamName[t]}">
           <i class="ph ph-check"></i>
         </span>
       </td>`;
     };
 
-    tbody.innerHTML = list.map(mod => {
-      const isExpanded = expandedModules.has(mod.name);
-      const moduleRow = `
-        <tr class="module-row" onclick="toggleModule('${mod.name.replace(/'/g, "\\'")}')">
-          <td>
-            <div class="module-header-content">
-              <button class="expand-btn ${isExpanded ? 'expanded' : ''}" title="${isExpanded ? 'Collapse' : 'Expand'} events"><i class="ph ph-caret-right"></i></button>
-              <span class="group-icon"><i class="ph ${mod.icon}"></i></span>
-              <span class="group-name">${mod.name}</span>
-              <span class="group-count">${mod.events.length}</span>
+    const recipientsCell = (ev) => {
+      const tags = externalKeys.map(t => {
+        const isOn = ev.routing[t] === 'P' || ev.routing[t] === 'I';
+        return `<span class="rcpt-tag ${isOn ? 'on' : 'off'}" onclick="toggleRouting('${ev.name.replace(/'/g, "\\'")}', '${t}', this);" title="${isOn ? 'Notifying ' + teamName[t] : 'Click to add ' + teamName[t]}">${teamName[t]}</span>`;
+      }).join('');
+      return `<td class="col-ext-start"><div class="recipient-tags">${tags}</div></td>`;
+    };
+
+    tbody.innerHTML = list.map(ev => `
+      <tr>
+        <td>
+          <div class="event-cell">
+            <span class="event-module-tag" title="Module"><i class="ph ${ev.icon}"></i>${ev.module}</span>
+            <div class="event-cell-text">
+              <span class="event-name">${ev.name}</span>
+              <span class="event-trigger">${ev.trigger}</span>
             </div>
-          </td>
-          ${internalKeys.map(t => chipCell(mod, t)).join('')}
-          ${externalKeys.map((t, i) => chipCell(mod, t, i === 0)).join('')}
-        </tr>
-      `;
-      const eventRows = isExpanded ? mod.events.map((e, idx) => `
-        <tr class="event-row ${idx === mod.events.length - 1 ? 'last' : ''}">
-          <td colspan="8">
-            <div class="event-detail">
-              <i class="ph ph-dot bullet"></i>
-              <div>
-                <div class="event-detail-name">${e.name}</div>
-                <div class="event-detail-trigger">${e.trigger}</div>
-              </div>
-            </div>
-          </td>
-        </tr>
-      `).join('') : '';
-      return moduleRow + eventRows;
-    }).join('');
+          </div>
+        </td>
+        ${internalKeys.map(t => chipCell(ev, t)).join('')}
+        ${recipientsCell(ev)}
+      </tr>
+    `).join('');
   }
 
   // Filter wiring
-  document.getElementById('search-input').addEventListener('input', e => { filters.search = e.target.value; renderModules(); });
-  document.getElementById('module-select').addEventListener('change', e => { filters.module = e.target.value; renderModules(); });
-  document.getElementById('audience-select').addEventListener('change', e => { filters.audience = e.target.value; renderModules(); });
+  document.getElementById('search-input').addEventListener('input', e => { filters.search = e.target.value; renderEvents(); });
+  document.getElementById('module-select').addEventListener('change', e => { filters.module = e.target.value; renderEvents(); });
+  document.getElementById('audience-select').addEventListener('change', e => { filters.audience = e.target.value; renderEvents(); });
   document.querySelectorAll('.chip[data-team]').forEach(chip => {
     chip.addEventListener('click', () => {
       const team = chip.dataset.team;
       filters.teams[team] = !filters.teams[team];
       chip.classList.toggle('active');
-      renderModules();
+      renderEvents();
     });
   });
   function resetFilters() {
@@ -1564,7 +1613,7 @@
     document.getElementById('module-select').value = '';
     document.getElementById('audience-select').value = '';
     document.querySelectorAll('#view-defaults .chip[data-team]').forEach(c => c.classList.add('active'));
-    renderModules();
+    renderEvents();
     toast({ title:'Filters reset', body:'Showing all rules.', type:'success' });
   }
   function newRule() { showNewRuleModal(); }
@@ -1638,7 +1687,6 @@
 
     let mod;
     if (moduleChoice === '__new__') {
-      // Avoid duplicate module names
       if (modules.some(m => m.name.toLowerCase() === newModuleName.toLowerCase())) {
         toast({ title:'Module already exists', body:`"${newModuleName}" is already a module. Pick it from the dropdown.`, type:'warning' });
         return;
@@ -1648,23 +1696,24 @@
     } else {
       mod = findModule(moduleChoice);
       if (!mod) { toast({ title:'Module not found', body:moduleChoice, type:'danger' }); return; }
-      // For existing modules, only update routing if the user changed defaults explicitly?
-      // Simpler: leave the module's existing routing alone; new events inherit it.
-      // (If the user wants to change module routing they can do it via checkboxes on the row.)
     }
 
-    // Avoid duplicate event names within the same module
+    // Reject duplicate event names within the same module
     if (mod.events.some(e => e.name.toLowerCase() === eventName.toLowerCase())) {
       toast({ title:'Event already exists', body:`"${eventName}" is already an event in ${mod.name}.`, type:'warning' });
       return;
     }
 
-    mod.events.push({ name: eventName, trigger });
+    // Each event gets its own routing (so it can diverge from siblings)
+    mod.events.push({
+      name: eventName,
+      trigger,
+      routing: { ...routing },
+      module: mod.name,
+      icon: mod.icon,
+    });
 
-    // Make sure the user can see the new event — expand the module
-    expandedModules.add(mod.name);
-
-    renderModules();
+    renderEvents();
     renderTemplatesEventList(document.getElementById('tpl-search-input').value);
     hideNewRuleModal();
     toast({
@@ -1684,15 +1733,20 @@
   /* =============================================================
      ROUTING TOGGLE
      ============================================================= */
-  function toggleRouting(moduleName, team, el) {
-    const mod = findModule(moduleName);
-    if (!mod) return;
-    const next = (mod.routing[team] === 'P' || mod.routing[team] === 'I') ? '-' : 'P';
-    mod.routing[team] = next;
-    el.classList.toggle('checked', next === 'P');
+  function toggleRouting(eventName, team, el) {
+    const ev = findEvent(eventName);
+    if (!ev) return;
+    const next = (ev.routing[team] === 'P' || ev.routing[team] === 'I') ? '-' : 'P';
+    ev.routing[team] = next;
+    if (el.classList.contains('rcpt-tag')) {
+      el.classList.toggle('on', next === 'P');
+      el.classList.toggle('off', next !== 'P');
+    } else {
+      el.classList.toggle('checked', next === 'P');
+    }
     toast({
       title: 'Routing updated',
-      body: `${mod.name} · ${teamName[team]} → ${next === 'P' ? 'will be notified' : 'will not be notified'}.`,
+      body: `${ev.name} · ${teamName[team]} → ${next === 'P' ? 'will be notified' : 'will not be notified'}.`,
       type: 'success'
     });
   }
@@ -2476,7 +2530,7 @@
   /* =============================================================
      INIT
      ============================================================= */
-  renderModules();
+  renderEvents();
   renderInbox();
   renderTemplatesEventList();
 </script>
