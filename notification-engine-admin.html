@@ -376,8 +376,8 @@
   /* Read-only variant — non-interactive display of preconfigured recipients */
   .rcpt-tag.readonly { cursor: default; }
   .rcpt-tag.readonly:hover { filter: none; }
-  .rcpt-tag.readonly.off:hover { background: var(--neutral-100); color: var(--neutral-400); border-color: var(--neutral-200); }
   .rcpt-tag.readonly.on:hover { background: var(--primary-500); border-color: var(--primary-500); }
+  .rcpt-empty { color: var(--neutral-400); font-size: 13px; }
 
   /* ========== Generic dropdown menu ========== */
   .menu {
@@ -1336,19 +1336,24 @@
     </div>
 
     <div class="field-row">
-      <label class="field-label">Trigger description</label>
-      <input class="tpl-input" id="new-rule-trigger" type="text" placeholder="When does this event fire?" />
-    </div>
-
-    <div class="field-row">
       <label class="field-label">Notify internal teams</label>
-      <div class="route-checkbox-grid" id="new-rule-routing">
+      <div class="route-checkbox-grid" id="new-rule-routing-internal">
         <label class="route-check-item"><span class="route-checkbox checked"><i class="ph ph-check"></i></span> <span>Customer Success</span></label>
         <label class="route-check-item"><span class="route-checkbox checked"><i class="ph ph-check"></i></span> <span>Customer Finance</span></label>
         <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>HR Ops</span></label>
         <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>Sales</span></label>
       </div>
-      <div class="field-hint">External recipients (Client, Employee, Contractor, Manager) are configured automatically by the engine.</div>
+    </div>
+
+    <div class="field-row">
+      <label class="field-label">Notify external recipients</label>
+      <div class="route-checkbox-grid" id="new-rule-routing-external">
+        <label class="route-check-item"><span class="route-checkbox checked"><i class="ph ph-check"></i></span> <span>Client</span></label>
+        <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>Employee</span></label>
+        <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>Contractor</span></label>
+        <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>Freelancer</span></label>
+        <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>Manager</span></label>
+      </div>
     </div>
 
     <div class="modal-divider"></div>
@@ -1449,12 +1454,14 @@
   const findModule = (name) => modules.find(m => m.name === name);
 
   // Give each event its own routing (initially copied from the parent module).
-  // Backfill any newly added external keys (e.g. `manager`) on legacy data.
+  // Backfill any newly added external keys (e.g. manager, freelancer) on legacy data.
   modules.forEach(m => {
-    if (m.routing.manager === undefined) m.routing.manager = '-';
+    if (m.routing.manager    === undefined) m.routing.manager    = '-';
+    if (m.routing.freelancer === undefined) m.routing.freelancer = '-';
     m.events.forEach(e => {
       if (!e.routing) e.routing = { ...m.routing };
-      if (e.routing.manager === undefined) e.routing.manager = '-';
+      if (e.routing.manager    === undefined) e.routing.manager    = '-';
+      if (e.routing.freelancer === undefined) e.routing.freelancer = '-';
       e.module = m.name;
       e.icon   = m.icon;
     });
@@ -1505,10 +1512,10 @@
      ============================================================= */
   const teamName  = {
     cs:'Customer Success', cf:'Customer Finance', hr:'HR Ops', sales:'Sales',
-    client:'Client', employee:'Employee', contractor:'Contractor', manager:'Manager'
+    client:'Client', employee:'Employee', contractor:'Contractor', freelancer:'Freelancer', manager:'Manager'
   };
   const internalKeys = ['cs','cf','hr','sales'];
-  const externalKeys = ['client','employee','contractor','manager'];
+  const externalKeys = ['client','employee','contractor','freelancer','manager'];
 
   const filters = { search:'', module:'', audience:'', teams:{ cs:true, cf:true, hr:true, sales:true } };
 
@@ -1598,11 +1605,12 @@
     };
 
     const recipientsCell = (ev) => {
-      const tags = externalKeys.map(t => {
-        const isOn = ev.routing[t] === 'P' || ev.routing[t] === 'I';
-        return `<span class="rcpt-tag readonly ${isOn ? 'on' : 'off'}" title="${isOn ? teamName[t] + ' will be notified' : teamName[t] + ' is not notified'}">${teamName[t]}</span>`;
-      }).join('');
-      return `<td class="col-ext-start"><div class="recipient-tags">${tags}</div></td>`;
+      const activeTags = externalKeys
+        .filter(t => ev.routing[t] === 'P' || ev.routing[t] === 'I')
+        .map(t => `<span class="rcpt-tag readonly on" title="${teamName[t]} will be notified">${teamName[t]}</span>`)
+        .join('');
+      const inner = activeTags || `<span class="rcpt-empty">—</span>`;
+      return `<td class="col-ext-start"><div class="recipient-tags">${inner}</div></td>`;
     };
 
     const moduleSlug = (name) => name.toLowerCase().replace(/\s+/g, '-');
@@ -1657,19 +1665,25 @@
 
     // Reset form fields
     document.getElementById('new-rule-event').value = '';
-    document.getElementById('new-rule-trigger').value = '';
     document.getElementById('new-module-name').value = '';
     document.getElementById('new-module-name-row').style.display = 'none';
     document.getElementById('new-rule-subject').value = '';
     document.getElementById('new-rule-body').value = '';
     document.getElementById('new-rule-cta').value = '';
 
-    // Reset internal-team checkboxes to a sensible default
-    const ruleKeys = ['cs','cf','hr','sales'];
-    const defaults = { cs:true, cf:true, hr:false, sales:false };
-    document.querySelectorAll('#new-rule-routing .route-check-item').forEach((item, i) => {
+    // Reset checkboxes to sensible defaults
+    const internalRuleKeys = ['cs','cf','hr','sales'];
+    const externalRuleKeys = ['client','employee','contractor','freelancer','manager'];
+    const internalDefaults = { cs:true,  cf:true,  hr:false, sales:false };
+    const externalDefaults = { client:true, employee:false, contractor:false, freelancer:false, manager:false };
+
+    document.querySelectorAll('#new-rule-routing-internal .route-check-item').forEach((item, i) => {
       const cb = item.querySelector('.route-checkbox');
-      cb.classList.toggle('checked', defaults[ruleKeys[i]]);
+      cb.classList.toggle('checked', internalDefaults[internalRuleKeys[i]]);
+    });
+    document.querySelectorAll('#new-rule-routing-external .route-check-item').forEach((item, i) => {
+      const cb = item.querySelector('.route-checkbox');
+      cb.classList.toggle('checked', externalDefaults[externalRuleKeys[i]]);
     });
 
     document.getElementById('new-rule-scrim').classList.add('open');
@@ -1691,8 +1705,8 @@
   });
 
   // Wire up checkboxes inside the new-rule modal so clicking toggles them
-  document.querySelectorAll('#new-rule-routing .route-check-item').forEach(item => {
-    item.addEventListener('click', e => {
+  document.querySelectorAll('#new-rule-routing-internal .route-check-item, #new-rule-routing-external .route-check-item').forEach(item => {
+    item.addEventListener('click', () => {
       const cb = item.querySelector('.route-checkbox');
       cb.classList.toggle('checked');
     });
@@ -1701,23 +1715,22 @@
   function createNewRule() {
     const moduleChoice = document.getElementById('new-rule-module').value;
     const eventName    = document.getElementById('new-rule-event').value.trim();
-    const trigger      = document.getElementById('new-rule-trigger').value.trim();
     const newModuleName = document.getElementById('new-module-name').value.trim();
 
     // Validate
     if (!moduleChoice) { toast({ title:'Pick a module', body:'Choose an existing module or create a new one.', type:'warning' }); return; }
     if (moduleChoice === '__new__' && !newModuleName) { toast({ title:'Module name required', body:'Give your new module a name.', type:'warning' }); return; }
     if (!eventName) { toast({ title:'Event name required', body:'Add a name like "Payslip download requested".', type:'warning' }); return; }
-    if (!trigger)   { toast({ title:'Trigger description required', body:'Describe when the event fires.', type:'warning' }); return; }
 
-    // Read internal-team checkboxes; external recipients are auto-configured.
-    const keys = ['cs','cf','hr','sales'];
-    const routing = {
-      // Sensible engine-configured defaults for external recipients
-      client: 'P', employee: 'P', contractor: '-', manager: '-',
-    };
-    document.querySelectorAll('#new-rule-routing .route-checkbox').forEach((cb, i) => {
-      routing[keys[i]] = cb.classList.contains('checked') ? 'P' : '-';
+    // Read both internal and external checkbox groups
+    const internalKeysList = ['cs','cf','hr','sales'];
+    const externalKeysList = ['client','employee','contractor','freelancer','manager'];
+    const routing = {};
+    document.querySelectorAll('#new-rule-routing-internal .route-checkbox').forEach((cb, i) => {
+      routing[internalKeysList[i]] = cb.classList.contains('checked') ? 'P' : '-';
+    });
+    document.querySelectorAll('#new-rule-routing-external .route-checkbox').forEach((cb, i) => {
+      routing[externalKeysList[i]] = cb.classList.contains('checked') ? 'P' : '-';
     });
 
     let mod;
@@ -1742,7 +1755,7 @@
     // Each event gets its own routing (so it can diverge from siblings)
     mod.events.push({
       name: eventName,
-      trigger,
+      trigger: '',
       routing: { ...routing },
       module: mod.name,
       icon: mod.icon,
