@@ -292,28 +292,29 @@
   .audience-contractor { background: #F2EBFF;             color: #5A3FD6; }
   .audience-mixed      { background: var(--primary-50);   color: var(--primary-700); }
 
-  /* ========== Role chips ========== */
-  .role-chip {
-    display: inline-flex; align-items: center; gap: 6px;
-    height: 28px; padding: 0 8px 0 12px;
-    border-radius: 999px;
-    font-size: 12px; font-weight: 700;
+  /* ========== Route checkboxes ========== */
+  .route-checkbox {
+    width: 20px; height: 20px;
+    border-radius: 5px;
+    border: 1.5px solid var(--neutral-300);
+    background: var(--neutral-0);
+    display: inline-grid; place-items: center;
     cursor: pointer; user-select: none;
     transition: all 120ms ease;
-    border: 1px solid transparent;
-    min-width: 92px;
-    max-width: 120px;
-    justify-content: center;
-    white-space: nowrap;
   }
-  .role-chip .role-caret { font-size: 9px; opacity: 0.7; margin-left: 2px; flex-shrink: 0; }
-  .role-chip.primary { background: var(--primary-500); color: white; }
-  .role-chip.primary:hover { background: var(--primary-600); }
-  .role-chip.informed { background: var(--primary-50); color: var(--primary-700); border-color: var(--primary-100); }
-  .role-chip.informed:hover { background: var(--primary-100); }
-  .role-chip.none { background: var(--neutral-100); color: var(--neutral-500); border-color: var(--neutral-200); }
-  .role-chip.none:hover { background: var(--neutral-200); color: var(--neutral-700); }
-  .role-chip.open { box-shadow: 0 0 0 3px var(--primary-100); }
+  .route-checkbox:hover { border-color: var(--primary-400); }
+  .route-checkbox i {
+    font-size: 13px;
+    color: white;
+    opacity: 0;
+    transition: opacity 100ms ease;
+  }
+  .route-checkbox.checked {
+    background: var(--primary-500);
+    border-color: var(--primary-500);
+  }
+  .route-checkbox.checked:hover { background: var(--primary-600); border-color: var(--primary-600); }
+  .route-checkbox.checked i { opacity: 1; }
 
   /* ========== Generic dropdown menu ========== */
   .menu {
@@ -384,70 +385,6 @@
   .menu-item.selected .menu-check { opacity: 1; }
   .menu-empty { padding: 14px; text-align: center; color: var(--neutral-500); font-size: 13px; }
 
-  /* ========== Owner cell (person chip in Owners table) ========== */
-  .owner-chip {
-    display: inline-flex; align-items: center;
-    gap: 8px;
-    padding: 4px 12px 4px 4px;
-    border-radius: 999px;
-    background: var(--neutral-0);
-    border: 1px solid var(--border-strong);
-    cursor: pointer;
-    transition: all 120ms ease;
-    max-width: 200px;
-  }
-  .owner-chip:hover { background: var(--neutral-50); border-color: var(--neutral-300); }
-  .owner-chip.open { box-shadow: 0 0 0 3px var(--primary-100); border-color: var(--primary-300); }
-  .owner-chip .person-ic {
-    width: 26px; height: 26px;
-    border-radius: 50%;
-    display: grid; place-items: center;
-    font-size: 11px; font-weight: 700;
-    color: white;
-    flex-shrink: 0;
-  }
-  .owner-chip .person-name {
-    font-size: 13px; font-weight: 700; color: var(--neutral-900);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .owner-chip .owner-caret { font-size: 9px; opacity: 0.6; color: var(--neutral-500); margin-left: 2px; }
-
-  .owner-empty {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 4px 12px;
-    border-radius: 999px;
-    background: var(--warning-50);
-    color: var(--warning-700);
-    border: 1px dashed var(--warning-500);
-    font-size: 12px; font-weight: 700;
-    cursor: pointer;
-    transition: all 120ms ease;
-  }
-  .owner-empty:hover { background: var(--warning-500); color: white; }
-  .owner-empty i { font-size: 14px; }
-
-  /* ========== Client cell (Owners table) ========== */
-  .client-cell { display: flex; align-items: center; gap: 10px; }
-  .client-avatar {
-    width: 32px; height: 32px;
-    border-radius: 8px;
-    display: grid; place-items: center;
-    font-size: 13px; font-weight: 700; color: white;
-    flex-shrink: 0;
-  }
-  .client-name { font-size: 14px; font-weight: 700; color: var(--neutral-900); }
-  .client-meta { font-size: 11px; color: var(--neutral-500); font-weight: 500; }
-  .tier-tag {
-    margin-left: 8px;
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 300; font-size: 11px;
-    padding: 2px 6px; border-radius: 4px;
-    text-transform: uppercase; letter-spacing: 0.5px;
-  }
-  .tier-premium { background: var(--primary-50); color: var(--primary-700); }
-  .tier-standard { background: var(--neutral-100); color: var(--neutral-600); }
-  .tier-trial { background: var(--warning-50); color: var(--warning-700); }
-
   /* ========== Table footer ========== */
   .table-footer {
     padding: 12px 20px;
@@ -469,6 +406,88 @@
   .empty-state i { font-size: 64px; color: var(--neutral-300); display: inline-block; margin-bottom: 12px; }
   .empty-state h4 { font-size: 18px; font-weight: 500; color: var(--neutral-800); margin-bottom: 6px; }
   .empty-state p { font-size: 14px; color: var(--neutral-500); margin-bottom: 16px; }
+
+  /* ========== Modal ========== */
+  .modal-scrim {
+    position: fixed; inset: 0;
+    background: rgba(18,22,32,0.4);
+    opacity: 0; pointer-events: none;
+    transition: opacity 200ms ease;
+    z-index: 90;
+  }
+  .modal-scrim.open { opacity: 1; pointer-events: auto; }
+  .modal {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -48%) scale(0.98);
+    width: 560px; max-width: calc(100vw - 32px);
+    max-height: calc(100vh - 48px);
+    background: var(--neutral-0);
+    border-radius: 14px;
+    box-shadow: 0 16px 48px rgba(18,22,32,0.18);
+    z-index: 95;
+    opacity: 0; pointer-events: none;
+    transition: opacity 180ms ease, transform 180ms ease;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .modal.open {
+    opacity: 1; pointer-events: auto;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .modal-header {
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 14px;
+  }
+  .modal-title {
+    font-size: 18px; font-weight: 700;
+    color: var(--neutral-900);
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+  .modal-subtitle {
+    font-size: 13px; color: var(--neutral-500); font-weight: 500;
+  }
+  .modal-body {
+    padding: 18px 22px 6px;
+    overflow-y: auto;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .modal-footer {
+    padding: 14px 22px;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 10px; justify-content: flex-end;
+    background: var(--neutral-50);
+  }
+  .field-row {}
+  .field-label {
+    display: block;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300; font-size: 11px;
+    color: var(--neutral-500);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .field-hint {
+    font-size: 11px; color: var(--neutral-500); font-weight: 500;
+    margin-top: 6px;
+  }
+  .route-checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 16px;
+    padding: 4px 0;
+  }
+  .route-check-item {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; font-weight: 500;
+    color: var(--neutral-800);
+    cursor: pointer;
+    padding: 4px 0;
+  }
+  .route-check-item .route-checkbox { flex-shrink: 0; }
 
   /* ========== Toast ========== */
   .toast-host {
@@ -997,10 +1016,6 @@
           <i class="ph ph-list-checks"></i> Defaults
           <span class="nav-badge" id="defaults-count">10</span>
         </a>
-        <a class="nav-item" data-view="owners" onclick="switchView('owners')">
-          <i class="ph ph-users-three"></i> Owners
-          <span class="nav-badge" id="owners-count">6</span>
-        </a>
         <a class="nav-item" data-view="templates" onclick="switchView('templates')">
           <i class="ph ph-note-pencil"></i> Templates
           <span class="nav-badge" id="templates-count">0</span>
@@ -1106,62 +1121,6 @@
             <button>3</button>
             <button><i class="ph ph-caret-right"></i></button>
           </div>
-        </div>
-      </section>
-    </section>
-
-    <!-- ========== VIEW: OWNERS ========== -->
-    <section class="view" id="view-owners">
-      <div class="page-header">
-        <div>
-          <div class="page-title">Client owners</div>
-          <div class="page-subtitle">
-            Assign the person on each team who owns each client. When a notification routes to a team
-            (e.g. "Customer Success"), the engine looks up the assigned person here and sends to them directly.
-          </div>
-        </div>
-        <div style="display:flex; gap:8px;">
-          <button class="btn btn-primary" onclick="newClient()"><i class="ph ph-plus"></i> Add client</button>
-        </div>
-      </div>
-
-      <section class="card">
-        <div class="filter-bar">
-          <div class="search">
-            <i class="ph ph-magnifying-glass"></i>
-            <input id="owners-search-input" type="text" placeholder="Search clients…" />
-          </div>
-          <div class="select-wrap">
-            <select id="tier-select" class="select">
-              <option value="">All tiers</option>
-              <option>Premium</option>
-              <option>Standard</option>
-              <option>Trial</option>
-            </select>
-          </div>
-          <div class="filter-spacer"></div>
-          <button class="btn btn-ghost" id="reset-owners-btn" onclick="resetOwnersFilters()" style="display:none;">
-            <i class="ph ph-arrow-counter-clockwise"></i> Reset
-          </button>
-        </div>
-
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Client</th>
-                <th>Customer Success</th>
-                <th>Customer Finance</th>
-                <th>HR Ops</th>
-                <th>Sales</th>
-              </tr>
-            </thead>
-            <tbody id="owners-body"></tbody>
-          </table>
-        </div>
-
-        <div class="table-footer">
-          <div>Showing <strong style="color:var(--neutral-800)" id="owners-result-count">6</strong> clients</div>
         </div>
       </section>
     </section>
@@ -1283,45 +1242,62 @@
   </main>
 </div>
 
-<!-- ========== ROLE DROPDOWN MENU ========== -->
-<div class="menu" id="role-menu">
-  <div class="menu-header" id="role-menu-header">Routing for team</div>
-  <div class="menu-list">
-    <div class="menu-item" data-role="P" onclick="selectRole('P')">
-      <span class="menu-ic primary"><i class="ph ph-check"></i></span>
-      <div class="menu-text">
-        <div class="menu-title">Primary owner</div>
-        <div class="menu-desc">Acts on this notification</div>
-      </div>
-      <i class="ph ph-check-circle menu-check"></i>
+<!-- ========== NEW RULE MODAL ========== -->
+<div class="modal-scrim" id="new-rule-scrim" onclick="hideNewRuleModal()"></div>
+<div class="modal" id="new-rule-modal" role="dialog" aria-labelledby="new-rule-title">
+  <div class="modal-header">
+    <div>
+      <div class="modal-title" id="new-rule-title">New notification rule</div>
+      <div class="modal-subtitle">Define a new product event and which module it belongs to.</div>
     </div>
-    <div class="menu-item" data-role="I" onclick="selectRole('I')">
-      <span class="menu-ic informed"><i class="ph ph-eye"></i></span>
-      <div class="menu-text">
-        <div class="menu-title">Informed</div>
-        <div class="menu-desc">CC'd for visibility</div>
-      </div>
-      <i class="ph ph-check-circle menu-check"></i>
-    </div>
-    <div class="menu-item" data-role="-" onclick="selectRole('-')">
-      <span class="menu-ic none"><i class="ph ph-minus"></i></span>
-      <div class="menu-text">
-        <div class="menu-title">Not routed</div>
-        <div class="menu-desc">No notification sent</div>
-      </div>
-      <i class="ph ph-check-circle menu-check"></i>
-    </div>
+    <button class="icon-btn" onclick="hideNewRuleModal()" title="Close"><i class="ph ph-x"></i></button>
   </div>
-</div>
 
-<!-- ========== OWNER PICKER MENU ========== -->
-<div class="menu" id="owner-menu" style="min-width:280px;">
-  <div class="menu-header" id="owner-menu-header">Assign owner</div>
-  <div class="menu-search">
-    <i class="ph ph-magnifying-glass"></i>
-    <input id="owner-search-input" type="text" placeholder="Search people…" />
+  <div class="modal-body">
+    <div class="field-row">
+      <label class="field-label">Module</label>
+      <div class="select-wrap" style="width:100%;">
+        <select id="new-rule-module" class="select" style="width:100%;">
+          <option value="">Pick a module…</option>
+          <option value="__new__">+ Create new module…</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field-row" id="new-module-name-row" style="display:none;">
+      <label class="field-label">New module name</label>
+      <input class="tpl-input" id="new-module-name" type="text" placeholder="e.g. Time tracking" />
+    </div>
+
+    <div class="field-row">
+      <label class="field-label">Event name</label>
+      <input class="tpl-input" id="new-rule-event" type="text" placeholder="e.g. Payslip download requested" />
+    </div>
+
+    <div class="field-row">
+      <label class="field-label">Trigger description</label>
+      <input class="tpl-input" id="new-rule-trigger" type="text" placeholder="When does this event fire?" />
+    </div>
+
+    <div class="field-row">
+      <label class="field-label">Notify by default</label>
+      <div class="route-checkbox-grid" id="new-rule-routing">
+        <label class="route-check-item"><span class="route-checkbox checked"><i class="ph ph-check"></i></span> <span>Customer Success</span></label>
+        <label class="route-check-item"><span class="route-checkbox checked"><i class="ph ph-check"></i></span> <span>Customer Finance</span></label>
+        <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>HR Ops</span></label>
+        <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>Sales</span></label>
+        <label class="route-check-item"><span class="route-checkbox checked"><i class="ph ph-check"></i></span> <span>Client</span></label>
+        <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>Manager</span></label>
+        <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>Worker</span></label>
+      </div>
+      <div class="field-hint">These defaults will be saved at the module level. You can fine-tune later.</div>
+    </div>
   </div>
-  <div class="menu-list" id="owner-menu-list"></div>
+
+  <div class="modal-footer">
+    <button class="btn btn-ghost" onclick="hideNewRuleModal()">Cancel</button>
+    <button class="btn btn-primary" onclick="createNewRule()"><i class="ph ph-check"></i> Create rule</button>
+  </div>
 </div>
 
 <!-- ========== TOAST HOST ========== -->
@@ -1399,16 +1375,7 @@
   ];
   const findModule = (name) => modules.find(m => m.name === name);
 
-  const clientPalette = {
-    'Acme Inc.':    { color: '#2684FF', tier: 'Premium',  meta: '24 employees · India'    },
-    'Beta Corp':    { color: '#12B76A', tier: 'Standard', meta: '12 employees · India'    },
-    'Gamma Ltd':    { color: '#F79009', tier: 'Standard', meta: '8 employees · India'     },
-    'Delta LLC':    { color: '#7B61FF', tier: 'Premium',  meta: '31 employees · USA'      },
-    'Epsilon GmbH': { color: '#F04438', tier: 'Trial',    meta: '5 contractors · Germany' },
-    'Zeta Pvt Ltd': { color: '#1059BD', tier: 'Standard', meta: '16 employees · India'    },
-  };
-
-  // Team members per team
+  // Team members per team (used by Inbox member dropdown)
   const team = {
     cs:    [ { id:'u_chandana', name:'Chandana', avatar:'#2684FF' },
              { id:'u_priya',    name:'Priya',    avatar:'#F79009' },
@@ -1427,16 +1394,6 @@
              { id:'u_dev',      name:'Dev',      avatar:'#12B76A' } ],
   };
 
-  // Client-owner mapping
-  const owners = [
-    { client:'Acme Inc.',    cs:'u_chandana', cf:'u_shashank', hr:'u_neha',  sales:'u_vikram' },
-    { client:'Beta Corp',    cs:'u_priya',    cf:'u_raj',      hr:'u_arjun', sales:null       },
-    { client:'Gamma Ltd',    cs:'u_aarav',    cf:'u_mira',     hr:'u_sneha', sales:'u_pooja'  },
-    { client:'Delta LLC',    cs:'u_chandana', cf:'u_karan',    hr:'u_neha',  sales:'u_dev'    },
-    { client:'Epsilon GmbH', cs:null,         cf:'u_shashank', hr:null,      sales:null       },
-    { client:'Zeta Pvt Ltd', cs:'u_riya',     cf:'u_mira',     hr:'u_vikash',sales:'u_vikram' },
-  ];
-
   /* =============================================================
      VIEW SWITCHING
      ============================================================= */
@@ -1451,8 +1408,6 @@
   /* =============================================================
      DEFAULTS — Rule table
      ============================================================= */
-  const roleClass = { P:'primary', I:'informed', '-':'none' };
-  const roleLabel = { P:'Primary', I:'Informed', '-':'None' };
   const teamName  = {
     cs:'Customer Success', cf:'Customer Finance', hr:'HR Ops', sales:'Sales',
     client:'Client', employee:'Manager', contractor:'Worker'
@@ -1547,13 +1502,15 @@
       return;
     }
 
-    const chipCell = (mod, t, isFirstExt = false) => `
+    const chipCell = (mod, t, isFirstExt = false) => {
+      const isOn = mod.routing[t] === 'P' || mod.routing[t] === 'I';
+      return `
       <td style="text-align:center;" class="${isFirstExt ? 'col-ext-start' : ''}" onclick="event.stopPropagation();">
-        <span class="role-chip ${roleClass[mod.routing[t]]}" onclick="event.stopPropagation(); openRoleMenu(this, '${mod.name.replace(/'/g, "\\'")}', '${t}');" title="Click to change">
-          <span>${roleLabel[mod.routing[t]]}</span>
-          <i class="ph ph-caret-down role-caret"></i>
+        <span class="route-checkbox ${isOn ? 'checked' : ''}" onclick="event.stopPropagation(); toggleRouting('${mod.name.replace(/'/g, "\\'")}', '${t}', this);" title="${isOn ? 'Notify ' + teamName[t] : 'Skip ' + teamName[t]}">
+          <i class="ph ph-check"></i>
         </span>
       </td>`;
+    };
 
     tbody.innerHTML = list.map(mod => {
       const isExpanded = expandedModules.has(mod.name);
@@ -1610,217 +1567,138 @@
     renderModules();
     toast({ title:'Filters reset', body:'Showing all rules.', type:'success' });
   }
-  function newRule() { toast({ title:'Create rule', body:'Rule editor would open here.', type:'success' }); }
+  function newRule() { showNewRuleModal(); }
 
-  /* =============================================================
-     ROLE DROPDOWN
-     ============================================================= */
-  let activeRoleMenu = null;
-  const roleMenu = document.getElementById('role-menu');
+  function showNewRuleModal() {
+    // Populate module dropdown with current modules + the "create new" option
+    const sel = document.getElementById('new-rule-module');
+    sel.innerHTML = '<option value="">Pick a module…</option>'
+      + modules.map(m => `<option value="${m.name}">${m.name}</option>`).join('')
+      + '<option value="__new__">+ Create new module…</option>';
 
-  function openRoleMenu(chipEl, moduleName, team) {
-    if (activeRoleMenu && activeRoleMenu.chipEl === chipEl) { closeAllMenus(); return; }
-    closeAllMenus();
-    const mod = findModule(moduleName);
-    if (!mod) return;
-    activeRoleMenu = { chipEl, moduleName, team };
+    // Reset form fields
+    document.getElementById('new-rule-event').value = '';
+    document.getElementById('new-rule-trigger').value = '';
+    document.getElementById('new-module-name').value = '';
+    document.getElementById('new-module-name-row').style.display = 'none';
 
-    document.getElementById('role-menu-header').textContent = `${mod.name} · ${teamName[team]}`;
-    roleMenu.querySelectorAll('.menu-item').forEach(item => {
-      item.classList.toggle('selected', item.dataset.role === mod.routing[team]);
+    // Reset checkboxes to a sensible default
+    const defaults = { cs:true, cf:true, hr:false, sales:false, client:true, manager:false, worker:false };
+    const labels = ['Customer Success','Customer Finance','HR Ops','Sales','Client','Manager','Worker'];
+    document.querySelectorAll('#new-rule-routing .route-check-item').forEach((item, i) => {
+      const key = ['cs','cf','hr','sales','client','manager','worker'][i];
+      const cb = item.querySelector('.route-checkbox');
+      cb.classList.toggle('checked', defaults[key]);
     });
 
-    positionMenu(roleMenu, chipEl, 240);
-    chipEl.classList.add('open');
-    requestAnimationFrame(() => roleMenu.classList.add('open'));
+    document.getElementById('new-rule-scrim').classList.add('open');
+    const m = document.getElementById('new-rule-modal');
+    m.classList.add('open');
+    setTimeout(() => sel.focus(), 100);
   }
 
-  function selectRole(role) {
-    if (!activeRoleMenu) return;
-    const { chipEl, moduleName, team } = activeRoleMenu;
-    const mod = findModule(moduleName);
-    if (!mod) { closeAllMenus(); return; }
-    if (mod.routing[team] !== role) {
-      mod.routing[team] = role;
-      chipEl.className = `role-chip ${roleClass[role]}`;
-      chipEl.innerHTML = `<span>${roleLabel[role]}</span><i class="ph ph-caret-down role-caret"></i>`;
-      toast({
-        title:'Routing updated',
-        body: `${mod.name} · ${teamName[team]} → ${role === 'P' ? 'Primary owner' : role === 'I' ? 'Informed' : 'Not routed'}.`,
-        type:'success'
-      });
-    }
-    closeAllMenus();
+  function hideNewRuleModal() {
+    document.getElementById('new-rule-scrim').classList.remove('open');
+    document.getElementById('new-rule-modal').classList.remove('open');
   }
 
-  /* =============================================================
-     OWNERS — Table
-     ============================================================= */
-  const ownersFilters = { search:'', tier:'' };
+  // Toggle the "new module name" row when "Create new module..." is picked
+  document.getElementById('new-rule-module').addEventListener('change', e => {
+    const isNew = e.target.value === '__new__';
+    document.getElementById('new-module-name-row').style.display = isNew ? '' : 'none';
+    if (isNew) setTimeout(() => document.getElementById('new-module-name').focus(), 80);
+  });
 
-  function findPerson(teamKey, userId) {
-    if (!userId) return null;
-    return team[teamKey].find(p => p.id === userId);
-  }
-
-  function filteredOwners() {
-    const s = ownersFilters.search.trim().toLowerCase();
-    return owners.filter(o => {
-      if (s && !o.client.toLowerCase().includes(s)) return false;
-      if (ownersFilters.tier && (clientPalette[o.client] || {}).tier !== ownersFilters.tier) return false;
-      return true;
+  // Wire up checkboxes inside the new-rule modal so clicking toggles them
+  document.querySelectorAll('#new-rule-routing .route-check-item').forEach(item => {
+    item.addEventListener('click', e => {
+      const cb = item.querySelector('.route-checkbox');
+      cb.classList.toggle('checked');
     });
-  }
+  });
 
-  function personChip(teamKey, userId, client) {
-    const p = findPerson(teamKey, userId);
-    if (!p) {
-      return `<button class="owner-empty" onclick="openOwnerMenu(this, '${client.replace(/'/g, "\\'")}', '${teamKey}')">
-        <i class="ph ph-warning"></i> Assign
-      </button>`;
+  function createNewRule() {
+    const moduleChoice = document.getElementById('new-rule-module').value;
+    const eventName    = document.getElementById('new-rule-event').value.trim();
+    const trigger      = document.getElementById('new-rule-trigger').value.trim();
+    const newModuleName = document.getElementById('new-module-name').value.trim();
+
+    // Validate
+    if (!moduleChoice) { toast({ title:'Pick a module', body:'Choose an existing module or create a new one.', type:'warning' }); return; }
+    if (moduleChoice === '__new__' && !newModuleName) { toast({ title:'Module name required', body:'Give your new module a name.', type:'warning' }); return; }
+    if (!eventName) { toast({ title:'Event name required', body:'Add a name like "Payslip download requested".', type:'warning' }); return; }
+    if (!trigger)   { toast({ title:'Trigger description required', body:'Describe when the event fires.', type:'warning' }); return; }
+
+    // Read routing checkboxes
+    const keys = ['cs','cf','hr','sales','client','manager','worker'];
+    const routing = {};
+    document.querySelectorAll('#new-rule-routing .route-checkbox').forEach((cb, i) => {
+      routing[keys[i]] = cb.classList.contains('checked') ? 'P' : '-';
+    });
+
+    let mod;
+    if (moduleChoice === '__new__') {
+      // Avoid duplicate module names
+      if (modules.some(m => m.name.toLowerCase() === newModuleName.toLowerCase())) {
+        toast({ title:'Module already exists', body:`"${newModuleName}" is already a module. Pick it from the dropdown.`, type:'warning' });
+        return;
+      }
+      mod = { name: newModuleName, icon: 'ph-cube', routing, events: [] };
+      modules.push(mod);
+    } else {
+      mod = findModule(moduleChoice);
+      if (!mod) { toast({ title:'Module not found', body:moduleChoice, type:'danger' }); return; }
+      // For existing modules, only update routing if the user changed defaults explicitly?
+      // Simpler: leave the module's existing routing alone; new events inherit it.
+      // (If the user wants to change module routing they can do it via checkboxes on the row.)
     }
-    const initial = p.name.charAt(0).toUpperCase();
-    return `<span class="owner-chip" onclick="openOwnerMenu(this, '${client.replace(/'/g, "\\'")}', '${teamKey}')">
-      <span class="person-ic" style="background:${p.avatar}">${initial}</span>
-      <span class="person-name">${p.name}</span>
-      <i class="ph ph-caret-down owner-caret"></i>
-    </span>`;
-  }
 
-  function clientCell(client) {
-    const meta = clientPalette[client] || { color:'#6B7588', tier:'Standard', meta:'' };
-    const initial = client.replace(/[^A-Za-z]/g, '').charAt(0).toUpperCase();
-    const tierClass = `tier-${(meta.tier || 'standard').toLowerCase()}`;
-    return `<div class="client-cell">
-      <div class="client-avatar" style="background:${meta.color}">${initial}</div>
-      <div>
-        <div class="client-name">${client}<span class="tier-tag ${tierClass}">${meta.tier}</span></div>
-        <div class="client-meta">${meta.meta}</div>
-      </div>
-    </div>`;
-  }
-
-  function renderOwners() {
-    const tbody = document.getElementById('owners-body');
-    const list = filteredOwners();
-    document.getElementById('owners-result-count').textContent = list.length;
-    document.getElementById('owners-count').textContent = owners.length;
-
-    const resetBtn = document.getElementById('reset-owners-btn');
-    if (resetBtn) resetBtn.style.display = (ownersFilters.search || ownersFilters.tier) ? 'inline-flex' : 'none';
-
-    if (list.length === 0) {
-      tbody.innerHTML = `
-        <tr><td colspan="5">
-          <div class="empty-state">
-            <i class="ph ph-buildings"></i>
-            <h4>No clients match</h4>
-            <p>Try clearing filters or adding a new client.</p>
-            <button class="btn btn-secondary" onclick="resetOwnersFilters()"><i class="ph ph-arrow-counter-clockwise"></i> Reset filters</button>
-          </div>
-        </td></tr>`;
+    // Avoid duplicate event names within the same module
+    if (mod.events.some(e => e.name.toLowerCase() === eventName.toLowerCase())) {
+      toast({ title:'Event already exists', body:`"${eventName}" is already an event in ${mod.name}.`, type:'warning' });
       return;
     }
 
-    tbody.innerHTML = list.map(o => `
-      <tr data-client="${o.client.replace(/"/g, '&quot;')}">
-        <td>${clientCell(o.client)}</td>
-        <td>${personChip('cs',    o.cs,    o.client)}</td>
-        <td>${personChip('cf',    o.cf,    o.client)}</td>
-        <td>${personChip('hr',    o.hr,    o.client)}</td>
-        <td>${personChip('sales', o.sales, o.client)}</td>
-      </tr>
-    `).join('');
+    mod.events.push({ name: eventName, trigger });
+
+    // Make sure the user can see the new event — expand the module
+    expandedModules.add(mod.name);
+
+    renderModules();
+    renderTemplatesEventList(document.getElementById('tpl-search-input').value);
+    hideNewRuleModal();
+    toast({
+      title: moduleChoice === '__new__' ? 'Module + rule created' : 'Rule added',
+      body: `${eventName} → ${mod.name}`,
+      type: 'success'
+    });
   }
 
-  document.getElementById('owners-search-input').addEventListener('input', e => { ownersFilters.search = e.target.value; renderOwners(); });
-  document.getElementById('tier-select').addEventListener('change', e => { ownersFilters.tier = e.target.value; renderOwners(); });
-  function resetOwnersFilters() {
-    ownersFilters.search = ''; ownersFilters.tier = '';
-    document.getElementById('owners-search-input').value = '';
-    document.getElementById('tier-select').value = '';
-    renderOwners();
-    toast({ title:'Filters reset', body:'Showing all clients.', type:'success' });
-  }
-  function newClient() { toast({ title:'Add client', body:'Client onboarding flow would open here.', type:'success' }); }
-
-  /* =============================================================
-     OWNER PICKER DROPDOWN
-     ============================================================= */
-  let activeOwnerMenu = null;
-  const ownerMenu = document.getElementById('owner-menu');
-  const ownerMenuList = document.getElementById('owner-menu-list');
-  const ownerSearchInput = document.getElementById('owner-search-input');
-
-  function buildOwnerMenuOptions(teamKey, currentId, query='') {
-    const q = query.trim().toLowerCase();
-    const people = team[teamKey].filter(p => !q || p.name.toLowerCase().includes(q));
-    const unassign = `
-      <div class="menu-item ${currentId === null ? 'selected' : ''}" onclick="selectOwner(null)">
-        <span class="menu-ic none"><i class="ph ph-minus"></i></span>
-        <div class="menu-text">
-          <div class="menu-title">Unassigned</div>
-          <div class="menu-desc">Fall back to team Slack channel</div>
-        </div>
-        <i class="ph ph-check-circle menu-check"></i>
-      </div>
-      <div style="height:1px; background:var(--border); margin:4px 0;"></div>
-    `;
-    if (people.length === 0 && q) {
-      return unassign + `<div class="menu-empty">No people match "${query}"</div>`;
+  // Close modal on Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && document.getElementById('new-rule-modal').classList.contains('open')) {
+      hideNewRuleModal();
     }
-    return unassign + people.map(p => `
-      <div class="menu-item ${currentId === p.id ? 'selected' : ''}" onclick="selectOwner('${p.id}')">
-        <span class="menu-ic" style="background:${p.avatar};">${p.name.charAt(0).toUpperCase()}</span>
-        <div class="menu-text">
-          <div class="menu-title">${p.name}</div>
-          <div class="menu-desc">${teamName[teamKey]}</div>
-        </div>
-        <i class="ph ph-check-circle menu-check"></i>
-      </div>
-    `).join('');
-  }
-
-  function openOwnerMenu(chipEl, client, teamKey) {
-    if (activeOwnerMenu && activeOwnerMenu.chipEl === chipEl) { closeAllMenus(); return; }
-    closeAllMenus();
-    const row = owners.find(o => o.client === client);
-    activeOwnerMenu = { chipEl, client, teamKey };
-
-    document.getElementById('owner-menu-header').textContent = `${teamName[teamKey]} owner · ${client}`;
-    ownerSearchInput.value = '';
-    ownerMenuList.innerHTML = buildOwnerMenuOptions(teamKey, row[teamKey]);
-
-    positionMenu(ownerMenu, chipEl, 280);
-    chipEl.classList.add('open');
-    requestAnimationFrame(() => { ownerMenu.classList.add('open'); ownerSearchInput.focus(); });
-  }
-
-  function selectOwner(userId) {
-    if (!activeOwnerMenu) return;
-    const { client, teamKey } = activeOwnerMenu;
-    const row = owners.find(o => o.client === client);
-    if (row[teamKey] !== userId) {
-      row[teamKey] = userId;
-      renderOwners();
-      const p = findPerson(teamKey, userId);
-      toast({
-        title:'Owner updated',
-        body: p ? `${p.name} now owns ${teamName[teamKey]} for ${client}.` : `${teamName[teamKey]} unassigned for ${client}. Will use team channel.`,
-        type: p ? 'success' : 'warning'
-      });
-    }
-    closeAllMenus();
-  }
-
-  ownerSearchInput.addEventListener('input', e => {
-    if (!activeOwnerMenu) return;
-    const row = owners.find(o => o.client === activeOwnerMenu.client);
-    ownerMenuList.innerHTML = buildOwnerMenuOptions(activeOwnerMenu.teamKey, row[activeOwnerMenu.teamKey], e.target.value);
   });
 
   /* =============================================================
-     MENU POSITIONING + GLOBAL CLOSE
+     ROUTING TOGGLE
+     ============================================================= */
+  function toggleRouting(moduleName, team, el) {
+    const mod = findModule(moduleName);
+    if (!mod) return;
+    const next = (mod.routing[team] === 'P' || mod.routing[team] === 'I') ? '-' : 'P';
+    mod.routing[team] = next;
+    el.classList.toggle('checked', next === 'P');
+    toast({
+      title: 'Routing updated',
+      body: `${mod.name} · ${teamName[team]} → ${next === 'P' ? 'will be notified' : 'will not be notified'}.`,
+      type: 'success'
+    });
+  }
+
+  /* =============================================================
+     MENU POSITIONING (used by client/inbox/etc. dropdowns)
      ============================================================= */
   function positionMenu(menuEl, anchorEl, width) {
     const rect = anchorEl.getBoundingClientRect();
@@ -1831,26 +1709,7 @@
     menuEl.style.top  = `${top}px`;
   }
 
-  function closeAllMenus() {
-    if (activeRoleMenu) {
-      activeRoleMenu.chipEl.classList.remove('open');
-      roleMenu.classList.remove('open');
-      activeRoleMenu = null;
-    }
-    if (activeOwnerMenu) {
-      activeOwnerMenu.chipEl.classList.remove('open');
-      ownerMenu.classList.remove('open');
-      activeOwnerMenu = null;
-    }
-  }
-
-  document.addEventListener('click', e => {
-    if (activeRoleMenu && !roleMenu.contains(e.target) && !activeRoleMenu.chipEl.contains(e.target)) closeAllMenus();
-    if (activeOwnerMenu && !ownerMenu.contains(e.target) && !activeOwnerMenu.chipEl.contains(e.target)) closeAllMenus();
-  });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAllMenus(); });
-  window.addEventListener('scroll', closeAllMenus, true);
-  window.addEventListener('resize', closeAllMenus);
+  function closeAllMenus() { /* nothing to close yet — placeholder for future menus */ }
 
   /* =============================================================
      TOAST
@@ -2618,7 +2477,6 @@
      INIT
      ============================================================= */
   renderModules();
-  renderOwners();
   renderInbox();
   renderTemplatesEventList();
 </script>
