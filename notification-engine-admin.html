@@ -1335,8 +1335,9 @@
         <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>HR Ops</span></label>
         <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>Sales</span></label>
         <label class="route-check-item"><span class="route-checkbox checked"><i class="ph ph-check"></i></span> <span>Client</span></label>
+        <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>Employee</span></label>
+        <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>Contractor</span></label>
         <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>Manager</span></label>
-        <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>Worker</span></label>
       </div>
       <div class="field-hint">These defaults will be saved at the module level. You can fine-tune later.</div>
     </div>
@@ -1424,9 +1425,12 @@
   const findModule = (name) => modules.find(m => m.name === name);
 
   // Give each event its own routing (initially copied from the parent module).
+  // Backfill any newly added external keys (e.g. `manager`) on legacy data.
   modules.forEach(m => {
+    if (m.routing.manager === undefined) m.routing.manager = '-';
     m.events.forEach(e => {
       if (!e.routing) e.routing = { ...m.routing };
+      if (e.routing.manager === undefined) e.routing.manager = '-';
       e.module = m.name;
       e.icon   = m.icon;
     });
@@ -1477,10 +1481,10 @@
      ============================================================= */
   const teamName  = {
     cs:'Customer Success', cf:'Customer Finance', hr:'HR Ops', sales:'Sales',
-    client:'Client', employee:'Manager', contractor:'Worker'
+    client:'Client', employee:'Employee', contractor:'Contractor', manager:'Manager'
   };
   const internalKeys = ['cs','cf','hr','sales'];
-  const externalKeys = ['client','employee','contractor'];
+  const externalKeys = ['client','employee','contractor','manager'];
 
   const filters = { search:'', module:'', audience:'', teams:{ cs:true, cf:true, hr:true, sales:true } };
 
@@ -1632,12 +1636,11 @@
     document.getElementById('new-module-name-row').style.display = 'none';
 
     // Reset checkboxes to a sensible default
-    const defaults = { cs:true, cf:true, hr:false, sales:false, client:true, manager:false, worker:false };
-    const labels = ['Customer Success','Customer Finance','HR Ops','Sales','Client','Manager','Worker'];
+    const ruleKeys = ['cs','cf','hr','sales','client','employee','contractor','manager'];
+    const defaults = { cs:true, cf:true, hr:false, sales:false, client:true, employee:false, contractor:false, manager:false };
     document.querySelectorAll('#new-rule-routing .route-check-item').forEach((item, i) => {
-      const key = ['cs','cf','hr','sales','client','manager','worker'][i];
       const cb = item.querySelector('.route-checkbox');
-      cb.classList.toggle('checked', defaults[key]);
+      cb.classList.toggle('checked', defaults[ruleKeys[i]]);
     });
 
     document.getElementById('new-rule-scrim').classList.add('open');
@@ -1679,7 +1682,7 @@
     if (!trigger)   { toast({ title:'Trigger description required', body:'Describe when the event fires.', type:'warning' }); return; }
 
     // Read routing checkboxes
-    const keys = ['cs','cf','hr','sales','client','manager','worker'];
+    const keys = ['cs','cf','hr','sales','client','employee','contractor','manager'];
     const routing = {};
     document.querySelectorAll('#new-rule-routing .route-checkbox').forEach((cb, i) => {
       routing[keys[i]] = cb.classList.contains('checked') ? 'P' : '-';
