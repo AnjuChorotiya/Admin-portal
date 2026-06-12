@@ -21,6 +21,7 @@ Repo: https://github.com/AnjuChorotiya/Admin-portal · Pages base: `https://anju
 |---|---|---|
 | form16.html | [src](https://github.com/AnjuChorotiya/Admin-portal/blob/main/form16.html) | [live](https://anjuchorotiya.github.io/Admin-portal/form16.html) |
 | notification-engine-admin.html | [src](https://github.com/AnjuChorotiya/Admin-portal/blob/main/notification-engine-admin.html) | [live](https://anjuchorotiya.github.io/Admin-portal/notification-engine-admin.html) |
+| client-verification.html | [src](https://github.com/AnjuChorotiya/Admin-portal/blob/main/client-verification.html) | [live](https://anjuchorotiya.github.io/Admin-portal/client-verification.html) |
 
 ## wisemonk-recruit-portal
 Repo: https://github.com/AnjuChorotiya/wisemonk-recruit-portal · Pages base: `https://anjuchorotiya.github.io/wisemonk-recruit-portal/`
