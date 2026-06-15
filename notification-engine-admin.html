@@ -225,33 +225,6 @@
   thead th.col-ext-start { border-left: 1px solid var(--border); }
   tbody td.col-ext-start { border-left: 1px solid var(--border); }
 
-  /* Event cell (flat layout) */
-  .event-cell {
-    display: flex; align-items: flex-start; gap: 12px;
-  }
-  .event-module-tag {
-    display: inline-block;
-    flex-shrink: 0;
-    padding: 4px 9px;
-    border-radius: 6px;
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 300; font-size: 11px;
-    text-transform: uppercase; letter-spacing: 0.4px;
-    margin-top: 2px;
-    align-self: flex-start;
-    background: var(--neutral-100);
-    color: var(--neutral-700);
-    min-width: 92px;
-    text-align: center;
-  }
-  .event-module-tag.mod-employees   { background: #E8F2FF; color: #1059BD; }
-  .event-module-tag.mod-payroll     { background: #FFF4E5; color: #B54708; }
-  .event-module-tag.mod-invoicing   { background: #F2EBFF; color: #5A3FD6; }
-  .event-module-tag.mod-compliance  { background: #FFE9E8; color: #B42318; }
-  .event-module-tag.mod-leaves      { background: #E6F9F0; color: #027A48; }
-  .event-module-tag.mod-contractors { background: #FFF7E1; color: #8A4400; }
-  .event-module-tag.mod-account     { background: #E8E9FF; color: #2A1F8C; }
-  .event-cell-text { min-width: 0; flex: 1; }
 
   /* Module row (legacy — kept for any leftover references, safe to remove later) */
   tbody tr.module-row { cursor: pointer; }
@@ -1680,13 +1653,8 @@
     tbody.innerHTML = list.map(ev => `
       <tr>
         <td>
-          <div class="event-cell">
-            <span class="event-module-tag mod-${moduleSlug(ev.module)}" title="Module">${ev.module}</span>
-            <div class="event-cell-text">
-              <span class="event-name">${ev.name}</span>
-              <span class="event-trigger">${ev.trigger}</span>
-            </div>
-          </div>
+          <span class="event-name">${ev.name}</span>
+          <span class="event-trigger">${ev.trigger}</span>
         </td>
         ${internalKeys.map(t => chipCell(ev, t)).join('')}
         ${recipientsCell(ev)}
