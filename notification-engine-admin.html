@@ -1357,21 +1357,6 @@
 
   <div class="modal-body">
     <div class="field-row">
-      <label class="field-label">Module</label>
-      <div class="select-wrap" style="width:100%;">
-        <select id="new-rule-module" class="wm-select" style="width:100%;">
-          <option value="">Pick a module…</option>
-          <option value="__new__">+ Create new module…</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="field-row" id="new-module-name-row" style="display:none;">
-      <label class="field-label">New module name</label>
-      <input class="tpl-input" id="new-module-name" type="text" placeholder="e.g. Time tracking" />
-    </div>
-
-    <div class="field-row">
       <label class="field-label">Event name</label>
       <input class="tpl-input" id="new-rule-event" type="text" placeholder="e.g. Payslip download requested" />
     </div>
@@ -1682,16 +1667,8 @@
   function newRule() { showNewRuleModal(); }
 
   function showNewRuleModal() {
-    // Populate module dropdown with current modules + the "create new" option
-    const sel = document.getElementById('new-rule-module');
-    sel.innerHTML = '<option value="">Pick a module…</option>'
-      + modules.map(m => `<option value="${m.name}">${m.name}</option>`).join('')
-      + '<option value="__new__">+ Create new module…</option>';
-
     // Reset form fields
     document.getElementById('new-rule-event').value = '';
-    document.getElementById('new-module-name').value = '';
-    document.getElementById('new-module-name-row').style.display = 'none';
     document.getElementById('new-rule-subject').value = '';
     document.getElementById('new-rule-body').value = '';
     document.getElementById('new-rule-cta').value = '';
@@ -1708,22 +1685,14 @@
     });
 
     document.getElementById('new-rule-scrim').classList.add('open');
-    const m = document.getElementById('new-rule-modal');
-    m.classList.add('open');
-    setTimeout(() => sel.focus(), 100);
+    document.getElementById('new-rule-modal').classList.add('open');
+    setTimeout(() => document.getElementById('new-rule-event').focus(), 100);
   }
 
   function hideNewRuleModal() {
     document.getElementById('new-rule-scrim').classList.remove('open');
     document.getElementById('new-rule-modal').classList.remove('open');
   }
-
-  // Toggle the "new module name" row when "Create new module..." is picked
-  document.getElementById('new-rule-module').addEventListener('change', e => {
-    const isNew = e.target.value === '__new__';
-    document.getElementById('new-module-name-row').style.display = isNew ? '' : 'none';
-    if (isNew) setTimeout(() => document.getElementById('new-module-name').focus(), 80);
-  });
 
   // Wire up checkboxes inside the new-rule modal so clicking toggles them
   document.querySelectorAll('#new-rule-routing .route-check-item').forEach(item => {
@@ -1733,15 +1702,28 @@
     });
   });
 
-  function createNewRule() {
-    const moduleChoice = document.getElementById('new-rule-module').value;
-    const eventName    = document.getElementById('new-rule-event').value.trim();
-    const newModuleName = document.getElementById('new-module-name').value.trim();
+  // Custom rules — those added via the New rule modal — land in a single
+  // "Custom" module that gets created on demand.
+  function getOrCreateCustomModule() {
+    let mod = modules.find(m => m.name === 'Custom');
+    if (!mod) {
+      mod = { name: 'Custom', icon: 'ph-cube',
+        routing: { cs:'-', cf:'-', hr:'-', sales:'-', client:'-', employee:'-', contractor:'-', freelancer:'-', manager:'-' },
+        events: [] };
+      modules.push(mod);
+    }
+    return mod;
+  }
 
-    // Validate
-    if (!moduleChoice) { toast({ title:'Pick a module', body:'Choose an existing module or create a new one.', type:'warning' }); return; }
-    if (moduleChoice === '__new__' && !newModuleName) { toast({ title:'Module name required', body:'Give your new module a name.', type:'warning' }); return; }
+  function createNewRule() {
+    const eventName = document.getElementById('new-rule-event').value.trim();
     if (!eventName) { toast({ title:'Event name required', body:'Add a name like "Payslip download requested".', type:'warning' }); return; }
+
+    // Reject duplicate event names globally so the inbox/templates lookups stay unambiguous.
+    if (allEvents().some(e => e.name.toLowerCase() === eventName.toLowerCase())) {
+      toast({ title:'Event already exists', body:`"${eventName}" is already a rule.`, type:'warning' });
+      return;
+    }
 
     // Read the combined Recipients checkbox grid (order matches the HTML)
     const allKeys = ['cs','cf','hr','sales','client','employee','contractor','freelancer','manager'];
@@ -1750,26 +1732,7 @@
       routing[allKeys[i]] = cb.classList.contains('checked') ? 'P' : '-';
     });
 
-    let mod;
-    if (moduleChoice === '__new__') {
-      if (modules.some(m => m.name.toLowerCase() === newModuleName.toLowerCase())) {
-        toast({ title:'Module already exists', body:`"${newModuleName}" is already a module. Pick it from the dropdown.`, type:'warning' });
-        return;
-      }
-      mod = { name: newModuleName, icon: 'ph-cube', routing, events: [] };
-      modules.push(mod);
-    } else {
-      mod = findModule(moduleChoice);
-      if (!mod) { toast({ title:'Module not found', body:moduleChoice, type:'danger' }); return; }
-    }
-
-    // Reject duplicate event names within the same module
-    if (mod.events.some(e => e.name.toLowerCase() === eventName.toLowerCase())) {
-      toast({ title:'Event already exists', body:`"${eventName}" is already an event in ${mod.name}.`, type:'warning' });
-      return;
-    }
-
-    // Each event gets its own routing (so it can diverge from siblings)
+    const mod = getOrCreateCustomModule();
     mod.events.push({
       name: eventName,
       trigger: '',
@@ -1778,8 +1741,7 @@
       icon: mod.icon,
     });
 
-    // If the user filled in template copy, register it under the 'internal' recipient
-    // (the most common variant). They can fine-tune per recipient type in the Templates tab.
+    // If the user filled in template copy, register it under the 'internal' recipient.
     const subject = document.getElementById('new-rule-subject').value.trim();
     const body    = document.getElementById('new-rule-body').value.trim();
     const cta     = document.getElementById('new-rule-cta').value.trim();
@@ -1791,11 +1753,7 @@
     renderEvents();
     renderTemplatesEventList(document.getElementById('tpl-search-input').value);
     hideNewRuleModal();
-    toast({
-      title: moduleChoice === '__new__' ? 'Module + rule created' : 'Rule added',
-      body: `${eventName} → ${mod.name}`,
-      type: 'success'
-    });
+    toast({ title:'Rule added', body: eventName, type:'success' });
   }
 
   // Close modal on Escape
@@ -1852,9 +1810,6 @@
     menu.className = 'row-action-menu';
     menu.innerHTML =
       '<button onclick="editRule()"><i class="ph ph-pencil-simple"></i> Edit rule</button>' +
-      '<button onclick="duplicateRule()"><i class="ph ph-copy"></i> Duplicate rule</button>' +
-      '<button onclick="testEvent()"><i class="ph ph-paper-plane-tilt"></i> Send test notification</button>' +
-      '<div class="menu-sep"></div>' +
       '<button class="danger" onclick="deleteRule()"><i class="ph ph-trash"></i> Delete rule</button>';
     document.body.appendChild(menu);
     return menu;
@@ -2817,10 +2772,6 @@
     document.querySelectorAll('select.wm-select').forEach(enhanceSelectAsDropdown);
 
     // Re-build dynamically populated dropdowns when their options change.
-    const moduleSelectInModal = document.getElementById('new-rule-module');
-    if (moduleSelectInModal) {
-      new MutationObserver(() => moduleSelectInModal._wmRebuild?.()).observe(moduleSelectInModal, { childList: true });
-    }
     const memberSelect = document.getElementById('inbox-member-select');
     if (memberSelect) {
       new MutationObserver(() => memberSelect._wmRebuild?.()).observe(memberSelect, { childList: true, subtree: true });
