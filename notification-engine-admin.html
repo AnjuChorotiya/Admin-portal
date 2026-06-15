@@ -1377,18 +1377,12 @@
     </div>
 
     <div class="field-row">
-      <label class="field-label">Notify internal teams</label>
-      <div class="route-checkbox-grid" id="new-rule-routing-internal">
+      <label class="field-label">Recipients</label>
+      <div class="route-checkbox-grid" id="new-rule-routing">
         <label class="route-check-item"><span class="route-checkbox checked"><i class="ph ph-check"></i></span> <span>Customer Success</span></label>
         <label class="route-check-item"><span class="route-checkbox checked"><i class="ph ph-check"></i></span> <span>Customer Finance</span></label>
         <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>HR Ops</span></label>
         <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>Sales</span></label>
-      </div>
-    </div>
-
-    <div class="field-row">
-      <label class="field-label">Notify external recipients</label>
-      <div class="route-checkbox-grid" id="new-rule-routing-external">
         <label class="route-check-item"><span class="route-checkbox checked"><i class="ph ph-check"></i></span> <span>Client</span></label>
         <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>Employee</span></label>
         <label class="route-check-item"><span class="route-checkbox"><i class="ph ph-check"></i></span> <span>Contractor</span></label>
@@ -1703,18 +1697,14 @@
     document.getElementById('new-rule-cta').value = '';
 
     // Reset checkboxes to sensible defaults
-    const internalRuleKeys = ['cs','cf','hr','sales'];
-    const externalRuleKeys = ['client','employee','contractor','freelancer','manager'];
-    const internalDefaults = { cs:true,  cf:true,  hr:false, sales:false };
-    const externalDefaults = { client:true, employee:false, contractor:false, freelancer:false, manager:false };
-
-    document.querySelectorAll('#new-rule-routing-internal .route-check-item').forEach((item, i) => {
+    const ruleKeys = ['cs','cf','hr','sales','client','employee','contractor','freelancer','manager'];
+    const ruleDefaults = {
+      cs:true, cf:true, hr:false, sales:false,
+      client:true, employee:false, contractor:false, freelancer:false, manager:false,
+    };
+    document.querySelectorAll('#new-rule-routing .route-check-item').forEach((item, i) => {
       const cb = item.querySelector('.route-checkbox');
-      cb.classList.toggle('checked', internalDefaults[internalRuleKeys[i]]);
-    });
-    document.querySelectorAll('#new-rule-routing-external .route-check-item').forEach((item, i) => {
-      const cb = item.querySelector('.route-checkbox');
-      cb.classList.toggle('checked', externalDefaults[externalRuleKeys[i]]);
+      cb.classList.toggle('checked', ruleDefaults[ruleKeys[i]]);
     });
 
     document.getElementById('new-rule-scrim').classList.add('open');
@@ -1736,7 +1726,7 @@
   });
 
   // Wire up checkboxes inside the new-rule modal so clicking toggles them
-  document.querySelectorAll('#new-rule-routing-internal .route-check-item, #new-rule-routing-external .route-check-item').forEach(item => {
+  document.querySelectorAll('#new-rule-routing .route-check-item').forEach(item => {
     item.addEventListener('click', () => {
       const cb = item.querySelector('.route-checkbox');
       cb.classList.toggle('checked');
@@ -1753,15 +1743,11 @@
     if (moduleChoice === '__new__' && !newModuleName) { toast({ title:'Module name required', body:'Give your new module a name.', type:'warning' }); return; }
     if (!eventName) { toast({ title:'Event name required', body:'Add a name like "Payslip download requested".', type:'warning' }); return; }
 
-    // Read both internal and external checkbox groups
-    const internalKeysList = ['cs','cf','hr','sales'];
-    const externalKeysList = ['client','employee','contractor','freelancer','manager'];
+    // Read the combined Recipients checkbox grid (order matches the HTML)
+    const allKeys = ['cs','cf','hr','sales','client','employee','contractor','freelancer','manager'];
     const routing = {};
-    document.querySelectorAll('#new-rule-routing-internal .route-checkbox').forEach((cb, i) => {
-      routing[internalKeysList[i]] = cb.classList.contains('checked') ? 'P' : '-';
-    });
-    document.querySelectorAll('#new-rule-routing-external .route-checkbox').forEach((cb, i) => {
-      routing[externalKeysList[i]] = cb.classList.contains('checked') ? 'P' : '-';
+    document.querySelectorAll('#new-rule-routing .route-checkbox').forEach((cb, i) => {
+      routing[allKeys[i]] = cb.classList.contains('checked') ? 'P' : '-';
     });
 
     let mod;
