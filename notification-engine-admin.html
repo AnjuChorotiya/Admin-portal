@@ -374,11 +374,15 @@
     color: var(--primary-700);
     border-color: var(--primary-100);
   }
-  .rcpt-tag.on:hover { background: var(--primary-100); border-color: var(--primary-200); }
+  /* Per-type colour coding for the on state */
+  .rcpt-tag.on.rcpt-client     { background: var(--primary-50); color: var(--primary-700); border-color: var(--primary-100); }
+  .rcpt-tag.on.rcpt-employee   { background: var(--success-50); color: var(--success-700); border-color: #B8E5CC; }
+  .rcpt-tag.on.rcpt-contractor { background: var(--warning-50); color: var(--warning-700); border-color: #FFE3A1; }
+  .rcpt-tag.on.rcpt-freelancer { background: #F2EBFF;          color: #5A3FD6;             border-color: #DCC9FF; }
+  .rcpt-tag.on.rcpt-manager    { background: #FFE9F0;          color: #C71F50;             border-color: #FFC9DC; }
   /* Read-only variant — non-interactive display of preconfigured recipients */
   .rcpt-tag.readonly { cursor: default; }
   .rcpt-tag.readonly:hover { filter: none; }
-  .rcpt-tag.readonly.on:hover { background: var(--primary-50); border-color: var(--primary-100); }
   .rcpt-empty { color: var(--neutral-400); font-size: 13px; }
 
   /* ========== Generic dropdown menu ========== */
@@ -1642,7 +1646,7 @@
     const recipientsCell = (ev) => {
       const activeTags = externalKeys
         .filter(t => ev.routing[t] === 'P' || ev.routing[t] === 'I')
-        .map(t => `<span class="rcpt-tag readonly on" title="${teamName[t]} will be notified">${teamName[t]}</span>`)
+        .map(t => `<span class="rcpt-tag readonly on rcpt-${t}" title="${teamName[t]} will be notified">${teamName[t]}</span>`)
         .join('');
       const inner = activeTags || `<span class="rcpt-empty">—</span>`;
       return `<td class="col-ext-start"><div class="recipient-tags">${inner}</div></td>`;
