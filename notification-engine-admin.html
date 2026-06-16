@@ -1161,7 +1161,9 @@
   <div class="modal-body">
     <div class="field-row">
       <label class="field-label">Event name</label>
-      <input class="tpl-input" id="new-rule-event" type="text" placeholder="e.g. Payslip download requested" />
+      <select class="wm-select" id="new-rule-event">
+        <option value="">Pick an event…</option>
+      </select>
     </div>
 
     <div class="field-row">
@@ -1505,7 +1507,50 @@
   }
   function newRule() { showNewRuleModal(); }
 
+  // A mocked "DB" of available product events the engine can route. In
+  // production this list would come from a backend endpoint. The list
+  // includes everything already in the modules data plus a handful of
+  // catalogue entries that aren't yet configured.
+  const eventCatalogue = [
+    // Additional unconfigured events the user can subscribe to
+    'Payslip download requested',
+    'Profile photo updated',
+    'Bank details verified',
+    'Investment proof rejected',
+    'Holiday calendar published',
+    'New policy document available',
+    'Asset assigned to employee',
+    'Asset return requested',
+    'Anniversary reminder',
+    'Birthday reminder',
+  ];
+
+  function getEventCatalogue() {
+    const fromData = allEvents().map(e => e.name);
+    // Merge while preserving order and deduping
+    const seen = new Set();
+    const combined = [...fromData, ...eventCatalogue].filter(name => {
+      const k = name.toLowerCase();
+      if (seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    });
+    return combined.sort((a, b) => a.localeCompare(b));
+  }
+
+  function populateNewRuleEventSelect() {
+    const sel = document.getElementById('new-rule-event');
+    const list = getEventCatalogue();
+    sel.innerHTML = '<option value="">Pick an event…</option>'
+      + list.map(name => `<option value="${escapeText(name)}">${escapeText(name)}</option>`).join('');
+    // Re-build the wm-dropdown menu so the new options appear
+    if (typeof sel._wmRebuild === 'function') sel._wmRebuild();
+  }
+
   function showNewRuleModal() {
+    // Populate the Event dropdown from the master catalogue
+    populateNewRuleEventSelect();
+
     // Reset form fields
     document.getElementById('new-rule-event').value = '';
     document.getElementById('new-rule-subject').value = '';
@@ -1556,13 +1601,7 @@
 
   function createNewRule() {
     const eventName = document.getElementById('new-rule-event').value.trim();
-    if (!eventName) { toast({ title:'Event name required', body:'Add a name like "Payslip download requested".', type:'warning' }); return; }
-
-    // Reject duplicate event names globally so the inbox/templates lookups stay unambiguous.
-    if (allEvents().some(e => e.name.toLowerCase() === eventName.toLowerCase())) {
-      toast({ title:'Event already exists', body:`"${eventName}" is already a rule.`, type:'warning' });
-      return;
-    }
+    if (!eventName) { toast({ title:'Pick an event', body:'Choose a notification event from the catalogue.', type:'warning' }); return; }
 
     // Read the combined Recipients checkbox grid (order matches the HTML)
     const allKeys = ['cs','cf','hr','sales','client','employee','contractor','freelancer','manager'];
@@ -1571,14 +1610,23 @@
       routing[allKeys[i]] = cb.classList.contains('checked') ? 'P' : '-';
     });
 
-    const mod = getOrCreateCustomModule();
-    mod.events.push({
-      name: eventName,
-      trigger: '',
-      routing: { ...routing },
-      module: mod.name,
-      icon: mod.icon,
-    });
+    // If the event is already configured, update its routing in place;
+    // otherwise add it to the Custom module.
+    const existing = findEvent(eventName);
+    let wasUpdate = false;
+    if (existing) {
+      existing.routing = { ...routing };
+      wasUpdate = true;
+    } else {
+      const mod = getOrCreateCustomModule();
+      mod.events.push({
+        name: eventName,
+        trigger: '',
+        routing: { ...routing },
+        module: mod.name,
+        icon: mod.icon,
+      });
+    }
 
     // If the user filled in template copy, register it under the 'internal' recipient.
     const subject = document.getElementById('new-rule-subject').value.trim();
@@ -1591,7 +1639,7 @@
 
     renderEvents();
     hideNewRuleModal();
-    toast({ title:'Rule added', body: eventName, type:'success' });
+    toast({ title: wasUpdate ? 'Rule updated' : 'Rule added', body: eventName, type:'success' });
   }
 
   // Close modal on Escape
