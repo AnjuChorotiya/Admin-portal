@@ -492,11 +492,10 @@
   .row-action-menu button.danger:hover { background: var(--danger-50); }
   .row-action-menu .menu-sep { height: 1px; background: var(--border); margin: 6px 4px; }
 
-  /* ========== Table footer ========== */
+  /* ========== Table footer (lives OUTSIDE the wm-table-card) ========== */
   .table-footer {
-    padding: 16px 20px;
+    padding: 16px 4px 4px;
     display: flex; align-items: center; justify-content: space-between;
-    border-top: 1px solid var(--border);
     background: transparent;
     font-size: 13px; color: var(--neutral-500);
   }
@@ -1040,20 +1039,20 @@
             <tbody id="rules-body"></tbody>
           </table>
         </div>
-
-        <div class="table-footer">
-          <div class="pager" id="defaults-pager">
-            <button class="pager-text">Prev</button>
-            <button class="pager-num active">1</button>
-            <button class="pager-num">2</button>
-            <button class="pager-num">3</button>
-            <span class="pager-ellipsis">…</span>
-            <button class="pager-num">25</button>
-            <button class="pager-text">Next</button>
-          </div>
-          <div class="pager-range"><strong style="color:var(--neutral-800)" id="result-count">1-10</strong> of 250</div>
-        </div>
       </section>
+
+      <div class="table-footer">
+        <div class="pager" id="defaults-pager">
+          <button class="pager-text">Prev</button>
+          <button class="pager-num active">1</button>
+          <button class="pager-num">2</button>
+          <button class="pager-num">3</button>
+          <span class="pager-ellipsis">…</span>
+          <button class="pager-num">25</button>
+          <button class="pager-text">Next</button>
+        </div>
+        <div class="pager-range"><strong style="color:var(--neutral-800)" id="result-count">1-10</strong> of 250</div>
+      </div>
     </section>
 
     <!-- ========== VIEW: INBOX ========== -->
@@ -1130,20 +1129,20 @@
             <tbody id="inbox-body"></tbody>
           </table>
         </div>
-
-        <div class="table-footer">
-          <div class="pager" id="inbox-pager">
-            <button class="pager-text">Prev</button>
-            <button class="pager-num active">1</button>
-            <button class="pager-num">2</button>
-            <button class="pager-num">3</button>
-            <span class="pager-ellipsis">…</span>
-            <button class="pager-num">25</button>
-            <button class="pager-text">Next</button>
-          </div>
-          <div class="pager-range"><strong style="color:var(--neutral-800)" id="inbox-result-count">1-10</strong> of 250</div>
-        </div>
       </section>
+
+      <div class="table-footer">
+        <div class="pager" id="inbox-pager">
+          <button class="pager-text">Prev</button>
+          <button class="pager-num active">1</button>
+          <button class="pager-num">2</button>
+          <button class="pager-num">3</button>
+          <span class="pager-ellipsis">…</span>
+          <button class="pager-num">25</button>
+          <button class="pager-text">Next</button>
+        </div>
+        <div class="pager-range"><strong style="color:var(--neutral-800)" id="inbox-result-count">1-10</strong> of 250</div>
+      </div>
     </section>
 
   </main>
