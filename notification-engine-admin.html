@@ -379,11 +379,11 @@
     border-color: var(--primary-100);
   }
   /* Per-type colour coding for the on state */
-  .rcpt-tag.on.rcpt-client     { background: var(--primary-50); color: var(--primary-700); border-color: var(--primary-100); }
-  .rcpt-tag.on.rcpt-employee   { background: var(--success-50); color: var(--success-700); border-color: #B8E5CC; }
-  .rcpt-tag.on.rcpt-contractor { background: var(--warning-50); color: var(--warning-700); border-color: #FFE3A1; }
-  .rcpt-tag.on.rcpt-freelancer { background: #F2EBFF;          color: #5A3FD6;             border-color: #DCC9FF; }
-  .rcpt-tag.on.rcpt-manager    { background: #FFE9F0;          color: #C71F50;             border-color: #FFC9DC; }
+  .rcpt-tag.on.rcpt-client     { background: var(--primary-50); color: var(--primary-700); border-color: transparent; }
+  .rcpt-tag.on.rcpt-employee   { background: var(--success-50); color: var(--success-700); border-color: transparent; }
+  .rcpt-tag.on.rcpt-contractor { background: var(--warning-50); color: var(--warning-700); border-color: transparent; }
+  .rcpt-tag.on.rcpt-freelancer { background: #F2EBFF;          color: #5A3FD6;             border-color: transparent; }
+  .rcpt-tag.on.rcpt-manager    { background: #FFE9F0;          color: #C71F50;             border-color: transparent; }
   /* Read-only variant — non-interactive display of preconfigured recipients */
   .rcpt-tag.readonly { cursor: default; }
   .rcpt-tag.readonly:hover { filter: none; }
@@ -967,10 +967,7 @@
       <div class="page-header">
         <div>
           <div class="page-title">Default routing rules</div>
-          <div class="page-subtitle">
-            Global routing for every product event. These defaults apply to every client unless overridden later.
-            The team you pick here is resolved to a specific person via the <strong>Owners</strong> tab.
-          </div>
+          <div class="page-subtitle">Choose who gets notified for each product event.</div>
         </div>
         <div style="display:flex; gap:8px;">
           <button class="wm-btn wm-btn--primary" onclick="newRule()"><i class="ph ph-plus"></i> New rule</button>
