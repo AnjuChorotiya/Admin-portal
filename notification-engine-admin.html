@@ -500,13 +500,71 @@
     background: var(--neutral-50);
     font-size: 13px; color: var(--neutral-500);
   }
-  .pager { display: flex; gap: 4px; }
-  .pager button {
-    width: 32px; height: 32px; border-radius: 6px;
-    background: var(--neutral-0); border: 1px solid var(--border-strong);
-    color: var(--neutral-700); font-weight: 500;
+  /* New pagination */
+  .pager {
+    display: flex; align-items: center; gap: 6px;
+    flex: 1; justify-content: center;
   }
-  .pager button.active { background: var(--primary-500); color: white; border-color: var(--primary-500); }
+  .pager-num,
+  .pager-text {
+    height: 32px; min-width: 32px; padding: 0 10px;
+    border: none; background: transparent;
+    color: var(--neutral-700); font-weight: 500; font-size: 13px;
+    border-radius: 999px;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: background 120ms ease, color 120ms ease;
+  }
+  .pager-num:hover:not(.active),
+  .pager-text:hover { background: var(--neutral-100); color: var(--neutral-900); }
+  .pager-num.active {
+    background: var(--primary-500);
+    color: white;
+    font-weight: 700;
+  }
+  .pager-ellipsis {
+    color: var(--neutral-500);
+    padding: 0 4px;
+    font-weight: 500; font-size: 13px;
+    user-select: none;
+  }
+  .pager-range {
+    font-size: 13px; color: var(--neutral-500);
+    flex-shrink: 0;
+  }
+
+  /* Multi-select dropdown */
+  .wm-dd-item .wm-dd-check {
+    width: 18px; height: 18px;
+    border-radius: 4px;
+    border: 1.5px solid var(--neutral-300);
+    background: var(--neutral-0);
+    display: inline-grid; place-items: center;
+    flex-shrink: 0;
+    transition: all 120ms ease;
+  }
+  .wm-dd-item .wm-dd-check svg {
+    width: 12px; height: 12px;
+    color: white;
+    opacity: 0;
+    transition: opacity 100ms ease;
+  }
+  .wm-dd-item .wm-dd-check.checked {
+    background: var(--primary-500);
+    border-color: var(--primary-500);
+  }
+  .wm-dd-item .wm-dd-check.checked svg { opacity: 1; }
+  .wm-dd-menu--multi .wm-dd-item {
+    gap: 10px;
+  }
+  .wm-dd-item--all {
+    font-weight: 700 !important;
+  }
+  .wm-dd-sep {
+    height: 1px;
+    background: var(--border);
+    margin: 4px 4px;
+  }
 
   /* ========== Empty state ========== */
   .empty-state { padding: 60px 24px; text-align: center; }
@@ -925,33 +983,17 @@
             <input id="search-input" type="text" placeholder="Search events or triggers…" />
           </div>
           <div class="select-wrap">
-            <select id="module-select" class="wm-select">
-              <option value="">All modules</option>
-              <option>Employees</option>
-              <option>Payroll</option>
-              <option>Invoicing</option>
-              <option>Compliance</option>
-              <option>Leaves</option>
-              <option>Assets</option>
-              <option>Contractors</option>
-              <option>Offboarding</option>
-              <option>Account</option>
-              <option>Support</option>
-            </select>
-          </div>
-          <div class="select-wrap">
             <select id="audience-select" class="wm-select">
-              <option value="">All audiences</option>
+              <option value="">All recipients</option>
               <option value="internal">Internal only</option>
               <option value="client">Client only</option>
-              <option value="employee">Manager only</option>
-              <option value="contractor">Worker only</option>
+              <option value="employee">Employee only</option>
+              <option value="contractor">Contractor only</option>
               <option value="mixed">Mixed</option>
             </select>
           </div>
           <div class="select-wrap">
-            <select id="team-select" class="wm-select">
-              <option value="">All teams</option>
+            <select id="team-select" class="wm-select" multiple data-wm-multi data-wm-all-label="All teams">
               <option value="cs">Customer Success</option>
               <option value="cf">Customer Finance</option>
               <option value="hr">HR Ops</option>
@@ -982,14 +1024,16 @@
         </div>
 
         <div class="table-footer">
-          <div>Showing <strong style="color:var(--neutral-800)" id="result-count">7</strong> features</div>
-          <div class="pager">
-            <button><i class="ph ph-caret-left"></i></button>
-            <button class="active">1</button>
-            <button>2</button>
-            <button>3</button>
-            <button><i class="ph ph-caret-right"></i></button>
+          <div class="pager" id="defaults-pager">
+            <button class="pager-text">Prev</button>
+            <button class="pager-num active">1</button>
+            <button class="pager-num">2</button>
+            <button class="pager-num">3</button>
+            <span class="pager-ellipsis">…</span>
+            <button class="pager-num">25</button>
+            <button class="pager-text">Next</button>
           </div>
+          <div class="pager-range"><strong style="color:var(--neutral-800)" id="result-count">7</strong> of 250</div>
         </div>
       </section>
     </section>
@@ -1070,7 +1114,16 @@
         </div>
 
         <div class="table-footer">
-          <div>Showing <strong style="color:var(--neutral-800)" id="inbox-result-count">24</strong> notifications</div>
+          <div class="pager" id="inbox-pager">
+            <button class="pager-text">Prev</button>
+            <button class="pager-num active">1</button>
+            <button class="pager-num">2</button>
+            <button class="pager-num">3</button>
+            <span class="pager-ellipsis">…</span>
+            <button class="pager-num">25</button>
+            <button class="pager-text">Next</button>
+          </div>
+          <div class="pager-range"><strong style="color:var(--neutral-800)" id="inbox-result-count">24</strong> of 250</div>
         </div>
       </section>
     </section>
@@ -1307,7 +1360,7 @@
   const internalKeys = ['cs','cf','hr','sales'];
   const externalKeys = ['client','employee','contractor','freelancer','manager'];
 
-  const filters = { search:'', module:'', audience:'', team:'' };
+  const filters = { search:'', audience:'', teams: [] };
 
   function computeAudience(item) {
     const r = item.routing;
@@ -1348,11 +1401,12 @@
         const hay = `${ev.name} ${ev.trigger} ${ev.module}`.toLowerCase();
         if (!hay.includes(s)) return false;
       }
-      if (filters.module && ev.module !== filters.module) return false;
       if (filters.audience && computeAudience(ev) !== filters.audience) return false;
-      if (filters.team) {
-        const r = ev.routing[filters.team];
-        if (r !== 'P' && r !== 'I') return false;
+      // Multi-select team filter: when any teams are picked, require the rule
+      // to involve at least one of them. Empty selection = no filter applied.
+      if (filters.teams.length) {
+        const involves = filters.teams.some(t => ev.routing[t] === 'P' || ev.routing[t] === 'I');
+        if (!involves) return false;
       }
       return true;
     });
@@ -1366,7 +1420,7 @@
     document.getElementById('defaults-count').textContent = totalEvents;
 
     const resetBtn = document.getElementById('reset-filters-btn');
-    const dirty = filters.search || filters.module || filters.audience || filters.team;
+    const dirty = filters.search || filters.audience || filters.teams.length > 0;
     if (resetBtn) resetBtn.style.display = dirty ? 'inline-flex' : 'none';
 
     if (list.length === 0) {
@@ -1421,15 +1475,19 @@
 
   // Filter wiring
   document.getElementById('search-input').addEventListener('input', e => { filters.search = e.target.value; renderEvents(); });
-  document.getElementById('module-select').addEventListener('change', e => { filters.module = e.target.value; renderEvents(); });
   document.getElementById('audience-select').addEventListener('change', e => { filters.audience = e.target.value; renderEvents(); });
-  document.getElementById('team-select').addEventListener('change',     e => { filters.team     = e.target.value; renderEvents(); });
+  document.getElementById('team-select').addEventListener('change', e => {
+    const sel = e.target;
+    filters.teams = Array.from(sel.selectedOptions).map(o => o.value).filter(Boolean);
+    renderEvents();
+  });
   function resetFilters() {
-    filters.search = ''; filters.module = ''; filters.audience = ''; filters.team = '';
+    filters.search = ''; filters.audience = ''; filters.teams = [];
     document.getElementById('search-input').value = '';
-    document.getElementById('module-select').value = '';
     document.getElementById('audience-select').value = '';
-    document.getElementById('team-select').value = '';
+    const teamSel = document.getElementById('team-select');
+    Array.from(teamSel.options).forEach(o => { o.selected = false; });
+    teamSel.dispatchEvent(new Event('change', { bubbles: true }));
     renderEvents();
     toast({ title:'Filters reset', body:'Showing all rules.', type:'success' });
   }
@@ -2137,12 +2195,18 @@
     const dd = document.createElement('div');
     dd.className = 'wm-dropdown';
 
+    const isMulti = selectEl.multiple;
+    const allLabel = selectEl.dataset.wmAllLabel || ('All ' + (selectEl.id || 'items').replace('-select','').replace('-','s'));
+
     const trigger = document.createElement('button');
     trigger.type = 'button';
     trigger.className = 'wm-dd-trigger';
+    if (isMulti) dd.classList.add('wm-dropdown--multi');
     const label = document.createElement('span');
     label.className = 'wm-dd-label';
-    label.textContent = selectEl.options[selectEl.selectedIndex]?.textContent || '';
+    label.textContent = isMulti
+      ? summarizeMultiLabel(selectEl, allLabel)
+      : (selectEl.options[selectEl.selectedIndex]?.textContent || '');
     trigger.appendChild(label);
     trigger.insertAdjacentHTML('beforeend',
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>'
@@ -2150,11 +2214,30 @@
     dd.appendChild(trigger);
 
     const menu = document.createElement('div');
-    menu.className = 'wm-dd-menu';
+    menu.className = 'wm-dd-menu' + (isMulti ? ' wm-dd-menu--multi' : '');
     dd.appendChild(menu);
 
     function rebuildMenu() {
       menu.innerHTML = '';
+      if (isMulti) {
+        // Header row + Select all toggle
+        const allItem = document.createElement('button');
+        allItem.type = 'button';
+        allItem.className = 'wm-dd-item wm-dd-item--all';
+        const allSelected = Array.from(selectEl.options).every(o => o.selected);
+        allItem.innerHTML = `<span class="wm-dd-check ${allSelected ? 'checked' : ''}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Select all</span>`;
+        allItem.addEventListener('click', e => {
+          e.stopPropagation();
+          const everySel = Array.from(selectEl.options).every(o => o.selected);
+          Array.from(selectEl.options).forEach(o => { o.selected = !everySel; });
+          selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+          rebuildMenu();
+        });
+        menu.appendChild(allItem);
+        const sep = document.createElement('div');
+        sep.className = 'wm-dd-sep';
+        menu.appendChild(sep);
+      }
       Array.from(selectEl.children).forEach(child => {
         if (child.tagName === 'OPTGROUP') {
           const header = document.createElement('div');
@@ -2170,23 +2253,47 @@
     function appendItem(opt) {
       const item = document.createElement('button');
       item.type = 'button';
-      item.className = 'wm-dd-item' + (opt.value === selectEl.value ? ' selected' : '');
+      const isSelected = isMulti ? opt.selected : (opt.value === selectEl.value);
+      item.className = 'wm-dd-item' + (isSelected ? ' selected' : '');
       item.dataset.value = opt.value;
       item.dataset.label = opt.textContent;
-      item.innerHTML = `<span>${escapeText(opt.textContent)}</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
-      item.addEventListener('click', e => {
-        e.stopPropagation();
-        Array.from(menu.querySelectorAll('.wm-dd-item')).forEach(i => i.classList.remove('selected'));
-        item.classList.add('selected');
-        label.textContent = item.dataset.label;
-        dd.classList.remove('is-open');
-        if (selectEl.value !== item.dataset.value) {
-          selectEl.value = item.dataset.value;
+      if (isMulti) {
+        item.innerHTML = `<span class="wm-dd-check ${isSelected ? 'checked' : ''}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>${escapeText(opt.textContent)}</span>`;
+        item.addEventListener('click', e => {
+          e.stopPropagation();
+          opt.selected = !opt.selected;
+          // Update visual immediately so the user sees the tick toggle
+          const checkEl = item.querySelector('.wm-dd-check');
+          checkEl.classList.toggle('checked', opt.selected);
+          item.classList.toggle('selected', opt.selected);
+          // Update Select-all reflect state
+          const allItem = menu.querySelector('.wm-dd-item--all .wm-dd-check');
+          if (allItem) allItem.classList.toggle('checked', Array.from(selectEl.options).every(o => o.selected));
+          label.textContent = summarizeMultiLabel(selectEl, allLabel);
           selectEl.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-      });
+        });
+      } else {
+        item.innerHTML = `<span>${escapeText(opt.textContent)}</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+        item.addEventListener('click', e => {
+          e.stopPropagation();
+          Array.from(menu.querySelectorAll('.wm-dd-item')).forEach(i => i.classList.remove('selected'));
+          item.classList.add('selected');
+          label.textContent = item.dataset.label;
+          dd.classList.remove('is-open');
+          if (selectEl.value !== item.dataset.value) {
+            selectEl.value = item.dataset.value;
+            selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+        });
+      }
       menu.appendChild(item);
+    }
+    function summarizeMultiLabel(sel, defLabel) {
+      const picked = Array.from(sel.options).filter(o => o.selected);
+      if (picked.length === 0 || picked.length === sel.options.length) return defLabel;
+      if (picked.length === 1) return picked[0].textContent;
+      return `${picked.length} selected`;
     }
 
     rebuildMenu();
