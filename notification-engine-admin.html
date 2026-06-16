@@ -533,6 +533,10 @@
     flex-shrink: 0;
   }
 
+  /* Soften the dropdown trigger label (override wm-ui default of 600) */
+  .wm-dd-trigger { font-weight: 500; }
+  .wm-dd-trigger .wm-dd-label { font-weight: 500; }
+
   /* Multi-select dropdown */
   .wm-dd-item .wm-dd-check {
     width: 18px; height: 18px;
@@ -1186,9 +1190,7 @@
   <div class="wm-drawer">
     <div class="wm-drawer-head">
       <div style="flex:1; min-width:0;">
-        <div class="wm-tag" id="event-drawer-module" style="margin-bottom:6px;"></div>
         <h2 id="event-drawer-title">Event name</h2>
-        <p id="event-drawer-trigger"></p>
       </div>
       <button class="wm-close" data-wm-close title="Close">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -1207,7 +1209,6 @@
           <textarea class="tpl-textarea" id="event-drawer-body-input" rows="4" placeholder="Body — the message recipients will see"></textarea>
           <input class="tpl-input" id="event-drawer-cta" type="text" placeholder="CTA label — e.g. Open in portal" style="max-width:280px;" />
         </div>
-        <div class="field-hint" style="margin-top:8px;">Use <code class="inline-code">{client}</code>, <code class="inline-code">{employee}</code>, etc. to interpolate event data.</div>
       </div>
     </div>
     <div class="wm-drawer-foot">
@@ -1698,9 +1699,7 @@
     if (!ev) return;
     currentDrawerEventName = eventName;
 
-    document.getElementById('event-drawer-module').textContent = ev.module;
     document.getElementById('event-drawer-title').textContent = ev.name;
-    document.getElementById('event-drawer-trigger').textContent = ev.trigger || 'No trigger description set.';
 
     // Build a read-only recipient summary using the same colour-coded tag styles
     const allKeys = ['cs','cf','hr','sales','client','employee','contractor','freelancer','manager'];
