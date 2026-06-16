@@ -994,8 +994,6 @@
       </section>
     </section>
 
-    <!-- ========== VIEW: TEMPLATES ========== -->
-
     <!-- ========== VIEW: INBOX ========== -->
     <section class="view" id="view-inbox">
       <div class="page-header">
@@ -2120,10 +2118,11 @@
     toast({ title:'Export started', body:`${rows.length} delivery row${rows.length === 1 ? '' : 's'} from ${list.length} event firing${list.length === 1 ? '' : 's'}.`, type:'success' });
   }
 
+  function escapeText(s) {
+    return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
   /* =============================================================
-     TEMPLATES (removed view — only eventCopy storage retained for
-     the Inbox row preview to render saved copy from createNewRule)
-     ============================================================= */
      wm-dropdown enhancement
      Wraps every native <select class="wm-select"> with a custom
      wm-dropdown so the open menu is themed by the design system.
