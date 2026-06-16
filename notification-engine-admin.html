@@ -578,6 +578,36 @@
   .wm-dropdown--combobox .wm-dd-input::placeholder { color: var(--neutral-400); }
   .wm-dd-item.is-hidden { display: none; }
 
+  /* Template variable picker chips */
+  .tpl-var-chips {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    align-items: center;
+    margin: 6px 0 12px;
+  }
+  .tpl-var-chips-label {
+    font-size: 11px; font-weight: 700;
+    color: var(--neutral-500);
+    text-transform: uppercase; letter-spacing: 0.4px;
+    margin-right: 4px;
+  }
+  .tpl-var-chip {
+    font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
+    background: var(--primary-50);
+    color: var(--primary-700);
+    border: 1px solid var(--primary-100);
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 100ms ease, transform 100ms ease;
+    line-height: 1.4;
+  }
+  .tpl-var-chip:hover { background: var(--primary-100); }
+  .tpl-var-chip:active { transform: scale(0.95); }
+  .tpl-var-chip::before { content: '{'; opacity: 0.5; }
+  .tpl-var-chip::after  { content: '}'; opacity: 0.5; }
+
   /* Multi-select dropdown */
   .wm-dd-item .wm-dd-check {
     width: 18px; height: 18px;
@@ -1210,7 +1240,18 @@
 
     <div class="field-row">
       <label class="field-label">Notification template</label>
-      <div class="field-hint" style="margin-top:0; margin-bottom:10px;">Write the message recipients will see. You can fine-tune per recipient type in the Templates tab later.</div>
+
+      <div class="tpl-var-chips" id="new-rule-var-chips">
+        <span class="tpl-var-chips-label">Insert placeholder:</span>
+        <button type="button" class="tpl-var-chip" data-var="{client}">client</button>
+        <button type="button" class="tpl-var-chip" data-var="{employee}">employee</button>
+        <button type="button" class="tpl-var-chip" data-var="{contractor}">contractor</button>
+        <button type="button" class="tpl-var-chip" data-var="{manager}">manager</button>
+        <button type="button" class="tpl-var-chip" data-var="{amount}">amount</button>
+        <button type="button" class="tpl-var-chip" data-var="{date}">date</button>
+        <button type="button" class="tpl-var-chip" data-var="{month}">month</button>
+        <button type="button" class="tpl-var-chip" data-var="{action_url}">action_url</button>
+      </div>
 
       <div style="display:flex; flex-direction:column; gap:10px;">
         <input class="tpl-input" id="new-rule-subject" type="text" placeholder="Subject — e.g. ⚠️ {client} — payslip ready" />
@@ -1610,6 +1651,29 @@
       cb.classList.toggle('checked');
     });
   });
+
+  // Variable picker chips — click inserts the placeholder at the cursor of
+  // whichever template field was last focused. Defaults to Subject.
+  (function wireVarChips() {
+    let lastFocused = null;
+    const fields = ['new-rule-subject', 'new-rule-body', 'new-rule-cta'].map(id => document.getElementById(id)).filter(Boolean);
+    fields.forEach(el => el.addEventListener('focus', () => { lastFocused = el; }));
+    document.querySelectorAll('#new-rule-var-chips .tpl-var-chip').forEach(chip => {
+      // Use mousedown so we insert BEFORE the input loses focus
+      chip.addEventListener('mousedown', e => {
+        e.preventDefault();
+        const target = lastFocused || fields[0];
+        if (!target) return;
+        const v = chip.dataset.var;
+        const start = target.selectionStart ?? target.value.length;
+        const end   = target.selectionEnd   ?? target.value.length;
+        target.value = target.value.slice(0, start) + v + target.value.slice(end);
+        target.focus();
+        const pos = start + v.length;
+        target.setSelectionRange(pos, pos);
+      });
+    });
+  })();
 
   // Custom rules — those added via the New rule modal — land in a single
   // "Custom" module that gets created on demand.
