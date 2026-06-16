@@ -121,6 +121,7 @@ Dated log of registry changes (pages added, removed, renamed, promoted). Newest 
 
 | Date | Version | Change |
 |---|---|---|
+| 2026-06-12 | — | Wired the **`dev-notes.js` loader into the wisemonk onboarding app** too (via `next/script` in the root layout; static export rebuilt). `contractor-legal-ai` intentionally left out. |
 | 2026-06-12 | — | Wired the **`dev-notes.js` loader into every static project screen** (Client-freelancer, client-balance, recruit-portal, Admin-portal — 46 screens). The Dev notes toggle stays hidden until an element has `data-wm-note`, so it's inert by default. |
 | 2026-06-12 | UI v1.5.0 | Added a **standalone `dev-notes.js`** — one `<script>` include enables Dev notes on **any project** (no library dependency, self-injects styles). Lets us drop a note on any element of any screen across all repos. |
 | 2026-06-12 | UI v1.4.1 | **Dev notes** now show on **hover** — hover an annotated element to read its note (no need to open the side panel; the panel is opt-in via a pin click). |
