@@ -500,34 +500,51 @@
     background: transparent;
     font-size: 13px; color: var(--neutral-500);
   }
-  /* New pagination */
+  /* Pagination — circular buttons with light borders, text-only Prev/Next */
   .pager {
     display: flex; align-items: center; gap: 6px;
     flex: 1; justify-content: center;
   }
   .pager-num,
-  .pager-text {
-    height: 32px; min-width: 32px; padding: 0 10px;
-    border: none; background: transparent;
-    color: var(--neutral-700); font-weight: 500; font-size: 13px;
-    border-radius: 999px;
+  .pager-ellipsis {
+    width: 32px; height: 32px;
     display: inline-flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    transition: background 120ms ease, color 120ms ease;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    background: var(--neutral-0);
+    color: var(--neutral-700);
+    font-weight: 500; font-size: 13px;
+    user-select: none;
+    transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
   }
-  .pager-num:hover:not(.active),
-  .pager-text:hover { background: var(--neutral-100); color: var(--neutral-900); }
+  .pager-num { cursor: pointer; }
+  .pager-num:hover:not(.active) {
+    background: var(--neutral-50);
+    border-color: var(--neutral-300);
+    color: var(--neutral-900);
+  }
   .pager-num.active {
     background: var(--primary-500);
     color: white;
     font-weight: 700;
+    border-color: var(--primary-500);
   }
   .pager-ellipsis {
     color: var(--neutral-500);
-    padding: 0 4px;
-    font-weight: 500; font-size: 13px;
-    user-select: none;
+    cursor: default;
   }
+  .pager-text {
+    background: transparent;
+    border: none;
+    color: var(--neutral-500);
+    font-weight: 500; font-size: 13px;
+    padding: 0 8px;
+    height: 32px;
+    cursor: pointer;
+    transition: color 120ms ease;
+    display: inline-flex; align-items: center;
+  }
+  .pager-text:hover { color: var(--neutral-900); }
   .pager-range {
     font-size: 13px; color: var(--neutral-500);
     flex-shrink: 0;
@@ -1034,7 +1051,7 @@
             <button class="pager-num">25</button>
             <button class="pager-text">Next</button>
           </div>
-          <div class="pager-range"><strong style="color:var(--neutral-800)" id="result-count">7</strong> of 250</div>
+          <div class="pager-range"><strong style="color:var(--neutral-800)" id="result-count">1-10</strong> of 250</div>
         </div>
       </section>
     </section>
@@ -1124,7 +1141,7 @@
             <button class="pager-num">25</button>
             <button class="pager-text">Next</button>
           </div>
-          <div class="pager-range"><strong style="color:var(--neutral-800)" id="inbox-result-count">24</strong> of 250</div>
+          <div class="pager-range"><strong style="color:var(--neutral-800)" id="inbox-result-count">1-10</strong> of 250</div>
         </div>
       </section>
     </section>
@@ -1413,7 +1430,7 @@
     const tbody = document.getElementById('rules-body');
     const list = filteredEvents();
     const totalEvents = allEvents().length;
-    document.getElementById('result-count').textContent = list.length;
+    document.getElementById('result-count').textContent = list.length === 0 ? '0' : `1-${Math.min(list.length, 10)}`;
     document.getElementById('defaults-count').textContent = totalEvents;
 
     const resetBtn = document.getElementById('reset-filters-btn');
@@ -2046,7 +2063,7 @@
 
     document.getElementById('inbox-count').textContent = notifications.length;
 
-    document.getElementById('inbox-result-count').textContent = list.length;
+    document.getElementById('inbox-result-count').textContent = list.length === 0 ? '0' : `1-${Math.min(list.length, 10)}`;
 
     const resetBtn = document.getElementById('reset-inbox-btn');
     const dirty = inboxFilters.search || inboxFilters.range || inboxFilters.module ||
