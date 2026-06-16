@@ -1166,7 +1166,7 @@
   <div class="modal-body">
     <div class="field-row">
       <label class="field-label">Event name</label>
-      <select class="wm-select" id="new-rule-event">
+      <select class="wm-select" id="new-rule-event" data-wm-combobox data-wm-placeholder="Pick an event or start typing…">
         <option value="">Pick an event…</option>
       </select>
     </div>
@@ -2259,21 +2259,40 @@
     dd.className = 'wm-dropdown';
 
     const isMulti = selectEl.multiple;
+    const isCombobox = selectEl.hasAttribute('data-wm-combobox');
     const allLabel = selectEl.dataset.wmAllLabel || ('All ' + (selectEl.id || 'items').replace('-select','').replace('-','s'));
 
-    const trigger = document.createElement('button');
-    trigger.type = 'button';
-    trigger.className = 'wm-dd-trigger';
-    if (isMulti) dd.classList.add('wm-dropdown--multi');
-    const label = document.createElement('span');
-    label.className = 'wm-dd-label';
-    label.textContent = isMulti
-      ? summarizeMultiLabel(selectEl, allLabel)
-      : (selectEl.options[selectEl.selectedIndex]?.textContent || '');
-    trigger.appendChild(label);
-    trigger.insertAdjacentHTML('beforeend',
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>'
-    );
+    let trigger, label, input;
+    if (isCombobox) {
+      dd.classList.add('wm-dropdown--combobox');
+      trigger = document.createElement('div');
+      trigger.className = 'wm-dd-trigger wm-dd-trigger--combobox';
+      input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'wm-dd-input';
+      input.autocomplete = 'off';
+      input.placeholder = selectEl.dataset.wmPlaceholder || 'Type to search…';
+      const opt = selectEl.options[selectEl.selectedIndex];
+      input.value = (opt && opt.value) ? opt.textContent : '';
+      trigger.appendChild(input);
+      trigger.insertAdjacentHTML('beforeend',
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>'
+      );
+    } else {
+      trigger = document.createElement('button');
+      trigger.type = 'button';
+      trigger.className = 'wm-dd-trigger';
+      if (isMulti) dd.classList.add('wm-dropdown--multi');
+      label = document.createElement('span');
+      label.className = 'wm-dd-label';
+      label.textContent = isMulti
+        ? summarizeMultiLabel(selectEl, allLabel)
+        : (selectEl.options[selectEl.selectedIndex]?.textContent || '');
+      trigger.appendChild(label);
+      trigger.insertAdjacentHTML('beforeend',
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>'
+      );
+    }
     dd.appendChild(trigger);
 
     const menu = document.createElement('div');
@@ -2342,7 +2361,11 @@
           e.stopPropagation();
           Array.from(menu.querySelectorAll('.wm-dd-item')).forEach(i => i.classList.remove('selected'));
           item.classList.add('selected');
-          label.textContent = item.dataset.label;
+          if (isCombobox && input) {
+            input.value = item.dataset.label;
+          } else if (label) {
+            label.textContent = item.dataset.label;
+          }
           dd.classList.remove('is-open');
           if (selectEl.value !== item.dataset.value) {
             selectEl.value = item.dataset.value;
@@ -2421,5 +2444,6 @@
   renderInbox();
 </script>
 
+  <script defer src="https://anjuchorotiya.github.io/Client-freelancer/wisemonk-ui/dev-notes.js"></script>
 </body>
 </html>
