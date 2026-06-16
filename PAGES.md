@@ -121,6 +121,7 @@ Dated log of registry changes (pages added, removed, renamed, promoted). Newest 
 
 | Date | Version | Change |
 |---|---|---|
+| 2026-06-12 | — | Before-setup home now shows the **empty workspace tabs** (Freelancers/Invoices/Time) + a **"Set up account" banner**; after setup those tabs navigate to the populated standalone pages. |
 | 2026-06-12 | — | Made the before-setup home link deterministic: `home.html` now honors **`?setup`** (force onboarding checklist) and **`?done`** (force dashboard), so the registry "before setup" link reliably shows the setup screen even after onboarding was completed. Live link → `home.html?setup`. |
 | 2026-06-12 | — | Surfaced the **setup-steps screen** from the before-setup home: labeled `client-onboarding.html` as the 6-step "Account setup" wizard and linked/listed its steps inside the `home.html` SCREENS doc. |
 | 2026-06-12 | — | Clarified the Client-freelancer **home** rows: `home.html` = home **before** setup (onboarding checklist), `dashboard.html` = home **after** setup ("You're all set"). Updated SCREENS.md docs to match. |
