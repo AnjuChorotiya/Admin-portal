@@ -66,11 +66,11 @@ Repo: https://github.com/AnjuChorotiya/Client-freelancer · Pages base: `https:/
 
 | Page | Source | Live Preview | Docs |
 |---|---|---| --- |
-| home.html | [src](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/home.html) | [live](https://anjuchorotiya.github.io/Client-freelancer/home.html) | [README](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/SCREENS.md#homehtml) |
+| home.html — Home (**before** setup · onboarding checklist) | [src](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/home.html) | [live](https://anjuchorotiya.github.io/Client-freelancer/home.html) | [README](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/SCREENS.md#homehtml) |
 | login.html | [src](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/login.html) | [live](https://anjuchorotiya.github.io/Client-freelancer/login.html) | [README](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/SCREENS.md#loginhtml) |
 | signup-role.html | [src](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/signup-role.html) | [live](https://anjuchorotiya.github.io/Client-freelancer/signup-role.html) | [README](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/SCREENS.md#signup-rolehtml) |
 | signup-country.html | [src](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/signup-country.html) | [live](https://anjuchorotiya.github.io/Client-freelancer/signup-country.html) | [README](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/SCREENS.md#signup-countryhtml) |
-| dashboard.html | [src](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/dashboard.html) | [live](https://anjuchorotiya.github.io/Client-freelancer/dashboard.html) | [README](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/SCREENS.md#dashboardhtml) |
+| dashboard.html — Home (**after** setup · "You're all set") | [src](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/dashboard.html) | [live](https://anjuchorotiya.github.io/Client-freelancer/dashboard.html) | [README](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/SCREENS.md#dashboardhtml) |
 | client-onboarding.html | [src](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/client-onboarding.html) | [live](https://anjuchorotiya.github.io/Client-freelancer/client-onboarding.html) | [README](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/SCREENS.md#client-onboardinghtml) |
 | contractor-onboarding.html | [src](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/contractor-onboarding.html) | [live](https://anjuchorotiya.github.io/Client-freelancer/contractor-onboarding.html) | [README](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/SCREENS.md#contractor-onboardinghtml) |
 | add-freelancer.html | [src](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/add-freelancer.html) | [live](https://anjuchorotiya.github.io/Client-freelancer/add-freelancer.html) | [README](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/SCREENS.md#add-freelancerhtml) |
@@ -121,6 +121,7 @@ Dated log of registry changes (pages added, removed, renamed, promoted). Newest 
 
 | Date | Version | Change |
 |---|---|---|
+| 2026-06-12 | — | Clarified the Client-freelancer **home** rows: `home.html` = home **before** setup (onboarding checklist), `dashboard.html` = home **after** setup ("You're all set"). Updated SCREENS.md docs to match. |
 | 2026-06-12 | — | Wired the **`dev-notes.js` loader into the wisemonk onboarding app** too (via `next/script` in the root layout; static export rebuilt). `contractor-legal-ai` intentionally left out. |
 | 2026-06-12 | — | Wired the **`dev-notes.js` loader into every static project screen** (Client-freelancer, client-balance, recruit-portal, Admin-portal — 46 screens). The Dev notes toggle stays hidden until an element has `data-wm-note`, so it's inert by default. |
 | 2026-06-12 | UI v1.5.0 | Added a **standalone `dev-notes.js`** — one `<script>` include enables Dev notes on **any project** (no library dependency, self-injects styles). Lets us drop a note on any element of any screen across all repos. |
