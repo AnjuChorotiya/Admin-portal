@@ -558,6 +558,26 @@
   #new-rule-modal .wm-dropdown .wm-dd-trigger { width: 100%; }
   #new-rule-modal .wm-dd-menu { left: 0; right: 0; }
 
+  /* Combobox trigger — input + chevron in a flex container */
+  .wm-dropdown--combobox .wm-dd-trigger--combobox {
+    padding: 0 14px 0 0;
+    cursor: text;
+  }
+  .wm-dropdown--combobox .wm-dd-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font: inherit;
+    font-family: var(--wm-font, 'Satoshi', sans-serif);
+    font-weight: 500;
+    padding: 11px 14px;
+    outline: none;
+    color: var(--neutral-900);
+    min-width: 0;
+  }
+  .wm-dropdown--combobox .wm-dd-input::placeholder { color: var(--neutral-400); }
+  .wm-dd-item.is-hidden { display: none; }
+
   /* Multi-select dropdown */
   .wm-dd-item .wm-dd-check {
     width: 18px; height: 18px;
@@ -2385,20 +2405,72 @@
     rebuildMenu();
     selectEl._wmRebuild = rebuildMenu;
 
-    trigger.addEventListener('click', e => {
-      e.stopPropagation();
-      const wasOpen = dd.classList.contains('is-open');
-      document.querySelectorAll('.wm-dropdown.is-open').forEach(o => o.classList.remove('is-open'));
-      if (!wasOpen) dd.classList.add('is-open');
-    });
+    function filterMenuByQuery(q) {
+      const ql = (q || '').toLowerCase().trim();
+      let any = false;
+      menu.querySelectorAll('.wm-dd-item').forEach(item => {
+        // Skip the placeholder "Pick an event…" row when typing
+        const v = item.dataset.value || '';
+        const text = (item.dataset.label || '').toLowerCase();
+        const hide = ql !== '' && (!v || !text.includes(ql));
+        item.classList.toggle('is-hidden', hide);
+        if (!hide) any = true;
+      });
+      // Hide empty-state if any visible
+      return any;
+    }
+
+    if (isCombobox) {
+      // Clicking anywhere in the trigger wrapper focuses the input
+      trigger.addEventListener('click', e => {
+        if (e.target !== input) input.focus();
+      });
+      input.addEventListener('focus', () => {
+        document.querySelectorAll('.wm-dropdown.is-open').forEach(o => { if (o !== dd) o.classList.remove('is-open'); });
+        dd.classList.add('is-open');
+        filterMenuByQuery(input.value);
+      });
+      input.addEventListener('input', () => {
+        dd.classList.add('is-open');
+        filterMenuByQuery(input.value);
+      });
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+          dd.classList.remove('is-open');
+          input.blur();
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          const firstVisible = menu.querySelector('.wm-dd-item:not(.is-hidden)');
+          if (firstVisible) firstVisible.click();
+        } else if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          dd.classList.add('is-open');
+          filterMenuByQuery(input.value);
+        }
+      });
+    } else {
+      trigger.addEventListener('click', e => {
+        e.stopPropagation();
+        const wasOpen = dd.classList.contains('is-open');
+        document.querySelectorAll('.wm-dropdown.is-open').forEach(o => o.classList.remove('is-open'));
+        if (!wasOpen) dd.classList.add('is-open');
+      });
+    }
 
     // Insert the dropdown after the select and hide the native control
     selectEl.parentNode.insertBefore(dd, selectEl.nextSibling);
     selectEl.style.display = 'none';
 
-    // Keep the visible label in sync if something else changes the select.value programmatically
+    // Keep the visible label/input in sync if something else changes the select.value programmatically
     selectEl.addEventListener('change', () => {
-      label.textContent = selectEl.options[selectEl.selectedIndex]?.textContent || '';
+      const opt = selectEl.options[selectEl.selectedIndex];
+      const txt = opt && opt.value ? opt.textContent : '';
+      if (isCombobox && input) {
+        // Don't clobber while the user is actively typing
+        if (document.activeElement !== input) input.value = txt;
+      } else if (label) {
+        label.textContent = isMulti ? summarizeMultiLabel(selectEl, allLabel) : (opt?.textContent || '');
+      }
       Array.from(menu.querySelectorAll('.wm-dd-item')).forEach(i => {
         i.classList.toggle('selected', i.dataset.value === selectEl.value);
       });
