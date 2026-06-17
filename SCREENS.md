@@ -37,26 +37,3 @@ Purpose and flow for each screen in this repo. Live pages:
 5. **Inbox** (Notification inbox) — a log of notifications dispatched in the last 30 days with columns **Time**, **Event**, **Client**, **Recipient**; filterable by search, time range, module (Employees, Payroll, Invoicing, Compliance, Leaves, Contractors, Account), audience and team member, plus an **Export** action.
 
 **Notes:** Views are toggled client-side via `switchView()`; the Templates and Inbox lists are populated dynamically by script.
-
----
-
-## client-verification.html
-
-**Purpose:** Internal admin dashboard for reviewing and verifying client onboarding submissions before a client is activated. Surfaces an AI risk screening per client so the operations team can clear, escalate, or request more information.
-
-**Flow:**
-1. A left sidebar (**Operations**) links across the admin pages — **Client verification** (active), **Form 16**, and **Notification engine**.
-2. The header offers a **Run AI check again** action and shows when all clients were last re-screened.
-3. Four stat cards summarise the queue — **Total clients**, **Pending review**, **Verified**, and **High risk** — each clickable to filter the table; the Total card resets all filters.
-4. A submissions table lists each client with columns **Client** (company + legal name), **Country**, **AI risk** (Low / Medium / High pill), **Submitted**, **Status** (Pending / Verified / Needs review), and a **View report** action.
-5. The table is filterable by free-text search (company, legal name, country) and by **Status** and **Risk** dropdowns; a **Clear filters** control appears while any filter is active.
-6. **Clicking a client row** opens an onboarding detail view: a back link ("All submissions"), a summary card (company, country/submitted meta, signatory line, status pill, **AI report** action), and field sections — **Signatory & organization**, **Tax & registration**, **Beneficial ownership**, **Banking & payout**, **Compliance & documents** — each rendered as label/value rows with file, URL and chip values, and a per-section **Complete** / **N missing** pill (missing fields show "Not provided").
-7. **View report** (table button or the detail view's **AI report** action) opens an AI verification modal with per-check results (legal entity, beneficial ownership, sanctions & PEP, tax registration, adverse media), each marked pass / warn / flag with detail. From the modal the admin can **Request more info** or **Mark as verified** (disabled when already verified).
-
-**Validations:**
-- No form inputs — this is a review surface. Filters are non-blocking; an empty-result state is shown when no rows match.
-- **Mark as verified** is disabled for clients already in the Verified state.
-
-**Notes:** All AI screening results, the re-run action, and the request/verify actions are simulated client-side for demonstration only and do not constitute a compliance determination (stated in an on-page disclaimer). Built on the admin portal chrome (Phosphor icons, shared design tokens).
-
----
