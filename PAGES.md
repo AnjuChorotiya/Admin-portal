@@ -35,7 +35,6 @@ Repo: https://github.com/AnjuChorotiya/Admin-portal · Pages base: `https://anju
 | payroll-summary.html | [src](https://github.com/AnjuChorotiya/Admin-portal/blob/main/payroll-summary.html) | [live](https://anjuchorotiya.github.io/Admin-portal/payroll-summary.html) | [README](https://github.com/AnjuChorotiya/Admin-portal/blob/main/SCREENS.md#payroll-summaryhtml) |
 | form16.html | [src](https://github.com/AnjuChorotiya/Admin-portal/blob/main/form16.html) | [live](https://anjuchorotiya.github.io/Admin-portal/form16.html) | [README](https://github.com/AnjuChorotiya/Admin-portal/blob/main/SCREENS.md#form16html) |
 | notification-engine-admin.html | [src](https://github.com/AnjuChorotiya/Admin-portal/blob/main/notification-engine-admin.html) | [live](https://anjuchorotiya.github.io/Admin-portal/notification-engine-admin.html) | [README](https://github.com/AnjuChorotiya/Admin-portal/blob/main/SCREENS.md#notification-engine-adminhtml) |
-| client-verification.html | [src](https://github.com/AnjuChorotiya/Admin-portal/blob/main/client-verification.html) | [live](https://anjuchorotiya.github.io/Admin-portal/client-verification.html) | [README](https://github.com/AnjuChorotiya/Admin-portal/blob/main/SCREENS.md#client-verificationhtml) |
 
 ## wisemonk-recruit-portal
 Repo: https://github.com/AnjuChorotiya/wisemonk-recruit-portal · Pages base: `https://anjuchorotiya.github.io/wisemonk-recruit-portal/` · Flow overview: [README](https://github.com/AnjuChorotiya/wisemonk-recruit-portal/blob/main/README.md)
@@ -123,6 +122,7 @@ Dated log of registry changes (pages added, removed, renamed, promoted). Newest 
 
 | Date | Version | Change |
 |---|---|---|
+| 2026-06-17 | — | Decommissioned **client-verification.html** from Admin-portal — removed the OPERATIONS tab, deleted the page, and dropped its registry row + SCREENS.md docs. |
 | 2026-06-12 | — | Before-setup home now shows the **empty workspace tabs** (Freelancers/Invoices/Time) + a **"Set up account" banner**; after setup those tabs navigate to the populated standalone pages. |
 | 2026-06-12 | — | Made the before-setup home link deterministic: `home.html` now honors **`?setup`** (force onboarding checklist) and **`?done`** (force dashboard), so the registry "before setup" link reliably shows the setup screen even after onboarding was completed. Live link → `home.html?setup`. |
 | 2026-06-12 | — | Surfaced the **setup-steps screen** from the before-setup home: labeled `client-onboarding.html` as the 6-step "Account setup" wizard and linked/listed its steps inside the `home.html` SCREENS doc. |
