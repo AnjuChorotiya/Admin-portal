@@ -26,6 +26,7 @@ Repo: https://github.com/AnjuChorotiya/wisemonk · Pages base: `https://anjuchor
 | Add employee | [src](https://github.com/AnjuChorotiya/wisemonk/blob/main/src/app/onboarding/employee/page.tsx) | [live](https://anjuchorotiya.github.io/wisemonk/onboarding/employee/) | [README](https://github.com/AnjuChorotiya/wisemonk/blob/main/SCREENS.md#add-employee) |
 | Admin onboarding verification | [src](https://github.com/AnjuChorotiya/wisemonk/blob/main/src/app/admin/page.tsx) | [live](https://anjuchorotiya.github.io/wisemonk/admin/) | — |
 | setup-banners.html — Account-setup nudge stages (start / continue / re-fill / under review) | [src](https://github.com/AnjuChorotiya/wisemonk/blob/main/docs/setup-banners.html) | [live](https://anjuchorotiya.github.io/wisemonk/setup-banners.html) | — |
+| pluxee-flexible-benefits.html — Pluxee flexible benefits / monthly expense declaration (Tax deductions) | [src](https://github.com/AnjuChorotiya/wisemonk/blob/main/docs/pluxee-flexible-benefits.html) | [live](https://anjuchorotiya.github.io/wisemonk/pluxee-flexible-benefits.html) | — |
 
 ## Admin-portal
 Repo: https://github.com/AnjuChorotiya/Admin-portal · Pages base: `https://anjuchorotiya.github.io/Admin-portal/` (root index 404s; link files directly)
@@ -122,6 +123,7 @@ Dated log of registry changes (pages added, removed, renamed, promoted). Newest 
 
 | Date | Version | Change |
 |---|---|---|
+| 2026-06-18 | — | Added **pluxee-flexible-benefits.html** to the wisemonk repo — a Pluxee monthly-expense declaration screen (Zaggle-styled flexible-wallets table with live totals + per-wallet min/max validation). |
 | 2026-06-17 | — | Labeled **contractor-onboarding.html** as **Add contractor** in the registry. |
 | 2026-06-17 | — | Decommissioned **client-verification.html** from Admin-portal — removed the OPERATIONS tab, deleted the page, and dropped its registry row + SCREENS.md docs. |
 | 2026-06-12 | — | Before-setup home now shows the **empty workspace tabs** (Freelancers/Invoices/Time) + a **"Set up account" banner**; after setup those tabs navigate to the populated standalone pages. |
