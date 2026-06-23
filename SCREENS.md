@@ -10,7 +10,7 @@ Purpose and flow for each screen in this repo. Live pages:
 **Purpose:** Finance admin screen giving an overview of the company's payroll for a selected month and a per-personnel status roster to drive the run through its lifecycle (Finalize → Execute → Mark as Paid).
 
 **Flow:**
-1. The left nav is scoped to the **Payroll** tab only, expanded to its sub-items — **Payroll summary** (active), Reimbursements, Payroll changes, Payslips, Form 16, Contractor Payouts, Reimbursement Payouts.
+1. The left nav is scoped to a single **Payroll** tab (no sub-menu or dropdown).
 2. A **Payroll** overview card shows the **Total payroll amount** (₹25,52,30,775.96) for the period, a month selector (June 2026), and three lifecycle actions: **Finalize payroll** (primary), **Execute payroll** and **Mark as Paid** (each disabled until the prior step completes).
 3. An **Employee status (June 2026)** card surfaces run counts — **Finalized / Executed / Paid / Skipped / Total** (0 / 0 / 0 / 698 / 698) — and an **Export** action.
 4. The roster table lists each worker with columns **Personnel** (avatar + name), **Client**, **Employment type**, **Job title**, **Currency** (sortable), **FX Rate**, **Gross pay**, **Total payout** (sortable), **Status** (sortable) and a per-row more-actions menu; rows are selectable via checkboxes with a header select-all.
