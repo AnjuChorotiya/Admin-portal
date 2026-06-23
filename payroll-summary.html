@@ -81,7 +81,7 @@
 
     /* Client status — invoice dot / deposit months / background-risk dot */
     .cstat { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
-    .cstat .dot, .cstat-legend .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+    .cstat .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
     .dot.green { background: var(--wm-success-500); }
     .dot.yellow { background: var(--wm-warning-500); }
     .dot.red { background: var(--wm-danger-500); }
@@ -93,14 +93,6 @@
     .dep.dash { color: var(--wm-neutral-300); font-weight: 500; }
     .th-info { display: inline-flex; align-items: center; gap: 5px; cursor: default; }
     .th-info svg { width: 13px; height: 13px; color: var(--wm-neutral-300); }
-
-    /* Client status legend */
-    .cstat-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 7px 14px; padding: 0 20px 14px; font-size: 12px; color: var(--wm-text-muted); }
-    .cstat-legend strong { color: var(--wm-text-secondary); font-weight: 700; }
-    .cstat-legend .leg { display: inline-flex; align-items: center; gap: 6px; }
-    .cstat-legend .dep { font-weight: 700; }
-    .cstat-legend .leg-note { color: var(--wm-neutral-400); }
-    .cstat-legend .leg-div { color: var(--wm-neutral-300); }
 
     /* lighter filter trigger text + multi-select trigger when active */
     .wm-dd-trigger { font-weight: 500; }
@@ -240,15 +232,6 @@
                 </div>
               </div>
             </div>
-          </div>
-
-          <div class="cstat-legend">
-            <strong>Client status key</strong>
-            <span class="leg"><span class="dot green"></span>/<span class="dot red"></span> invoice paid / unpaid</span>
-            <span class="leg-div">·</span>
-            <span class="leg"><span class="dep up">2.2</span> deposit runway, months <span class="leg-note">(green ≥1 · <span class="dep mid">orange</span> 0–1 · <span class="dep down">red</span> shortfall · – no data)</span></span>
-            <span class="leg-div">·</span>
-            <span class="leg"><span class="dot green"></span><span class="dot yellow"></span><span class="dot red"></span> background risk: good / watch / high</span>
           </div>
 
           <table class="wm-table" id="payTable">
