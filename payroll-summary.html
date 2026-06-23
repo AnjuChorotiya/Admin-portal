@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payroll summary — Wisemonk</title>
+  <!-- fonts -->
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+  <!-- wisemonk-ui design system -->
+  <link rel="stylesheet" href="wisemonk-ui/wisemonk-ui.css">
+  <script src="wisemonk-ui/wisemonk-ui.js" defer></script>
+  <style>
+    /* App shell only — everything else comes from wisemonk-ui */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: var(--wm-font); background: var(--wm-bg-subtle); color: var(--wm-text-primary); min-height: 100vh; }
+    a { text-decoration: none; color: inherit; }
+
+    .app { display: flex; min-height: 100vh; }
+    .sidebar { width: 248px; flex-shrink: 0; background: var(--wm-neutral-0); border-right: 1px solid var(--wm-border); padding: 26px 18px; display: flex; flex-direction: column; gap: 26px; }
+
+    /* Brand */
+    .brand { display: flex; align-items: center; gap: 9px; padding: 0 6px; }
+    .brand-mark { width: 30px; height: 30px; flex-shrink: 0; }
+    .brand-name { font-weight: 700; font-size: 19px; letter-spacing: -0.4px; color: var(--wm-text-primary); }
+
+    .nav-title { font-family: var(--wm-font-tag); font-weight: 300; font-size: 12px; letter-spacing: 0.6px; color: var(--wm-neutral-300); padding: 0 8px 6px; text-transform: uppercase; }
+    .nav-link { display: flex; align-items: center; gap: 11px; height: 38px; padding: 0 10px; border-radius: 8px; font-weight: 600; font-size: 14.5px; color: var(--wm-text-secondary); transition: background .15s, color .15s; }
+    .nav-link:hover { background: var(--wm-neutral-50); }
+    .nav-link.active { background: rgba(38,132,255,0.10); color: var(--wm-primary-600); }
+    .nav-link svg { width: 20px; height: 20px; flex-shrink: 0; }
+    .nav-chev { margin-left: auto; width: 16px !important; height: 16px !important; transition: transform .2s; }
+
+    /* Payroll sub-menu */
+    .nav-sub { display: flex; flex-direction: column; gap: 1px; margin: 4px 0 0; padding-left: 22px; border-left: 1px solid var(--wm-border); margin-left: 19px; }
+    .nav-sublink { display: block; padding: 8px 10px; border-radius: 7px; font-size: 13.5px; font-weight: 500; color: var(--wm-text-muted); transition: background .15s, color .15s; }
+    .nav-sublink:hover { background: var(--wm-neutral-50); color: var(--wm-text-secondary); }
+    .nav-sublink.active { color: var(--wm-primary-600); font-weight: 700; background: rgba(38,132,255,0.07); }
+
+    .main-col { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+    .header { display: flex; align-items: center; justify-content: space-between; height: 80px; padding: 0 40px; background: var(--wm-bg-subtle); }
+    .header h1 { font-weight: 700; font-size: 22px; letter-spacing: -0.3px; color: var(--wm-text-primary); }
+    .header-right { display: flex; align-items: center; gap: 14px; }
+    .user-chip { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 4px 8px 4px 4px; border-radius: 100px; }
+    .user-name { font-weight: 600; font-size: 15px; color: var(--wm-text-secondary); white-space: nowrap; }
+    .user-chev { width: 16px; height: 16px; color: var(--wm-text-muted); }
+
+    .content { flex: 1; padding: 8px 40px 56px; display: flex; flex-direction: column; gap: 20px; }
+
+    /* ---- Payroll overview card ---- */
+    .ovw { display: flex; align-items: flex-start; justify-content: space-between; gap: 32px; }
+    .ovw-head h2 { font-weight: 700; font-size: 21px; letter-spacing: -0.3px; color: var(--wm-text-primary); }
+    .ovw-head p { color: var(--wm-text-muted); font-size: 14px; font-weight: 500; margin-top: 4px; }
+    .ovw-amt-label { font-size: 13px; font-weight: 600; color: var(--wm-text-muted); margin-top: 22px; }
+    .ovw-amt { font-size: 34px; font-weight: 700; letter-spacing: -1px; color: var(--wm-text-primary); margin-top: 4px; line-height: 1.05; }
+    .ovw-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+    .period-sel { min-width: 132px; }
+    .period-sel .wm-select { padding: 10px 38px 10px 14px; font-size: 14px; font-weight: 600; border-radius: var(--wm-radius-sm); }
+
+    /* ---- Table card head (title + status counts + export) ---- */
+    .tbl-head { display: flex; align-items: center; gap: 20px; padding: 18px 20px 4px; flex-wrap: wrap; }
+    .tbl-head h3 { font-weight: 700; font-size: 16px; color: var(--wm-text-primary); }
+    .status-counts { display: flex; align-items: center; gap: 18px; margin-left: auto; }
+    .sc { display: inline-flex; align-items: baseline; gap: 6px; font-size: 13px; font-weight: 500; color: var(--wm-text-muted); }
+    .sc b { font-size: 14px; font-weight: 700; color: var(--wm-text-secondary); }
+    .sc.skip b { color: var(--wm-warning-700); }
+    .sc.total b { color: var(--wm-primary-600); }
+
+    /* status counts | export divider */
+    .tbl-head .wm-btn--sm svg { width: 15px; height: 15px; }
+
+    /* ---- Table cell helpers ---- */
+    .col-check { width: 46px; }
+    .wm-check { width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid var(--wm-border-strong); appearance: none; -webkit-appearance: none; cursor: pointer; position: relative; background: #fff; transition: all .15s; flex-shrink: 0; vertical-align: middle; }
+    .wm-check:hover { border-color: var(--wm-primary-500); }
+    .wm-check:checked { background: var(--wm-primary-500); border-color: var(--wm-primary-500); }
+    .wm-check:checked::after { content: ""; position: absolute; left: 5px; top: 2px; width: 5px; height: 9px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+
+    .th-sort { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; }
+    .th-sort svg { width: 13px; height: 13px; color: var(--wm-neutral-300); }
+    .emp-type { color: var(--wm-text-secondary); font-weight: 500; }
+    .ccy { font-weight: 700; color: var(--wm-text-secondary); letter-spacing: .3px; }
+    .ccy.eur { color: var(--wm-primary-600); }
+    .num { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--wm-text-primary); white-space: nowrap; }
+    .num.muted { color: var(--wm-text-muted); font-weight: 500; }
+    .fx-dash { color: var(--wm-neutral-300); }
+    .fx-input { width: 78px; padding: 7px 9px; border: 1px solid var(--wm-border-strong); border-radius: 7px; font-family: var(--wm-font); font-size: 13px; font-weight: 600; color: var(--wm-text-primary); outline: none; text-align: right; transition: border-color .15s, box-shadow .15s; }
+    .fx-input::placeholder { color: var(--wm-neutral-300); font-weight: 500; }
+    .fx-input:focus { border-color: var(--wm-primary-500); box-shadow: 0 0 0 3px rgba(38,132,255,0.14); }
+    .exit-tag { display: inline-block; margin-left: 8px; padding: 2px 7px; border-radius: 5px; font-size: 10.5px; font-weight: 700; letter-spacing: .4px; background: var(--wm-warning-50); color: var(--wm-warning-700); vertical-align: middle; }
+
+    th.num-col, td.num-col { text-align: right; }
+    .wm-table tbody td.cell-actions { padding-right: 18px; }
+
+    /* sticky-ish table head when scrolling the page */
+    .wm-table thead th { white-space: nowrap; }
+
+    @media (max-width: 1100px) { .ovw { flex-direction: column; } .ovw-actions { justify-content: flex-start; } }
+    @media (max-width: 980px) {
+      .sidebar { display: none; }
+      .header { padding: 16px 20px; height: auto; flex-direction: column; align-items: flex-start; gap: 10px; }
+      .content { padding: 8px 20px 56px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- icon sprite (inline; referenced with bare #ic-) -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+    <symbol id="ic-wallet-money" viewBox="0 0 24 24" fill="none"><path d="M18.04 13.55C17.62 13.96 17.38 14.55 17.44 15.18C17.53 16.26 18.52 17.05 19.6 17.05H21.5V18.24C21.5 20.31 19.81 22 17.74 22H6.26C4.19 22 2.5 20.31 2.5 18.24V11.51C2.5 9.44001 4.19 7.75 6.26 7.75H17.74C19.81 7.75 21.5 9.44001 21.5 11.51V12.95H19.48C18.92 12.95 18.41 13.17 18.04 13.55Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 12.41V7.84C2.5 6.65 3.23 5.59 4.34 5.17L12.28 2.17C13.52 1.7 14.85 2.62 14.85 3.95V7.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M22.5588 13.9702V16.0302C22.5588 16.5802 22.1188 17.0302 21.5588 17.0502H19.5988C18.5188 17.0502 17.5288 16.2602 17.4388 15.1802C17.3788 14.5502 17.6188 13.9602 18.0388 13.5502C18.4088 13.1702 18.9188 12.9502 19.4788 12.9502H21.5588C22.1188 12.9702 22.5588 13.4202 22.5588 13.9702Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 12H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-notification" viewBox="0 0 24 24" fill="none"><path d="M12.02 2.91C8.71 2.91 6.02 5.6 6.02 8.91V11.8C6.02 12.41 5.76 13.34 5.45 13.86L4.3 15.77C3.59 16.95 4.08 18.26 5.38 18.7C9.69 20.14 14.34 20.14 18.65 18.7C19.86 18.3 20.39 16.87 19.73 15.77L18.58 13.86C18.28 13.34 18.02 12.41 18.02 11.8V8.91C18.02 5.61 15.32 2.91 12.02 2.91Z" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"/><path d="M15.02 19.06C15.02 20.71 13.67 22.06 12.02 22.06C11.2 22.06 10.44 21.72 9.9 21.18C9.36 20.64 9.02 19.88 9.02 19.06" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10"/></symbol>
+    <symbol id="ic-arrow-down" viewBox="0 0 24 24" fill="none"><path d="M19.92 8.95L13.4 15.47C12.63 16.24 11.37 16.24 10.6 15.47L4.08 8.95" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-export" viewBox="0 0 24 24" fill="none"><path d="M9 11.8L21.2 11.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.65 15.27L22.12 11.8L18.65 8.33" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M11.8 7.46V6.7C11.8 4.05 11.8 2.6 9.31 2.6H6.45C3.96 2.6 2.5 4.05 2.5 6.7V17.3C2.5 19.95 3.96 21.4 6.45 21.4H9.31C11.8 21.4 11.8 19.95 11.8 17.3V16.54" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-more" viewBox="0 0 24 24" fill="none"><circle cx="5" cy="12" r="2" fill="currentColor"/><circle cx="12" cy="12" r="2" fill="currentColor"/><circle cx="19" cy="12" r="2" fill="currentColor"/></symbol>
+    <symbol id="ic-info-circle" viewBox="0 0 24 24" fill="none"><path d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 8V13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M11.995 16H12.004" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-sort" viewBox="0 0 24 24" fill="none"><path d="M8 5V19M8 5L4.5 8.5M8 5L11.5 8.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 19V5M16 19L19.5 15.5M16 19L12.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </svg>
+
+  <div class="app">
+    <aside class="sidebar">
+      <a href="#" class="brand">
+        <svg class="brand-mark" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="40" height="40" rx="9" fill="#2684FF"/>
+          <path d="M9 13.5L13.6 27.5C13.8 28.1 14.7 28.1 14.9 27.5L18.3 17.3C18.5 16.7 19.4 16.7 19.6 17.3L23 27.5C23.2 28.1 24.1 28.1 24.3 27.5L29 13.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="brand-name">Wisemonk</span>
+      </a>
+
+      <nav>
+        <div class="nav-title">Finance</div>
+        <a href="#" class="nav-link active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><use href="#ic-wallet-money"/></svg>
+          Payroll
+          <svg class="nav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#ic-arrow-down"/></svg>
+        </a>
+        <div class="nav-sub">
+          <a href="payroll-summary.html" class="nav-sublink active">Payroll summary</a>
+          <a href="#" class="nav-sublink">Reimbursements</a>
+          <a href="#" class="nav-sublink">Payroll changes</a>
+          <a href="#" class="nav-sublink">Payslips</a>
+          <a href="form16.html" class="nav-sublink">Form 16</a>
+          <a href="#" class="nav-sublink">Contractor Payouts</a>
+          <a href="#" class="nav-sublink">Reimbursement Payouts</a>
+        </div>
+      </nav>
+    </aside>
+
+    <div class="main-col">
+      <header class="header">
+        <h1>Good Afternoon, Anju Chorotiya!</h1>
+        <div class="header-right">
+          <button class="wm-icon-btn" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-notification"/></svg></button>
+          <div class="user-chip">
+            <span class="wm-avatar wm-avatar--sm">AC</span>
+            <span class="user-name">Anju Chorotiya</span>
+            <svg class="user-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#ic-arrow-down"/></svg>
+          </div>
+        </div>
+      </header>
+
+      <div class="content">
+
+        <!-- Payroll overview -->
+        <div class="wm-card">
+          <div class="ovw">
+            <div class="ovw-head">
+              <h2>Payroll</h2>
+              <p>An overview of the company's payroll for the selected period.</p>
+              <div class="ovw-amt-label">Total payroll amount</div>
+              <div class="ovw-amt">₹25,52,30,775.96</div>
+            </div>
+            <div class="ovw-actions">
+              <div class="period-sel wm-field-float" style="margin-bottom:0;">
+                <select class="wm-select" id="periodSel" aria-label="Payroll period">
+                  <option>June 2026</option>
+                  <option>May 2026</option>
+                  <option>April 2026</option>
+                  <option>March 2026</option>
+                </select>
+              </div>
+              <button class="wm-btn wm-btn--primary" id="finalizeBtn">Finalize payroll</button>
+              <button class="wm-btn wm-btn--outline" id="executeBtn" disabled>Execute payroll</button>
+              <button class="wm-btn wm-btn--outline" id="markPaidBtn" disabled>Mark as Paid</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Employee status -->
+        <div class="wm-table-card">
+          <div class="tbl-head">
+            <h3>Employee status (June 2026)</h3>
+            <div class="status-counts">
+              <span class="sc">Finalized <b>0</b></span>
+              <span class="sc">Executed <b>0</b></span>
+              <span class="sc">Paid <b>0</b></span>
+              <span class="sc skip">Skipped <b>698</b></span>
+              <span class="sc total">Total <b>698</b></span>
+              <button class="wm-btn wm-btn--outline wm-btn--sm" id="exportBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-export"/></svg>Export</button>
+            </div>
+          </div>
+
+          <div class="wm-toolbar">
+            <div class="wm-search">
+              <input type="text" placeholder="Search by name, client or job title" data-wm-table-search="#payTable">
+            </div>
+            <div class="wm-toolbar-actions">
+              <div class="wm-dropdown" data-wm-filter="#payTable" data-wm-filter-key="client">
+                <button class="wm-dd-trigger"><span class="wm-dd-label">All clients</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+                <div class="wm-dd-menu" role="listbox">
+                  <button class="wm-dd-item selected" data-value="all" data-label="All clients"><span>All clients</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                  <button class="wm-dd-item" data-value="model-ml" data-label="Model ML"><span>Model ML</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                  <button class="wm-dd-item" data-value="handmark" data-label="Handmark Co Inc"><span>Handmark Co Inc</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                  <button class="wm-dd-item" data-value="streamland" data-label="Streamland Media"><span>Streamland Media</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                  <button class="wm-dd-item" data-value="op-consulting" data-label="OP Consulting Group LLC"><span>OP Consulting Group LLC</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                </div>
+              </div>
+              <div class="wm-dropdown" data-wm-filter="#payTable" data-wm-filter-key="type">
+                <button class="wm-dd-trigger"><span class="wm-dd-label">Employee type</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+                <div class="wm-dd-menu" role="listbox">
+                  <button class="wm-dd-item selected" data-value="all" data-label="Employee type"><span>All types</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                  <button class="wm-dd-item" data-value="full_time" data-label="Full-time"><span>Full-time</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                  <button class="wm-dd-item" data-value="part_time" data-label="Part-time"><span>Part-time</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                  <button class="wm-dd-item" data-value="contractor" data-label="Contractor"><span>Contractor</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                </div>
+              </div>
+              <div class="wm-dropdown" data-wm-filter="#payTable" data-wm-filter-key="status">
+                <button class="wm-dd-trigger"><span class="wm-dd-label">Status</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+                <div class="wm-dd-menu" role="listbox">
+                  <button class="wm-dd-item selected" data-value="all" data-label="Status"><span>All statuses</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                  <button class="wm-dd-item" data-value="skipped" data-label="Skipped"><span>Skipped</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                  <button class="wm-dd-item" data-value="finalized" data-label="Finalized"><span>Finalized</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                  <button class="wm-dd-item" data-value="executed" data-label="Executed"><span>Executed</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                  <button class="wm-dd-item" data-value="paid" data-label="Paid"><span>Paid</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <table class="wm-table" id="payTable">
+            <thead>
+              <tr>
+                <th class="col-check"><input type="checkbox" class="wm-check" id="checkAll"></th>
+                <th>Personnel</th>
+                <th>Client</th>
+                <th>Employment type</th>
+                <th>Job title</th>
+                <th><span class="th-sort">Currency <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-sort"/></svg></span></th>
+                <th>FX Rate</th>
+                <th class="num-col">Gross pay</th>
+                <th class="num-col"><span class="th-sort">Total payout <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-sort"/></svg></span></th>
+                <th><span class="th-sort">Status <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-sort"/></svg></span></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-client="streamland" data-type="full_time" data-status="skipped">
+                <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
+                <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AD</span><span class="wm-cell-text"><strong>Abhijit De</strong></span></div></td>
+                <td>Streamland Media</td>
+                <td><span class="emp-type">Full_time</span></td>
+                <td>Supervisor - Asset</td>
+                <td><span class="ccy">INR</span></td>
+                <td><span class="fx-dash">–</span></td>
+                <td class="num-col"><span class="num">₹2,50,000.00</span></td>
+                <td class="num-col"><span class="num">₹1,79,406.00</span></td>
+                <td><span class="wm-pill wm-pill--neutral">Skipped</span></td>
+                <td class="cell-actions"><button class="wm-icon-btn"><svg><use href="#ic-more"/></svg></button></td>
+              </tr>
+              <tr data-client="model-ml" data-type="full_time" data-status="skipped">
+                <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
+                <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AG</span><span class="wm-cell-text"><strong>Abhinav Gupta</strong></span></div></td>
+                <td>Model ML</td>
+                <td><span class="emp-type">Full_time</span></td>
+                <td>AI Analyst</td>
+                <td><span class="ccy">INR</span></td>
+                <td><span class="fx-dash">–</span></td>
+                <td class="num-col"><span class="num">₹1,25,000.00</span></td>
+                <td class="num-col"><span class="num">₹1,13,356.00</span></td>
+                <td><span class="wm-pill wm-pill--neutral">Skipped</span></td>
+                <td class="cell-actions"><button class="wm-icon-btn"><svg><use href="#ic-more"/></svg></button></td>
+              </tr>
+              <tr data-client="op-consulting" data-type="full_time" data-status="skipped">
+                <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
+                <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AS</span><span class="wm-cell-text"><strong>ABHINAYA SRIVASTAVA</strong></span></div></td>
+                <td>OP Consulting Group LLC</td>
+                <td><span class="emp-type">Full_time</span></td>
+                <td>TECHNICAL RECRUITER</td>
+                <td><span class="ccy">INR</span></td>
+                <td><span class="fx-dash">–</span></td>
+                <td class="num-col"><span class="num">₹50,000.00</span></td>
+                <td class="num-col"><span class="num">₹46,200.00</span></td>
+                <td><span class="wm-pill wm-pill--neutral">Skipped</span></td>
+                <td class="cell-actions"><button class="wm-icon-btn"><svg><use href="#ic-more"/></svg></button></td>
+              </tr>
+              <tr data-client="model-ml" data-type="full_time" data-status="skipped">
+                <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
+                <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AA</span><span class="wm-cell-text"><strong>Abhishek Amrit Mehra</strong></span></div></td>
+                <td>Model ML</td>
+                <td><span class="emp-type">Full_time</span></td>
+                <td>AI Analyst</td>
+                <td><span class="ccy">INR</span></td>
+                <td><span class="fx-dash">–</span></td>
+                <td class="num-col"><span class="num">₹1,20,833.33</span></td>
+                <td class="num-col"><span class="num">₹1,09,839.33</span></td>
+                <td><span class="wm-pill wm-pill--neutral">Skipped</span></td>
+                <td class="cell-actions"><button class="wm-icon-btn"><svg><use href="#ic-more"/></svg></button></td>
+              </tr>
+              <tr data-client="handmark" data-type="full_time" data-status="skipped">
+                <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
+                <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AB</span><span class="wm-cell-text"><strong>Abhishek Bedi</strong></span></div></td>
+                <td>Handmark Co Inc</td>
+                <td><span class="emp-type">Full_time</span></td>
+                <td>Architect</td>
+                <td><span class="ccy">INR</span></td>
+                <td><span class="fx-dash">–</span></td>
+                <td class="num-col"><span class="num">₹65,000.00</span></td>
+                <td class="num-col"><span class="num">₹61,200.00</span></td>
+                <td><span class="wm-pill wm-pill--neutral">Skipped</span></td>
+                <td class="cell-actions"><button class="wm-icon-btn"><svg><use href="#ic-more"/></svg></button></td>
+              </tr>
+              <tr data-client="handmark" data-type="full_time" data-status="skipped">
+                <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
+                <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AB</span><span class="wm-cell-text"><strong>Abhishek Bedi</strong></span></div></td>
+                <td>Handmark Co Inc</td>
+                <td><span class="emp-type">Full_time</span></td>
+                <td>Architect</td>
+                <td><span class="ccy">INR</span></td>
+                <td><span class="fx-dash">–</span></td>
+                <td class="num-col"><span class="num">₹65,000.00</span></td>
+                <td class="num-col"><span class="num">₹61,200.00</span></td>
+                <td><span class="wm-pill wm-pill--neutral">Skipped</span></td>
+                <td class="cell-actions"><button class="wm-icon-btn"><svg><use href="#ic-more"/></svg></button></td>
+              </tr>
+              <tr data-client="handmark" data-type="full_time" data-status="skipped">
+                <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
+                <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AB</span><span class="wm-cell-text"><strong>Abhishek Bedi</strong></span></div></td>
+                <td>Handmark Co Inc</td>
+                <td><span class="emp-type">Full_time</span></td>
+                <td>Architect</td>
+                <td><span class="ccy">INR</span></td>
+                <td><span class="fx-dash">–</span></td>
+                <td class="num-col"><span class="num">₹65,000.00</span></td>
+                <td class="num-col"><span class="num">₹61,200.00</span></td>
+                <td><span class="wm-pill wm-pill--neutral">Skipped</span></td>
+                <td class="cell-actions"><button class="wm-icon-btn"><svg><use href="#ic-more"/></svg></button></td>
+              </tr>
+              <tr data-client="handmark" data-type="full_time" data-status="skipped">
+                <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
+                <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AB</span><span class="wm-cell-text"><strong>Abhishek Bedi</strong></span></div></td>
+                <td>Handmark Co Inc</td>
+                <td><span class="emp-type">Full_time</span></td>
+                <td>Architect</td>
+                <td><span class="ccy">INR</span></td>
+                <td><span class="fx-dash">–</span></td>
+                <td class="num-col"><span class="num">₹65,000.00</span></td>
+                <td class="num-col"><span class="num">₹61,200.00</span></td>
+                <td><span class="wm-pill wm-pill--neutral">Skipped</span></td>
+                <td class="cell-actions"><button class="wm-icon-btn"><svg><use href="#ic-more"/></svg></button></td>
+              </tr>
+              <tr data-client="hagedorn" data-type="full_time" data-status="skipped">
+                <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
+                <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AC</span><span class="wm-cell-text"><strong>Abhishek Choudhary</strong></span></div></td>
+                <td>HAGEDORN Products &amp; Systems GmbH</td>
+                <td><span class="emp-type">Full_time</span></td>
+                <td>Business Development Manager</td>
+                <td><span class="ccy eur">EUR</span></td>
+                <td><input type="text" class="fx-input" placeholder="Rate" aria-label="FX rate"></td>
+                <td class="num-col"><span class="num">₹2,11,883.02</span></td>
+                <td class="num-col"><span class="num">₹1,81,247.02</span></td>
+                <td><span class="wm-pill wm-pill--neutral">Skipped</span></td>
+                <td class="cell-actions"><button class="wm-icon-btn"><svg><use href="#ic-more"/></svg></button></td>
+              </tr>
+              <tr data-client="model-ml" data-type="full_time" data-status="skipped">
+                <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
+                <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AK</span><span class="wm-cell-text"><strong>Abhishek Katvi</strong></span></div></td>
+                <td>Model ML</td>
+                <td><span class="emp-type">Full_time</span></td>
+                <td>AI Analyst</td>
+                <td><span class="ccy">INR</span></td>
+                <td><span class="fx-dash">–</span></td>
+                <td class="num-col"><span class="num">₹1,52,500.00</span></td>
+                <td class="num-col"><span class="num">₹1,35,987.00</span></td>
+                <td><span class="wm-pill wm-pill--neutral">Skipped</span></td>
+                <td class="cell-actions"><button class="wm-icon-btn"><svg><use href="#ic-more"/></svg></button></td>
+              </tr>
+              <tr data-client="united-creative" data-type="full_time" data-status="skipped">
+                <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
+                <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AP</span><span class="wm-cell-text"><strong>Abhishek Pandey</strong></span></div></td>
+                <td>United Creative Services</td>
+                <td><span class="emp-type">Full_time</span></td>
+                <td>Illustrator &amp; Storyboard Artist</td>
+                <td><span class="ccy">INR</span></td>
+                <td><span class="fx-dash">–</span></td>
+                <td class="num-col"><span class="num">₹62,500.00</span></td>
+                <td class="num-col"><span class="num">₹58,700.00</span></td>
+                <td><span class="wm-pill wm-pill--neutral">Skipped</span></td>
+                <td class="cell-actions"><button class="wm-icon-btn"><svg><use href="#ic-more"/></svg></button></td>
+              </tr>
+              <tr data-client="wieldyai" data-type="full_time" data-status="skipped">
+                <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
+                <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AR</span><span class="wm-cell-text"><strong>Abhishek Raj</strong></span></div></td>
+                <td>WieldyAI</td>
+                <td><span class="emp-type">Full_time</span></td>
+                <td>Software Engineer</td>
+                <td><span class="ccy">INR</span></td>
+                <td><span class="fx-dash">–</span></td>
+                <td class="num-col"><span class="num">₹3,81,429.00</span></td>
+                <td class="num-col"><span class="num">₹2,97,535.00</span></td>
+                <td><span class="wm-pill wm-pill--neutral">Skipped</span></td>
+                <td class="cell-actions"><button class="wm-icon-btn"><svg><use href="#ic-more"/></svg></button></td>
+              </tr>
+              <tr data-client="genera" data-type="full_time" data-status="skipped">
+                <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
+                <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AT</span><span class="wm-cell-text"><strong>Abhishek Tripathi</strong></span></div></td>
+                <td>Genera Capital</td>
+                <td><span class="emp-type">Full_time</span></td>
+                <td>Junior Frontend Developer</td>
+                <td><span class="ccy">INR</span></td>
+                <td><span class="fx-dash">–</span></td>
+                <td class="num-col"><span class="num">₹1,37,760.00</span></td>
+                <td class="num-col"><span class="num">₹1,24,125.00</span></td>
+                <td><span class="wm-pill wm-pill--neutral">Skipped</span></td>
+                <td class="cell-actions"><button class="wm-icon-btn"><svg><use href="#ic-more"/></svg></button></td>
+              </tr>
+              <tr data-client="zeo" data-type="full_time" data-status="skipped">
+                <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
+                <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm wm-avatar--muted">A</span><span class="wm-cell-text"><strong>abu<span class="exit-tag">EXIT</span></strong></span></div></td>
+                <td>Zeo comp test</td>
+                <td><span class="emp-type">Full_time</span></td>
+                <td>dummy</td>
+                <td><span class="ccy">INR</span></td>
+                <td><span class="fx-dash">–</span></td>
+                <td class="num-col"><span class="num muted">₹0.00</span></td>
+                <td class="num-col"><span class="num muted">₹0.00</span></td>
+                <td><span class="wm-pill wm-pill--neutral">Skipped</span></td>
+                <td class="cell-actions"><button class="wm-icon-btn"><svg><use href="#ic-more"/></svg></button></td>
+              </tr>
+              <tr data-client="circadian" data-type="full_time" data-status="skipped">
+                <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
+                <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AA</span><span class="wm-cell-text"><strong>abu abu</strong></span></div></td>
+                <td>Circadian Global Forwarding</td>
+                <td><span class="emp-type">Full_time</span></td>
+                <td>Analyst</td>
+                <td><span class="ccy">INR</span></td>
+                <td><span class="fx-dash">–</span></td>
+                <td class="num-col"><span class="num">₹37,500.00</span></td>
+                <td class="num-col"><span class="num">₹33,700.00</span></td>
+                <td><span class="wm-pill wm-pill--neutral">Skipped</span></td>
+                <td class="cell-actions"><button class="wm-icon-btn"><svg><use href="#ic-more"/></svg></button></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="wm-table-empty">No personnel match your search.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // ---- Select all / row checkboxes ----
+      var checkAll = document.getElementById('checkAll');
+      var rows = function () { return Array.prototype.slice.call(document.querySelectorAll('.row-check')); };
+      function visibleRows() { return rows().filter(function (c) { return c.closest('tr').style.display !== 'none'; }); }
+
+      checkAll.addEventListener('change', function () {
+        visibleRows().forEach(function (c) { c.checked = checkAll.checked; });
+      });
+      rows().forEach(function (c) {
+        c.addEventListener('change', function () {
+          var vis = visibleRows();
+          var checked = vis.filter(function (x) { return x.checked; });
+          checkAll.checked = vis.length > 0 && checked.length === vis.length;
+          checkAll.indeterminate = checked.length > 0 && checked.length < vis.length;
+        });
+      });
+
+      // ---- Payroll lifecycle buttons (demo state machine) ----
+      var finalizeBtn = document.getElementById('finalizeBtn');
+      var executeBtn = document.getElementById('executeBtn');
+      var markPaidBtn = document.getElementById('markPaidBtn');
+
+      finalizeBtn.addEventListener('click', function () {
+        WMUI.toast('Payroll finalized for June 2026', { type: 'success' });
+        finalizeBtn.disabled = true;
+        executeBtn.disabled = false;
+      });
+      executeBtn.addEventListener('click', function () {
+        if (executeBtn.disabled) return;
+        WMUI.toast('Payroll execution started', { type: 'success' });
+        executeBtn.disabled = true;
+        markPaidBtn.disabled = false;
+      });
+      markPaidBtn.addEventListener('click', function () {
+        if (markPaidBtn.disabled) return;
+        WMUI.toast('Payroll marked as paid', { type: 'success' });
+        markPaidBtn.disabled = true;
+      });
+
+      // ---- Export ----
+      document.getElementById('exportBtn').addEventListener('click', function () {
+        WMUI.toast('Preparing payroll export…');
+      });
+    });
+  </script>
+</body>
+</html>

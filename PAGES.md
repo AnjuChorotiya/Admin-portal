@@ -32,6 +32,7 @@ Repo: https://github.com/AnjuChorotiya/Admin-portal · Pages base: `https://anju
 
 | Page | Source | Live Preview | Docs |
 |---|---|---| --- |
+| payroll-summary.html | [src](https://github.com/AnjuChorotiya/Admin-portal/blob/main/payroll-summary.html) | [live](https://anjuchorotiya.github.io/Admin-portal/payroll-summary.html) | [README](https://github.com/AnjuChorotiya/Admin-portal/blob/main/SCREENS.md#payroll-summaryhtml) |
 | form16.html | [src](https://github.com/AnjuChorotiya/Admin-portal/blob/main/form16.html) | [live](https://anjuchorotiya.github.io/Admin-portal/form16.html) | [README](https://github.com/AnjuChorotiya/Admin-portal/blob/main/SCREENS.md#form16html) |
 | notification-engine-admin.html | [src](https://github.com/AnjuChorotiya/Admin-portal/blob/main/notification-engine-admin.html) | [live](https://anjuchorotiya.github.io/Admin-portal/notification-engine-admin.html) | [README](https://github.com/AnjuChorotiya/Admin-portal/blob/main/SCREENS.md#notification-engine-adminhtml) |
 | client-verification.html | [src](https://github.com/AnjuChorotiya/Admin-portal/blob/main/client-verification.html) | [live](https://anjuchorotiya.github.io/Admin-portal/client-verification.html) | [README](https://github.com/AnjuChorotiya/Admin-portal/blob/main/SCREENS.md#client-verificationhtml) |
