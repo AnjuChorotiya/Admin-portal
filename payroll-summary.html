@@ -210,7 +210,9 @@
                 <th class="col-check"><input type="checkbox" class="wm-check" id="checkAll"></th>
                 <th>Personnel</th>
                 <th>Client</th>
-                <th><span class="th-info" title="Invoice paid by client (green) or unpaid (red)  /  deposit-runway risk in months — green ≥1, orange 0–1, red negative (shortfall), – no data  /  client background risk (green good · yellow watch · red high risk)">Invoice / Deposit / Risk <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-info-circle"/></svg></span></th>
+                <th data-wm-note="Client-health snapshot at payout time, three signals split by ' / '. (1) Invoice — the client's invoice payment status (Paid/Unpaid). (2) Deposit — deposit balance expressed as inventory runway in months, sourced from the Deposit screen (green ≥1, orange 0–1, red negative/shortfall, – no data). (3) Risk — client background-verification risk dot, sourced from the Client verification screen (green good · yellow watch · red high risk).">
+                  <span class="th-info" title="Invoice — client invoice Paid/Unpaid  /  Deposit — inventory runway in months, from the Deposit screen (green ≥1, orange 0–1, red shortfall, – none)  /  Risk — client background risk, from the Client verification screen (green good · yellow watch · red high)">Invoice / Deposit / Risk <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-info-circle"/></svg></span>
+                </th>
                 <th>Employment type</th>
                 <th><span class="th-sort">Currency <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-sort"/></svg></span></th>
                 <th>FX Rate</th>
@@ -494,5 +496,7 @@
       search.addEventListener('input', applyFilters);
     });
   </script>
+  <!-- Dev notes (drop-in): floating "Dev notes" toggle reveals data-wm-note annotations -->
+  <script defer src="https://anjuchorotiya.github.io/Client-freelancer/wisemonk-ui/dev-notes.js"></script>
 </body>
 </html>
