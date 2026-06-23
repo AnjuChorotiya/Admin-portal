@@ -16,12 +16,14 @@ Purpose and flow for each screen in this repo. Live pages:
 4. The roster table lists each worker with columns **Personnel** (avatar + name), **Client**, **Client status**, **Employment type**, **Job title**, **Currency** (sortable), **FX Rate**, **Gross pay**, **Total payout** (sortable), **Status** (sortable) and a per-row more-actions menu; rows are selectable via checkboxes with a header select-all.
 5. **Client status** packs three at-a-glance health signals into one cell, separated by `/`: an **invoice-paid dot** (green = invoice paid by client, red = unpaid), a **deposit-runway risk figure** in months as a colour-coded signed decimal (green ≥ 1 healthy · orange 0–1 thin · red negative = shortfall/overdue · grey dash = no data, e.g. `2.2`, `0.3`, `-1.1`, `–`), and a **client-background risk dot** (green = good · yellow = watch · red = high risk). Each element carries a hover tooltip and the column header has an info tooltip describing the legend.
 6. The **FX Rate** column shows a dash (–) for every row (no rate applied yet). Exited workers carry an **EXIT** tag on the name.
-7. The toolbar filters the roster by free-text search (name / client / job title) and by **All clients**, **Employee type** and **Status** dropdowns; an empty-result state shows when no rows match.
+7. The toolbar filters the roster by free-text search (name / client / job title) and by **All clients**, **Employee type** and **Status** dropdowns. Each dropdown is **multi-select** (tick several values; the trigger reads "… · N" when more than one is chosen, the field name when none); filters combine as AND across columns and OR within a column. An empty-result state shows when no rows match.
+8. A **Client status key** legend sits between the toolbar and the table, spelling out the dot/figure meanings so the column is readable without hovering.
 
 **Validations:**
 - Lifecycle buttons are state-gated: **Execute payroll** enables only after Finalize; **Mark as Paid** enables only after Execute (`finalizeBtn` → `executeBtn` → `markPaidBtn`).
 - Header select-all toggles only currently-visible (filtered) rows and reflects an indeterminate state on partial selection.
 - FX Rate is display-only (dash placeholder) on every row; all amounts and counts are illustrative demo data.
+- Filter dropdowns are multi-select and combine with the search box; selecting the "All …" row clears that column's filter.
 
 **Notes:** Built on the wisemonk-ui design system; status pills use neutral styling for "Skipped". Lifecycle actions and Export are simulated client-side (toasts) for demonstration.
 

@@ -81,18 +81,30 @@
 
     /* Client status — invoice dot / deposit months / background-risk dot */
     .cstat { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
-    .cstat .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
-    .cstat .dot.green { background: var(--wm-success-500); }
-    .cstat .dot.yellow { background: var(--wm-warning-500); }
-    .cstat .dot.red { background: var(--wm-danger-500); }
+    .cstat .dot, .cstat-legend .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+    .dot.green { background: var(--wm-success-500); }
+    .dot.yellow { background: var(--wm-warning-500); }
+    .dot.red { background: var(--wm-danger-500); }
     .cstat .sep { color: var(--wm-neutral-300); font-weight: 500; }
     .cstat .dep { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--wm-text-secondary); }
-    .cstat .dep.up { color: var(--wm-success-500); }
-    .cstat .dep.mid { color: var(--wm-warning-500); }
-    .cstat .dep.down { color: var(--wm-danger-500); }
-    .cstat .dep.dash { color: var(--wm-neutral-300); font-weight: 500; }
+    .dep.up { color: var(--wm-success-500); }
+    .dep.mid { color: var(--wm-warning-500); }
+    .dep.down { color: var(--wm-danger-500); }
+    .dep.dash { color: var(--wm-neutral-300); font-weight: 500; }
     .th-info { display: inline-flex; align-items: center; gap: 5px; cursor: default; }
     .th-info svg { width: 13px; height: 13px; color: var(--wm-neutral-300); }
+
+    /* Client status legend */
+    .cstat-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 7px 14px; padding: 0 20px 14px; font-size: 12px; color: var(--wm-text-muted); }
+    .cstat-legend strong { color: var(--wm-text-secondary); font-weight: 700; }
+    .cstat-legend .leg { display: inline-flex; align-items: center; gap: 6px; }
+    .cstat-legend .dep { font-weight: 700; }
+    .cstat-legend .leg-note { color: var(--wm-neutral-400); }
+    .cstat-legend .leg-div { color: var(--wm-neutral-300); }
+
+    /* lighter filter trigger text + multi-select trigger when active */
+    .wm-dd-trigger { font-weight: 500; }
+    .wm-dd-multi.has-sel .wm-dd-trigger { color: var(--wm-primary-600); border-color: var(--wm-primary-200); }
 
     th.num-col, td.num-col { text-align: right; }
     .wm-table tbody td.cell-actions { padding-right: 18px; }
@@ -195,10 +207,10 @@
 
           <div class="wm-toolbar">
             <div class="wm-search">
-              <input type="text" placeholder="Search by name, client or job title" data-wm-table-search="#payTable">
+              <input type="text" id="paySearch" placeholder="Search by name, client or job title">
             </div>
             <div class="wm-toolbar-actions">
-              <div class="wm-dropdown" data-wm-filter="#payTable" data-wm-filter-key="client">
+              <div class="wm-dropdown wm-dd-multi" data-key="client" data-base="All clients">
                 <button class="wm-dd-trigger"><span class="wm-dd-label">All clients</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
                 <div class="wm-dd-menu" role="listbox">
                   <button class="wm-dd-item selected" data-value="all" data-label="All clients"><span>All clients</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
@@ -208,7 +220,7 @@
                   <button class="wm-dd-item" data-value="op-consulting" data-label="OP Consulting Group LLC"><span>OP Consulting Group LLC</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
                 </div>
               </div>
-              <div class="wm-dropdown" data-wm-filter="#payTable" data-wm-filter-key="type">
+              <div class="wm-dropdown wm-dd-multi" data-key="type" data-base="Employee type">
                 <button class="wm-dd-trigger"><span class="wm-dd-label">Employee type</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
                 <div class="wm-dd-menu" role="listbox">
                   <button class="wm-dd-item selected" data-value="all" data-label="Employee type"><span>All types</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
@@ -217,7 +229,7 @@
                   <button class="wm-dd-item" data-value="contractor" data-label="Contractor"><span>Contractor</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
                 </div>
               </div>
-              <div class="wm-dropdown" data-wm-filter="#payTable" data-wm-filter-key="status">
+              <div class="wm-dropdown wm-dd-multi" data-key="status" data-base="Status">
                 <button class="wm-dd-trigger"><span class="wm-dd-label">Status</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
                 <div class="wm-dd-menu" role="listbox">
                   <button class="wm-dd-item selected" data-value="all" data-label="Status"><span>All statuses</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
@@ -228,6 +240,15 @@
                 </div>
               </div>
             </div>
+          </div>
+
+          <div class="cstat-legend">
+            <strong>Client status key</strong>
+            <span class="leg"><span class="dot green"></span>/<span class="dot red"></span> invoice paid / unpaid</span>
+            <span class="leg-div">·</span>
+            <span class="leg"><span class="dep up">2.2</span> deposit runway, months <span class="leg-note">(green ≥1 · <span class="dep mid">orange</span> 0–1 · <span class="dep down">red</span> shortfall · – no data)</span></span>
+            <span class="leg-div">·</span>
+            <span class="leg"><span class="dot green"></span><span class="dot yellow"></span><span class="dot red"></span> background risk: good / watch / high</span>
           </div>
 
           <table class="wm-table" id="payTable">
@@ -511,6 +532,73 @@
       document.getElementById('exportBtn').addEventListener('click', function () {
         WMUI.toast('Preparing payroll export…');
       });
+
+      // ---- Multi-select filters + search (combined) ----
+      var table = document.getElementById('payTable');
+      var bodyRows = Array.prototype.slice.call(table.tBodies[0].rows);
+      var search = document.getElementById('paySearch');
+      var empty = document.querySelector('.wm-table-empty');
+      var selected = { client: new Set(), type: new Set(), status: new Set() };
+
+      function applyFilters() {
+        var q = (search.value || '').toLowerCase().trim();
+        var visible = 0;
+        bodyRows.forEach(function (tr) {
+          var okText = !q || tr.textContent.toLowerCase().indexOf(q) !== -1;
+          var okFilters = Object.keys(selected).every(function (k) {
+            var set = selected[k];
+            return set.size === 0 || set.has(tr.dataset[k] || '');
+          });
+          var show = okText && okFilters;
+          tr.style.display = show ? '' : 'none';
+          if (show) visible++;
+        });
+        if (empty) empty.classList.toggle('show', visible === 0);
+        // keep header select-all in sync with the new visible set
+        var vis = visibleRows();
+        var checked = vis.filter(function (x) { return x.checked; });
+        checkAll.checked = vis.length > 0 && checked.length === vis.length;
+        checkAll.indeterminate = checked.length > 0 && checked.length < vis.length;
+      }
+
+      Array.prototype.slice.call(document.querySelectorAll('.wm-dd-multi')).forEach(function (dd) {
+        var key = dd.dataset.key;
+        var base = dd.dataset.base || 'All';
+        var labelEl = dd.querySelector('.wm-dd-label');
+        var menu = dd.querySelector('.wm-dd-menu');
+        var items = Array.prototype.slice.call(menu.querySelectorAll('.wm-dd-item'));
+        var set = selected[key];
+
+        // capture phase: take over the click before wisemonk-ui's single-select
+        // handler runs, so the menu stays open and multiple values can be picked.
+        menu.addEventListener('click', function (e) {
+          var item = e.target.closest('.wm-dd-item');
+          if (!item) return;
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          var val = item.dataset.value;
+          if (val === 'all') { set.clear(); }
+          else if (set.has(val)) { set.delete(val); }
+          else { set.add(val); }
+
+          items.forEach(function (it) {
+            var v = it.dataset.value;
+            it.classList.toggle('selected', v === 'all' ? set.size === 0 : set.has(v));
+          });
+
+          if (set.size === 0) labelEl.textContent = base;
+          else if (set.size === 1) {
+            var only = items.filter(function (it) { return it.dataset.value === Array.from(set)[0]; })[0];
+            labelEl.textContent = only ? (only.dataset.label || only.textContent.trim()) : base;
+          } else {
+            labelEl.textContent = base + ' · ' + set.size;
+          }
+          dd.classList.toggle('has-sel', set.size > 0);
+          applyFilters();
+        }, true);
+      });
+
+      search.addEventListener('input', applyFilters);
     });
   </script>
 </body>
