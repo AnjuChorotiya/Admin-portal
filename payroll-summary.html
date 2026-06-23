@@ -82,6 +82,17 @@
     .fx-input:focus { border-color: var(--wm-primary-500); box-shadow: 0 0 0 3px rgba(38,132,255,0.14); }
     .exit-tag { display: inline-block; margin-left: 8px; padding: 2px 7px; border-radius: 5px; font-size: 10.5px; font-weight: 700; letter-spacing: .4px; background: var(--wm-warning-50); color: var(--wm-warning-700); vertical-align: middle; }
 
+    /* Client status — invoice dot / deposit months / background-risk dot */
+    .cstat { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
+    .cstat .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+    .cstat .dot.green { background: var(--wm-success-500); }
+    .cstat .dot.yellow { background: var(--wm-warning-500); }
+    .cstat .dot.red { background: var(--wm-danger-500); }
+    .cstat .sep { color: var(--wm-neutral-300); font-weight: 500; }
+    .cstat .dep { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--wm-text-secondary); }
+    .th-info { display: inline-flex; align-items: center; gap: 5px; cursor: default; }
+    .th-info svg { width: 13px; height: 13px; color: var(--wm-neutral-300); }
+
     th.num-col, td.num-col { text-align: right; }
     .wm-table tbody td.cell-actions { padding-right: 18px; }
 
@@ -224,6 +235,7 @@
                 <th class="col-check"><input type="checkbox" class="wm-check" id="checkAll"></th>
                 <th>Personnel</th>
                 <th>Client</th>
+                <th><span class="th-info" title="Invoice paid by client (green) or unpaid (red)  /  deposit held, in months  /  client background risk (green good · yellow watch · red high risk)">Client status <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-info-circle"/></svg></span></th>
                 <th>Employment type</th>
                 <th>Job title</th>
                 <th><span class="th-sort">Currency <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-sort"/></svg></span></th>
@@ -239,6 +251,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AD</span><span class="wm-cell-text"><strong>Abhijit De</strong></span></div></td>
                 <td>Streamland Media</td>
+                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="sep">/</span><span class="dep">3 mo</span><span class="sep">/</span><span class="dot green" title="Client background: good"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>Supervisor - Asset</td>
                 <td><span class="ccy">INR</span></td>
@@ -252,6 +265,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AG</span><span class="wm-cell-text"><strong>Abhinav Gupta</strong></span></div></td>
                 <td>Model ML</td>
+                <td><span class="cstat"><span class="dot red" title="Invoice unpaid by client"></span><span class="sep">/</span><span class="dep">2 mo</span><span class="sep">/</span><span class="dot yellow" title="Client background: watch"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>AI Analyst</td>
                 <td><span class="ccy">INR</span></td>
@@ -265,6 +279,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AS</span><span class="wm-cell-text"><strong>ABHINAYA SRIVASTAVA</strong></span></div></td>
                 <td>OP Consulting Group LLC</td>
+                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="sep">/</span><span class="dep">6 mo</span><span class="sep">/</span><span class="dot green" title="Client background: good"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>TECHNICAL RECRUITER</td>
                 <td><span class="ccy">INR</span></td>
@@ -278,6 +293,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AA</span><span class="wm-cell-text"><strong>Abhishek Amrit Mehra</strong></span></div></td>
                 <td>Model ML</td>
+                <td><span class="cstat"><span class="dot red" title="Invoice unpaid by client"></span><span class="sep">/</span><span class="dep">2 mo</span><span class="sep">/</span><span class="dot yellow" title="Client background: watch"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>AI Analyst</td>
                 <td><span class="ccy">INR</span></td>
@@ -291,6 +307,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AB</span><span class="wm-cell-text"><strong>Abhishek Bedi</strong></span></div></td>
                 <td>Handmark Co Inc</td>
+                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="sep">/</span><span class="dep">1 mo</span><span class="sep">/</span><span class="dot yellow" title="Client background: watch"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>Architect</td>
                 <td><span class="ccy">INR</span></td>
@@ -304,6 +321,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AB</span><span class="wm-cell-text"><strong>Abhishek Bedi</strong></span></div></td>
                 <td>Handmark Co Inc</td>
+                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="sep">/</span><span class="dep">1 mo</span><span class="sep">/</span><span class="dot yellow" title="Client background: watch"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>Architect</td>
                 <td><span class="ccy">INR</span></td>
@@ -317,6 +335,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AB</span><span class="wm-cell-text"><strong>Abhishek Bedi</strong></span></div></td>
                 <td>Handmark Co Inc</td>
+                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="sep">/</span><span class="dep">1 mo</span><span class="sep">/</span><span class="dot yellow" title="Client background: watch"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>Architect</td>
                 <td><span class="ccy">INR</span></td>
@@ -330,6 +349,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AB</span><span class="wm-cell-text"><strong>Abhishek Bedi</strong></span></div></td>
                 <td>Handmark Co Inc</td>
+                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="sep">/</span><span class="dep">1 mo</span><span class="sep">/</span><span class="dot yellow" title="Client background: watch"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>Architect</td>
                 <td><span class="ccy">INR</span></td>
@@ -343,6 +363,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AC</span><span class="wm-cell-text"><strong>Abhishek Choudhary</strong></span></div></td>
                 <td>HAGEDORN Products &amp; Systems GmbH</td>
+                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="sep">/</span><span class="dep">4 mo</span><span class="sep">/</span><span class="dot green" title="Client background: good"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>Business Development Manager</td>
                 <td><span class="ccy eur">EUR</span></td>
@@ -356,6 +377,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AK</span><span class="wm-cell-text"><strong>Abhishek Katvi</strong></span></div></td>
                 <td>Model ML</td>
+                <td><span class="cstat"><span class="dot red" title="Invoice unpaid by client"></span><span class="sep">/</span><span class="dep">2 mo</span><span class="sep">/</span><span class="dot yellow" title="Client background: watch"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>AI Analyst</td>
                 <td><span class="ccy">INR</span></td>
@@ -369,6 +391,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AP</span><span class="wm-cell-text"><strong>Abhishek Pandey</strong></span></div></td>
                 <td>United Creative Services</td>
+                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="sep">/</span><span class="dep">3 mo</span><span class="sep">/</span><span class="dot green" title="Client background: good"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>Illustrator &amp; Storyboard Artist</td>
                 <td><span class="ccy">INR</span></td>
@@ -382,6 +405,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AR</span><span class="wm-cell-text"><strong>Abhishek Raj</strong></span></div></td>
                 <td>WieldyAI</td>
+                <td><span class="cstat"><span class="dot red" title="Invoice unpaid by client"></span><span class="sep">/</span><span class="dep">0 mo</span><span class="sep">/</span><span class="dot red" title="Client background: high risk"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>Software Engineer</td>
                 <td><span class="ccy">INR</span></td>
@@ -395,6 +419,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AT</span><span class="wm-cell-text"><strong>Abhishek Tripathi</strong></span></div></td>
                 <td>Genera Capital</td>
+                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="sep">/</span><span class="dep">5 mo</span><span class="sep">/</span><span class="dot green" title="Client background: good"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>Junior Frontend Developer</td>
                 <td><span class="ccy">INR</span></td>
@@ -408,6 +433,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm wm-avatar--muted">A</span><span class="wm-cell-text"><strong>abu<span class="exit-tag">EXIT</span></strong></span></div></td>
                 <td>Zeo comp test</td>
+                <td><span class="cstat"><span class="dot red" title="Invoice unpaid by client"></span><span class="sep">/</span><span class="dep">0 mo</span><span class="sep">/</span><span class="dot red" title="Client background: high risk"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>dummy</td>
                 <td><span class="ccy">INR</span></td>
@@ -421,6 +447,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AA</span><span class="wm-cell-text"><strong>abu abu</strong></span></div></td>
                 <td>Circadian Global Forwarding</td>
+                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="sep">/</span><span class="dep">2 mo</span><span class="sep">/</span><span class="dot green" title="Client background: good"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>Analyst</td>
                 <td><span class="ccy">INR</span></td>

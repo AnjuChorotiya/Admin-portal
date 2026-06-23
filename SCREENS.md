@@ -13,9 +13,10 @@ Purpose and flow for each screen in this repo. Live pages:
 1. The left nav is scoped to a single **Payroll** tab (no sub-menu or dropdown).
 2. A **Payroll** overview card shows the **Total payroll amount** (₹25,52,30,775.96) for the period, a month selector (June 2026), and three lifecycle actions: **Finalize payroll** (primary), **Execute payroll** and **Mark as Paid** (each disabled until the prior step completes).
 3. An **Employee status (June 2026)** card surfaces run counts — **Finalized / Executed / Paid / Skipped / Total** (0 / 0 / 0 / 698 / 698) — and an **Export** action.
-4. The roster table lists each worker with columns **Personnel** (avatar + name), **Client**, **Employment type**, **Job title**, **Currency** (sortable), **FX Rate**, **Gross pay**, **Total payout** (sortable), **Status** (sortable) and a per-row more-actions menu; rows are selectable via checkboxes with a header select-all.
-5. Foreign-currency rows (e.g. EUR) expose an inline editable **FX Rate** input; INR rows show a dash. Exited workers carry an **EXIT** tag on the name.
-6. The toolbar filters the roster by free-text search (name / client / job title) and by **All clients**, **Employee type** and **Status** dropdowns; an empty-result state shows when no rows match.
+4. The roster table lists each worker with columns **Personnel** (avatar + name), **Client**, **Client status**, **Employment type**, **Job title**, **Currency** (sortable), **FX Rate**, **Gross pay**, **Total payout** (sortable), **Status** (sortable) and a per-row more-actions menu; rows are selectable via checkboxes with a header select-all.
+5. **Client status** packs three at-a-glance health signals into one cell, separated by `/`: an **invoice-paid dot** (green = invoice paid by client, red = unpaid), the **deposit held** by the client expressed in months (e.g. `3 mo`), and a **client-background risk dot** (green = good · yellow = watch · red = high risk). Each dot carries a hover tooltip and the column header has an info tooltip describing the legend.
+6. Foreign-currency rows (e.g. EUR) expose an inline editable **FX Rate** input; INR rows show a dash. Exited workers carry an **EXIT** tag on the name.
+7. The toolbar filters the roster by free-text search (name / client / job title) and by **All clients**, **Employee type** and **Status** dropdowns; an empty-result state shows when no rows match.
 
 **Validations:**
 - Lifecycle buttons are state-gated: **Execute payroll** enables only after Finalize; **Mark as Paid** enables only after Execute (`finalizeBtn` → `executeBtn` → `markPaidBtn`).
