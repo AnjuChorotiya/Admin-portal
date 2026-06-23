@@ -101,13 +101,15 @@
     .info-tip { position: relative; display: inline-flex; align-items: center; cursor: help; outline: none; }
     .info-tip > svg { transition: color .15s; }
     .info-tip:hover > svg, .info-tip:focus-visible > svg { color: var(--wm-primary-500); }
-    .info-pop { position: absolute; top: calc(100% + 9px); left: 50%; z-index: 60; width: 280px; padding: 11px 13px;
-      background: var(--wm-ink); color: #fff; border-radius: 8px; font-family: var(--wm-font); font-size: 12px; font-weight: 500;
-      line-height: 1.55; letter-spacing: normal; text-transform: none; text-align: left; box-shadow: var(--wm-shadow-md);
-      opacity: 0; visibility: hidden; transform: translateX(-50%) translateY(-4px); transition: opacity .15s ease, transform .15s ease; pointer-events: none; }
-    .info-pop b { font-weight: 700; color: #fff; }
-    .info-pop::before { content: ""; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-bottom-color: var(--wm-ink); }
-    .info-tip:hover .info-pop, .info-tip:focus-visible .info-pop { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    .info-pop { position: absolute; top: calc(100% + 10px); left: -10px; z-index: 60; width: 300px; padding: 13px 15px;
+      display: flex; flex-direction: column; gap: 9px;
+      background: var(--wm-ink); color: #C9CFDA; border-radius: 10px; font-family: var(--wm-font); font-size: 12px; font-weight: 500;
+      line-height: 1.45; letter-spacing: normal; text-transform: none; text-align: left; box-shadow: 0 12px 30px -10px rgba(0,0,0,0.5);
+      opacity: 0; visibility: hidden; transform: translateY(-4px); transition: opacity .15s ease, transform .15s ease; pointer-events: none; }
+    .info-pop .ip-row { display: block; padding-left: 62px; position: relative; }
+    .info-pop .ip-row b { position: absolute; left: 0; top: 0; width: 54px; color: #fff; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; }
+    .info-pop::before { content: ""; position: absolute; bottom: 100%; left: 16px; border: 6px solid transparent; border-bottom-color: var(--wm-ink); }
+    .info-tip:hover .info-pop, .info-tip:focus-visible .info-pop { opacity: 1; visibility: visible; transform: translateY(0); }
 
 
     #payTable th.num-col, #payTable td.num-col { text-align: left; }
@@ -222,7 +224,7 @@
                 <th>Personnel</th>
                 <th>Client</th>
                 <th data-wm-note="Client-health snapshot at payout time, three signals split by ' / '. (1) Invoice — the client's invoice payment status (Paid/Unpaid). (2) Deposit — deposit balance expressed as inventory runway in months, sourced from the Deposit screen. (3) Risk — client background-verification risk dot, sourced from the Client verification screen (green good · yellow watch · red high risk).">
-                  <span class="th-info">Invoice / Deposit / Risk <span class="info-tip" tabindex="0" aria-label="Column legend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-info-circle"/></svg><span class="info-pop" role="tooltip"><b>Invoice</b> — client invoice Paid / Unpaid<br><b>Deposit</b> — inventory runway in months, from the Deposit screen<br><b>Risk</b> — client background risk, from the Client verification screen</span></span></span>
+                  <span class="th-info">Invoice / Deposit / Risk <span class="info-tip" tabindex="0" aria-label="Column legend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-info-circle"/></svg><span class="info-pop" role="tooltip"><span class="ip-row"><b>Invoice</b> Client's invoice — Paid or Unpaid</span><span class="ip-row"><b>Deposit</b> Inventory runway in months · from the Deposit screen</span><span class="ip-row"><b>Risk</b> Client background risk · from the Client verification screen</span></span></span></span>
                 </th>
                 <th>Employment type</th>
                 <th><span class="th-sort">Currency <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-sort"/></svg></span></th>
