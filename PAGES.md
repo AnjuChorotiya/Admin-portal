@@ -82,6 +82,7 @@ Repo: https://github.com/AnjuChorotiya/Client-freelancer · Pages base: `https:/
 | invoicing-setup.html | [src](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/invoicing-setup.html) | [live](https://anjuchorotiya.github.io/Client-freelancer/invoicing-setup.html) | [README](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/SCREENS.md#invoicing-setuphtml) |
 | raise-invoices.html | [src](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/raise-invoices.html) | [live](https://anjuchorotiya.github.io/Client-freelancer/raise-invoices.html) | [README](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/SCREENS.md#raise-invoiceshtml) |
 | pay.html | [src](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/pay.html) | [live](https://anjuchorotiya.github.io/Client-freelancer/pay.html) | [README](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/SCREENS.md#payhtml) |
+| wallet.html — **client wallet** (FX-surplus credit + ledger) | [src](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/wallet.html) | [live](https://anjuchorotiya.github.io/Client-freelancer/wallet.html) | Stores favourable-FX surplus from payments; auto-applied to future invoices on pay.html. Shared store `wm-wallet.js` |
 | check-inbox.html | [src](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/check-inbox.html) | [live](https://anjuchorotiya.github.io/Client-freelancer/check-inbox.html) | [README](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/SCREENS.md#check-inboxhtml) |
 | time.html | [src](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/time.html) | [live](https://anjuchorotiya.github.io/Client-freelancer/time.html) | [README](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/SCREENS.md#timehtml) |
 | time-attendance.html | [src](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/time-attendance.html) | [live](https://anjuchorotiya.github.io/Client-freelancer/time-attendance.html) | [README](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/SCREENS.md#time-attendancehtml) |
@@ -123,6 +124,7 @@ Dated log of registry changes (pages added, removed, renamed, promoted). Newest 
 
 | Date | Version | Change |
 |---|---|---|
+| 2026-06-23 | — | Added **wallet.html** to Client-freelancer — a client wallet that stores favourable-FX surplus from payments (balance card + transaction ledger). `pay.html` credits the surplus on settlement and offers to apply existing wallet credit to a payment; both pages share `wm-wallet.js`. Wallet nav item added across the portal sidebar. |
 | 2026-06-18 | — | Added **pluxee-flexible-benefits.html** to the wisemonk repo — a Pluxee monthly-expense declaration screen (Zaggle-styled flexible-wallets table with live totals + per-wallet min/max validation). |
 | 2026-06-17 | — | Re-verified all **53 live links → 200** after the repo visibility flip; refreshed the "Last verified" date. (No new/removed pages across the hosted repos.) |
 | 2026-06-17 | — | Labeled **contractor-onboarding.html** as **Add contractor** in the registry. |
