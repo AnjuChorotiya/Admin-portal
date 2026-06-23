@@ -16,13 +16,13 @@ Purpose and flow for each screen in this repo. Live pages:
 4. The roster table lists each worker with columns **Personnel** (avatar + name, with the **designation/job title shown beneath the name**), **Client**, **Invoice / Deposit / Risk**, **Employment type**, **Currency** (sortable), **FX Rate**, **Gross pay**, **Total payout** (sortable), **Status** (sortable) and a per-row more-actions menu; rows are selectable via checkboxes with a header select-all.
 5. **Invoice / Deposit / Risk** is a centre-aligned column packing three at-a-glance client health signals into one cell, separated by `/`: an **invoice label** in light weight — "Paid" (blue) or "Unpaid" (grey), a **deposit-runway risk figure** in months as a colour-coded signed decimal (green ≥ 1 healthy · orange 0–1 thin · red negative = shortfall/overdue · grey dash = no data, e.g. `2.2`, `0.3`, `-1.1`, `–`), and a **client-background risk dot** (green = good · yellow = watch · red = high risk). Each element carries a hover tooltip and the column header has an info tooltip describing the legend.
 6. The **FX Rate** column shows a dash (–) for every row (no rate applied yet). Exited workers carry an **EXIT** tag on the name.
-7. Filtering happens in a **per-column filter row inside the table header**: a name text box under **Personnel** plus dropdowns under **Client**, **Invoice / Deposit / Risk** (Paid / Unpaid), **Employment type**, **Currency** (INR / EUR) and **Status**. The toolbar keeps a global free-text **search**; a **Clear filters** button appears whenever any filter or search is active. Filters combine as AND across columns and active selects highlight in the brand colour. Native `<select>` controls are used so their menus aren't clipped by the card's `overflow:hidden`. An empty-result state shows when no rows match. The Invoice / Deposit / Risk dots/figure are explained via per-element hover tooltips and the column header's info tooltip.
+7. The toolbar has a global free-text **search** (name / client / designation) that filters the roster; an empty-result state shows when no rows match. The Invoice / Deposit / Risk dots/figure are explained via per-element hover tooltips and the column header's info tooltip.
 
 **Validations:**
 - Lifecycle buttons are state-gated: **Execute payroll** enables only after Finalize; **Mark as Paid** enables only after Execute (`finalizeBtn` → `executeBtn` → `markPaidBtn`).
 - Header select-all toggles only currently-visible (filtered) rows and reflects an indeterminate state on partial selection.
 - FX Rate is display-only (dash placeholder) on every row; all amounts and counts are illustrative demo data.
-- Header per-column filters (single-select) combine with the global search box; choosing "All …" clears that column's filter, and Clear filters resets everything.
+- The roster is filtered by the global search box only; matching is case-insensitive across the row text.
 
 **Notes:** Built on the wisemonk-ui design system; status pills use neutral styling for "Skipped". Lifecycle actions and Export are simulated client-side (toasts) for demonstration.
 

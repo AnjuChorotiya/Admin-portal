@@ -98,18 +98,6 @@
     .th-info { display: inline-flex; align-items: center; gap: 5px; cursor: default; }
     .th-info svg { width: 13px; height: 13px; color: var(--wm-neutral-300); }
 
-    /* lighter filter trigger text */
-    .wm-dd-trigger { font-weight: 500; }
-
-    /* per-column header filter row */
-    .wm-filter-row th { padding: 8px 24px 12px; background: var(--wm-neutral-50); border-bottom: 1px solid var(--wm-border); vertical-align: top; }
-    .col-flt, .col-sel { width: 100%; min-width: 92px; font-family: var(--wm-font); font-size: 12.5px; font-weight: 500; color: var(--wm-text-secondary); border: 1px solid var(--wm-border-strong); border-radius: 7px; padding: 7px 9px; background: var(--wm-neutral-0); outline: none; transition: border-color .15s, box-shadow .15s; }
-    .col-flt::placeholder { color: var(--wm-text-muted); font-weight: 400; }
-    .col-flt:focus, .col-sel:focus { border-color: var(--wm-primary-500); box-shadow: 0 0 0 3px rgba(38,132,255,0.14); }
-    .col-sel { appearance: none; -webkit-appearance: none; -moz-appearance: none; cursor: pointer; padding-right: 26px;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B7588' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-      background-repeat: no-repeat; background-position: right 8px center; background-size: 14px; }
-    .col-sel.is-active { border-color: var(--wm-primary-300); color: var(--wm-primary-700); font-weight: 600; }
 
     #payTable th.num-col, #payTable td.num-col { text-align: right; }
     .wm-table tbody td.cell-actions { padding-right: 18px; }
@@ -214,7 +202,6 @@
             <div class="wm-search">
               <input type="text" id="paySearch" placeholder="Search by name, client or designation">
             </div>
-            <button class="wm-btn wm-btn--ghost wm-btn--sm" id="clearFilters" type="button" hidden>Clear filters</button>
           </div>
 
           <table class="wm-table" id="payTable">
@@ -230,60 +217,6 @@
                 <th class="num-col">Gross pay</th>
                 <th class="num-col"><span class="th-sort">Total payout <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-sort"/></svg></span></th>
                 <th><span class="th-sort">Status <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-sort"/></svg></span></th>
-                <th></th>
-              </tr>
-              <tr class="wm-filter-row">
-                <th class="col-check"></th>
-                <th><input type="text" class="col-flt" id="fltName" placeholder="Filter name"></th>
-                <th>
-                  <select class="col-sel" data-key="client" aria-label="Filter by client">
-                    <option value="all">All clients</option>
-                    <option value="model-ml">Model ML</option>
-                    <option value="handmark">Handmark Co Inc</option>
-                    <option value="streamland">Streamland Media</option>
-                    <option value="op-consulting">OP Consulting Group LLC</option>
-                    <option value="hagedorn">HAGEDORN Products &amp; Systems GmbH</option>
-                    <option value="united-creative">United Creative Services</option>
-                    <option value="wieldyai">WieldyAI</option>
-                    <option value="genera">Genera Capital</option>
-                    <option value="zeo">Zeo comp test</option>
-                    <option value="circadian">Circadian Global Forwarding</option>
-                  </select>
-                </th>
-                <th>
-                  <select class="col-sel" data-key="invoice" aria-label="Filter by invoice status">
-                    <option value="all">All invoices</option>
-                    <option value="paid">Paid</option>
-                    <option value="unpaid">Unpaid</option>
-                  </select>
-                </th>
-                <th>
-                  <select class="col-sel" data-key="type" aria-label="Filter by employment type">
-                    <option value="all">All types</option>
-                    <option value="full_time">Full-time</option>
-                    <option value="part_time">Part-time</option>
-                    <option value="contractor">Contractor</option>
-                  </select>
-                </th>
-                <th>
-                  <select class="col-sel" data-key="currency" aria-label="Filter by currency">
-                    <option value="all">All</option>
-                    <option value="inr">INR</option>
-                    <option value="eur">EUR</option>
-                  </select>
-                </th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th>
-                  <select class="col-sel" data-key="status" aria-label="Filter by status">
-                    <option value="all">All statuses</option>
-                    <option value="skipped">Skipped</option>
-                    <option value="finalized">Finalized</option>
-                    <option value="executed">Executed</option>
-                    <option value="paid">Paid</option>
-                  </select>
-                </th>
                 <th></th>
               </tr>
             </thead>
@@ -537,54 +470,28 @@
         WMUI.toast('Preparing payroll export…');
       });
 
-      // ---- Per-column header filters + search ----
+      // ---- Global search ----
       var table = document.getElementById('payTable');
       var bodyRows = Array.prototype.slice.call(table.tBodies[0].rows);
       var search = document.getElementById('paySearch');
-      var nameFilter = document.getElementById('fltName');
-      var colSels = Array.prototype.slice.call(document.querySelectorAll('.col-sel'));
-      var clearBtn = document.getElementById('clearFilters');
       var empty = document.querySelector('.wm-table-empty');
-
-      function anyActive() {
-        if ((search.value || '').trim() || (nameFilter.value || '').trim()) return true;
-        return colSels.some(function (s) { return s.value !== 'all'; });
-      }
 
       function applyFilters() {
         var q = (search.value || '').toLowerCase().trim();
-        var nameQ = (nameFilter.value || '').toLowerCase().trim();
         var visible = 0;
         bodyRows.forEach(function (tr) {
-          var okText = !q || tr.textContent.toLowerCase().indexOf(q) !== -1;
-          var nameCell = tr.querySelector('.wm-cell-text');
-          var okName = !nameQ || (nameCell && nameCell.textContent.toLowerCase().indexOf(nameQ) !== -1);
-          var okSels = colSels.every(function (s) {
-            return s.value === 'all' || (tr.dataset[s.dataset.key] || '') === s.value;
-          });
-          var show = okText && okName && okSels;
+          var show = !q || tr.textContent.toLowerCase().indexOf(q) !== -1;
           tr.style.display = show ? '' : 'none';
           if (show) visible++;
         });
         if (empty) empty.classList.toggle('show', visible === 0);
-        colSels.forEach(function (s) { s.classList.toggle('is-active', s.value !== 'all'); });
-        if (clearBtn) clearBtn.hidden = !anyActive();
-        // keep header select-all in sync with the new visible set
         var vis = visibleRows();
         var checked = vis.filter(function (x) { return x.checked; });
         checkAll.checked = vis.length > 0 && checked.length === vis.length;
         checkAll.indeterminate = checked.length > 0 && checked.length < vis.length;
       }
 
-      colSels.forEach(function (s) { s.addEventListener('change', applyFilters); });
-      nameFilter.addEventListener('input', applyFilters);
       search.addEventListener('input', applyFilters);
-      if (clearBtn) clearBtn.addEventListener('click', function () {
-        search.value = '';
-        nameFilter.value = '';
-        colSels.forEach(function (s) { s.value = 'all'; });
-        applyFilters();
-      });
     });
   </script>
 </body>
