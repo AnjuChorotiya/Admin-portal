@@ -85,7 +85,11 @@
     .dot.green { background: var(--wm-success-500); }
     .dot.yellow { background: var(--wm-warning-500); }
     .dot.red { background: var(--wm-danger-500); }
+    .cstat .inv-lbl { font-size: 12.5px; font-weight: 600; color: var(--wm-success-700); }
+    .cstat .inv-lbl.unpaid { color: var(--wm-danger-700); }
     .cstat .sep { color: var(--wm-neutral-300); font-weight: 500; }
+    /* center-align the Invoice / Deposit / Risk column (4th) */
+    #payTable th:nth-child(4), #payTable td:nth-child(4) { text-align: center; }
     .cstat .dep { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--wm-text-secondary); }
     .dep.up { color: var(--wm-success-500); }
     .dep.mid { color: var(--wm-warning-500); }
@@ -256,7 +260,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AD</span><span class="wm-cell-text"><strong>Abhijit De</strong></span></div></td>
                 <td>Streamland Media</td>
-                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="sep">/</span><span class="dep up" title="Deposit runway: 2.2 months">2.2</span><span class="sep">/</span><span class="dot green" title="Client background: good"></span></span></td>
+                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="inv-lbl">Paid</span><span class="sep">/</span><span class="dep up" title="Deposit runway: 2.2 months">2.2</span><span class="sep">/</span><span class="dot green" title="Client background: good"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>Supervisor - Asset</td>
                 <td><span class="ccy">INR</span></td>
@@ -270,7 +274,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AG</span><span class="wm-cell-text"><strong>Abhinav Gupta</strong></span></div></td>
                 <td>Model ML</td>
-                <td><span class="cstat"><span class="dot red" title="Invoice unpaid by client"></span><span class="sep">/</span><span class="dep down" title="Deposit shortfall: 1.1 months overdue">-1.1</span><span class="sep">/</span><span class="dot yellow" title="Client background: watch"></span></span></td>
+                <td><span class="cstat"><span class="dot red" title="Invoice unpaid by client"></span><span class="inv-lbl unpaid">Unpaid</span><span class="sep">/</span><span class="dep down" title="Deposit shortfall: 1.1 months overdue">-1.1</span><span class="sep">/</span><span class="dot yellow" title="Client background: watch"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>AI Analyst</td>
                 <td><span class="ccy">INR</span></td>
@@ -284,7 +288,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AS</span><span class="wm-cell-text"><strong>ABHINAYA SRIVASTAVA</strong></span></div></td>
                 <td>OP Consulting Group LLC</td>
-                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="sep">/</span><span class="dep mid" title="Deposit runway: 0.3 months">0.3</span><span class="sep">/</span><span class="dot green" title="Client background: good"></span></span></td>
+                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="inv-lbl">Paid</span><span class="sep">/</span><span class="dep mid" title="Deposit runway: 0.3 months">0.3</span><span class="sep">/</span><span class="dot green" title="Client background: good"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>TECHNICAL RECRUITER</td>
                 <td><span class="ccy">INR</span></td>
@@ -298,7 +302,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AA</span><span class="wm-cell-text"><strong>Abhishek Amrit Mehra</strong></span></div></td>
                 <td>Model ML</td>
-                <td><span class="cstat"><span class="dot red" title="Invoice unpaid by client"></span><span class="sep">/</span><span class="dep up" title="Deposit runway: 1.5 months">1.5</span><span class="sep">/</span><span class="dot yellow" title="Client background: watch"></span></span></td>
+                <td><span class="cstat"><span class="dot red" title="Invoice unpaid by client"></span><span class="inv-lbl unpaid">Unpaid</span><span class="sep">/</span><span class="dep up" title="Deposit runway: 1.5 months">1.5</span><span class="sep">/</span><span class="dot yellow" title="Client background: watch"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>AI Analyst</td>
                 <td><span class="ccy">INR</span></td>
@@ -312,7 +316,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AB</span><span class="wm-cell-text"><strong>Abhishek Bedi</strong></span></div></td>
                 <td>Handmark Co Inc</td>
-                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="sep">/</span><span class="dep up" title="Deposit runway: 2.9 months">2.9</span><span class="sep">/</span><span class="dot yellow" title="Client background: watch"></span></span></td>
+                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="inv-lbl">Paid</span><span class="sep">/</span><span class="dep up" title="Deposit runway: 2.9 months">2.9</span><span class="sep">/</span><span class="dot yellow" title="Client background: watch"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>Architect</td>
                 <td><span class="ccy">INR</span></td>
@@ -326,7 +330,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AB</span><span class="wm-cell-text"><strong>Abhishek Bedi</strong></span></div></td>
                 <td>Handmark Co Inc</td>
-                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="sep">/</span><span class="dep up" title="Deposit runway: 1.7 months">1.7</span><span class="sep">/</span><span class="dot yellow" title="Client background: watch"></span></span></td>
+                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="inv-lbl">Paid</span><span class="sep">/</span><span class="dep up" title="Deposit runway: 1.7 months">1.7</span><span class="sep">/</span><span class="dot yellow" title="Client background: watch"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>Architect</td>
                 <td><span class="ccy">INR</span></td>
@@ -340,7 +344,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AB</span><span class="wm-cell-text"><strong>Abhishek Bedi</strong></span></div></td>
                 <td>Handmark Co Inc</td>
-                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="sep">/</span><span class="dep dash" title="No deposit data">–</span><span class="sep">/</span><span class="dot yellow" title="Client background: watch"></span></span></td>
+                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="inv-lbl">Paid</span><span class="sep">/</span><span class="dep dash" title="No deposit data">–</span><span class="sep">/</span><span class="dot yellow" title="Client background: watch"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>Architect</td>
                 <td><span class="ccy">INR</span></td>
@@ -354,7 +358,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AB</span><span class="wm-cell-text"><strong>Abhishek Bedi</strong></span></div></td>
                 <td>Handmark Co Inc</td>
-                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="sep">/</span><span class="dep up" title="Deposit runway: 2.6 months">2.6</span><span class="sep">/</span><span class="dot yellow" title="Client background: watch"></span></span></td>
+                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="inv-lbl">Paid</span><span class="sep">/</span><span class="dep up" title="Deposit runway: 2.6 months">2.6</span><span class="sep">/</span><span class="dot yellow" title="Client background: watch"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>Architect</td>
                 <td><span class="ccy">INR</span></td>
@@ -368,7 +372,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AC</span><span class="wm-cell-text"><strong>Abhishek Choudhary</strong></span></div></td>
                 <td>HAGEDORN Products &amp; Systems GmbH</td>
-                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="sep">/</span><span class="dep up" title="Deposit runway: 1.9 months">1.9</span><span class="sep">/</span><span class="dot green" title="Client background: good"></span></span></td>
+                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="inv-lbl">Paid</span><span class="sep">/</span><span class="dep up" title="Deposit runway: 1.9 months">1.9</span><span class="sep">/</span><span class="dot green" title="Client background: good"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>Business Development Manager</td>
                 <td><span class="ccy eur">EUR</span></td>
@@ -382,7 +386,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AK</span><span class="wm-cell-text"><strong>Abhishek Katvi</strong></span></div></td>
                 <td>Model ML</td>
-                <td><span class="cstat"><span class="dot red" title="Invoice unpaid by client"></span><span class="sep">/</span><span class="dep down" title="Deposit shortfall: 0.4 months overdue">-0.4</span><span class="sep">/</span><span class="dot yellow" title="Client background: watch"></span></span></td>
+                <td><span class="cstat"><span class="dot red" title="Invoice unpaid by client"></span><span class="inv-lbl unpaid">Unpaid</span><span class="sep">/</span><span class="dep down" title="Deposit shortfall: 0.4 months overdue">-0.4</span><span class="sep">/</span><span class="dot yellow" title="Client background: watch"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>AI Analyst</td>
                 <td><span class="ccy">INR</span></td>
@@ -396,7 +400,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AP</span><span class="wm-cell-text"><strong>Abhishek Pandey</strong></span></div></td>
                 <td>United Creative Services</td>
-                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="sep">/</span><span class="dep up" title="Deposit runway: 2.1 months">2.1</span><span class="sep">/</span><span class="dot green" title="Client background: good"></span></span></td>
+                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="inv-lbl">Paid</span><span class="sep">/</span><span class="dep up" title="Deposit runway: 2.1 months">2.1</span><span class="sep">/</span><span class="dot green" title="Client background: good"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>Illustrator &amp; Storyboard Artist</td>
                 <td><span class="ccy">INR</span></td>
@@ -410,7 +414,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AR</span><span class="wm-cell-text"><strong>Abhishek Raj</strong></span></div></td>
                 <td>WieldyAI</td>
-                <td><span class="cstat"><span class="dot red" title="Invoice unpaid by client"></span><span class="sep">/</span><span class="dep down" title="Deposit shortfall: 2.0 months overdue">-2.0</span><span class="sep">/</span><span class="dot red" title="Client background: high risk"></span></span></td>
+                <td><span class="cstat"><span class="dot red" title="Invoice unpaid by client"></span><span class="inv-lbl unpaid">Unpaid</span><span class="sep">/</span><span class="dep down" title="Deposit shortfall: 2.0 months overdue">-2.0</span><span class="sep">/</span><span class="dot red" title="Client background: high risk"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>Software Engineer</td>
                 <td><span class="ccy">INR</span></td>
@@ -424,7 +428,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AT</span><span class="wm-cell-text"><strong>Abhishek Tripathi</strong></span></div></td>
                 <td>Genera Capital</td>
-                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="sep">/</span><span class="dep up" title="Deposit runway: 2.6 months">2.6</span><span class="sep">/</span><span class="dot green" title="Client background: good"></span></span></td>
+                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="inv-lbl">Paid</span><span class="sep">/</span><span class="dep up" title="Deposit runway: 2.6 months">2.6</span><span class="sep">/</span><span class="dot green" title="Client background: good"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>Junior Frontend Developer</td>
                 <td><span class="ccy">INR</span></td>
@@ -438,7 +442,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm wm-avatar--muted">A</span><span class="wm-cell-text"><strong>abu<span class="exit-tag">EXIT</span></strong></span></div></td>
                 <td>Zeo comp test</td>
-                <td><span class="cstat"><span class="dot red" title="Invoice unpaid by client"></span><span class="sep">/</span><span class="dep dash" title="No deposit data">–</span><span class="sep">/</span><span class="dot red" title="Client background: high risk"></span></span></td>
+                <td><span class="cstat"><span class="dot red" title="Invoice unpaid by client"></span><span class="inv-lbl unpaid">Unpaid</span><span class="sep">/</span><span class="dep dash" title="No deposit data">–</span><span class="sep">/</span><span class="dot red" title="Client background: high risk"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>dummy</td>
                 <td><span class="ccy">INR</span></td>
@@ -452,7 +456,7 @@
                 <td class="col-check"><input type="checkbox" class="wm-check row-check"></td>
                 <td><div class="wm-cell-name"><span class="wm-avatar wm-avatar--sm">AA</span><span class="wm-cell-text"><strong>abu abu</strong></span></div></td>
                 <td>Circadian Global Forwarding</td>
-                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="sep">/</span><span class="dep up" title="Deposit runway: 1.3 months">1.3</span><span class="sep">/</span><span class="dot green" title="Client background: good"></span></span></td>
+                <td><span class="cstat"><span class="dot green" title="Invoice paid by client"></span><span class="inv-lbl">Paid</span><span class="sep">/</span><span class="dep up" title="Deposit runway: 1.3 months">1.3</span><span class="sep">/</span><span class="dot green" title="Client background: good"></span></span></td>
                 <td><span class="emp-type">Full_time</span></td>
                 <td>Analyst</td>
                 <td><span class="ccy">INR</span></td>
