@@ -26,7 +26,8 @@ Repo: https://github.com/AnjuChorotiya/wisemonk · Pages base: `https://anjuchor
 | Add employee | [src](https://github.com/AnjuChorotiya/wisemonk/blob/main/src/app/onboarding/employee/page.tsx) | [live](https://anjuchorotiya.github.io/wisemonk/onboarding/employee/) | [README](https://github.com/AnjuChorotiya/wisemonk/blob/main/SCREENS.md#add-employee) |
 | Admin onboarding verification | [src](https://github.com/AnjuChorotiya/wisemonk/blob/main/src/app/admin/page.tsx) | [live](https://anjuchorotiya.github.io/wisemonk/admin/) | — |
 | setup-banners.html — Account-setup nudge stages (start / continue / re-fill / under review) | [src](https://github.com/AnjuChorotiya/wisemonk/blob/main/docs/setup-banners.html) | [live](https://anjuchorotiya.github.io/wisemonk/setup-banners.html) | — |
-| pluxee-flexible-benefits.html — Pluxee flexible benefits / monthly expense declaration (Tax deductions) | [src](https://github.com/AnjuChorotiya/wisemonk/blob/main/docs/pluxee-flexible-benefits.html) | [live](https://anjuchorotiya.github.io/wisemonk/pluxee-flexible-benefits.html) | — |
+| pluxee-flexible-benefits-intro.html — Pluxee FBP intro / landing (how it works · benefits · note) | [src](https://github.com/AnjuChorotiya/wisemonk/blob/main/docs/pluxee-flexible-benefits-intro.html) | [live](https://anjuchorotiya.github.io/wisemonk/pluxee-flexible-benefits-intro.html) | — |
+| pluxee-flexible-benefits.html — Pluxee flexible benefits / monthly expense declaration (Old & New regime tabs) | [src](https://github.com/AnjuChorotiya/wisemonk/blob/main/docs/pluxee-flexible-benefits.html) | [live](https://anjuchorotiya.github.io/wisemonk/pluxee-flexible-benefits.html) | — |
 
 ## Admin-portal
 Repo: https://github.com/AnjuChorotiya/Admin-portal · Pages base: `https://anjuchorotiya.github.io/Admin-portal/` (root index 404s; link files directly)
@@ -125,6 +126,7 @@ Dated log of registry changes (pages added, removed, renamed, promoted). Newest 
 | Date | Version | Change |
 |---|---|---|
 | 2026-06-23 | — | Added **wallet.html** to Client-freelancer — a client wallet that stores favourable-FX surplus from payments (balance card + transaction ledger). `pay.html` credits the surplus on settlement and offers to apply existing wallet credit to a payment; both pages share `wm-wallet.js`. Wallet nav item added across the portal sidebar. |
+| 2026-06-18 | — | Added **pluxee-flexible-benefits-intro.html** — a Pluxee FBP landing screen (how it works · benefits · note) leading into the declaration screen via a Get started CTA. |
 | 2026-06-18 | — | Added **pluxee-flexible-benefits.html** to the wisemonk repo — a Pluxee monthly-expense declaration screen (Zaggle-styled flexible-wallets table with live totals + per-wallet min/max validation). |
 | 2026-06-17 | — | Re-verified all **53 live links → 200** after the repo visibility flip; refreshed the "Last verified" date. (No new/removed pages across the hosted repos.) |
 | 2026-06-17 | — | Labeled **contractor-onboarding.html** as **Add contractor** in the registry. |
