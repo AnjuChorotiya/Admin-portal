@@ -28,8 +28,7 @@ Repo: https://github.com/AnjuChorotiya/wisemonk · Pages base: `https://anjuchor
 | setup-banners.html — Account-setup nudge stages (start / continue / re-fill / under review) | [src](https://github.com/AnjuChorotiya/wisemonk/blob/main/docs/setup-banners.html) | [live](https://anjuchorotiya.github.io/wisemonk/setup-banners.html) | — |
 | pluxee-flexible-benefits-intro.html — Pluxee FBP intro / landing (how it works · benefits · note) | [src](https://github.com/AnjuChorotiya/wisemonk/blob/main/docs/pluxee-flexible-benefits-intro.html) | [live](https://anjuchorotiya.github.io/wisemonk/pluxee-flexible-benefits-intro.html) | — |
 | pluxee-flexible-benefits.html — Pluxee flexible benefits / monthly expense declaration (Old & New regime tabs) | [src](https://github.com/AnjuChorotiya/wisemonk/blob/main/docs/pluxee-flexible-benefits.html) | [live](https://anjuchorotiya.github.io/wisemonk/pluxee-flexible-benefits.html) | — |
-| pluxee-faqs.html — Pluxee Card FAQs (accordion; linked from intro "Know more" + declaration "Learn more") | [src](https://github.com/AnjuChorotiya/wisemonk/blob/main/docs/pluxee-faqs.html) | [live](https://anjuchorotiya.github.io/wisemonk/pluxee-faqs.html) | — |
-| pluxee-merchants.html — Pluxee meal-card benefits & merchant network (1.5 lac+ merchants; linked from intro) | [src](https://github.com/AnjuChorotiya/wisemonk/blob/main/docs/pluxee-merchants.html) | [live](https://anjuchorotiya.github.io/wisemonk/pluxee-merchants.html) | — |
+| pluxee-faqs.html — Pluxee Card FAQs (accordion, incl. "Where can I use my card?" merchant list) | [src](https://github.com/AnjuChorotiya/wisemonk/blob/main/docs/pluxee-faqs.html) | [live](https://anjuchorotiya.github.io/wisemonk/pluxee-faqs.html) | — |
 
 ## Admin-portal
 Repo: https://github.com/AnjuChorotiya/Admin-portal · Pages base: `https://anjuchorotiya.github.io/Admin-portal/` (root index 404s; link files directly)
@@ -128,7 +127,7 @@ Dated log of registry changes (pages added, removed, renamed, promoted). Newest 
 | Date | Version | Change |
 |---|---|---|
 | 2026-06-23 | — | Added **wallet.html** to Client-freelancer — a client wallet that stores favourable-FX surplus from payments (balance card + transaction ledger). `pay.html` credits the surplus on settlement and offers to apply existing wallet credit to a payment; both pages share `wm-wallet.js`. Wallet nav item added across the portal sidebar. |
-| 2026-06-18 | — | Added **pluxee-merchants.html** — a Pluxee meal-card benefits & merchant-network page (1.5 lac+ merchants by category); linked from the intro. |
+| 2026-06-18 | — | Folded the Pluxee merchant network into the FAQ ("Where can I use my Pluxee card?" item) and retired the standalone **pluxee-merchants.html**. |
 | 2026-06-18 | — | Added **pluxee-faqs.html** — a Pluxee Card FAQ accordion; linked from the intro "Know more" card and the declaration "Learn more" link. |
 | 2026-06-18 | — | Added **pluxee-flexible-benefits-intro.html** — a Pluxee FBP landing screen (how it works · benefits · note) leading into the declaration screen via a Get started CTA. |
 | 2026-06-18 | — | Added **pluxee-flexible-benefits.html** to the wisemonk repo — a Pluxee monthly-expense declaration screen (Zaggle-styled flexible-wallets table with live totals + per-wallet min/max validation). |
