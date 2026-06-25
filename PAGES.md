@@ -29,6 +29,8 @@ Repo: https://github.com/AnjuChorotiya/wisemonk · Pages base: `https://anjuchor
 | pluxee-flexible-benefits-intro.html — Pluxee FBP intro / landing (how it works · benefits · note) | [src](https://github.com/AnjuChorotiya/wisemonk/blob/main/docs/pluxee-flexible-benefits-intro.html) | [live](https://anjuchorotiya.github.io/wisemonk/pluxee-flexible-benefits-intro.html) | — |
 | pluxee-flexible-benefits.html — Pluxee flexible benefits / monthly expense declaration (Old & New regime tabs) | [src](https://github.com/AnjuChorotiya/wisemonk/blob/main/docs/pluxee-flexible-benefits.html) | [live](https://anjuchorotiya.github.io/wisemonk/pluxee-flexible-benefits.html) | — |
 | pluxee-faqs.html — Pluxee Card FAQs (accordion, incl. "Where can I use my card?" merchant list) | [src](https://github.com/AnjuChorotiya/wisemonk/blob/main/docs/pluxee-faqs.html) | [live](https://anjuchorotiya.github.io/wisemonk/pluxee-faqs.html) | — |
+| zaggle-flexible-benefits-intro.html — Zaggle FBP intro / landing | [src](https://github.com/AnjuChorotiya/wisemonk/blob/main/docs/zaggle-flexible-benefits-intro.html) | [live](https://anjuchorotiya.github.io/wisemonk/zaggle-flexible-benefits-intro.html) | — |
+| zaggle-flexible-benefits.html — Zaggle flexible benefits / declaration (Old & New regime tabs) | [src](https://github.com/AnjuChorotiya/wisemonk/blob/main/docs/zaggle-flexible-benefits.html) | [live](https://anjuchorotiya.github.io/wisemonk/zaggle-flexible-benefits.html) | — |
 
 ## Admin-portal
 Repo: https://github.com/AnjuChorotiya/Admin-portal · Pages base: `https://anjuchorotiya.github.io/Admin-portal/` (root index 404s; link files directly)
@@ -127,6 +129,7 @@ Dated log of registry changes (pages added, removed, renamed, promoted). Newest 
 | Date | Version | Change |
 |---|---|---|
 | 2026-06-23 | — | Added **wallet.html** to Client-freelancer — a client wallet that stores favourable-FX surplus from payments (balance card + transaction ledger). `pay.html` credits the surplus on settlement and offers to apply existing wallet credit to a payment; both pages share `wm-wallet.js`. Wallet nav item added across the portal sidebar. |
+| 2026-06-18 | — | Added the **Zaggle** flow — `zaggle-flexible-benefits-intro.html` (FBP intro) and `zaggle-flexible-benefits.html` (declaration with Old/New regime tabs); cross-linked Pluxee/Zaggle nav tabs. |
 | 2026-06-18 | — | Folded the Pluxee merchant network into the FAQ ("Where can I use my Pluxee card?" item) and retired the standalone **pluxee-merchants.html**. |
 | 2026-06-18 | — | Added **pluxee-faqs.html** — a Pluxee Card FAQ accordion; linked from the intro "Know more" card and the declaration "Learn more" link. |
 | 2026-06-18 | — | Added **pluxee-flexible-benefits-intro.html** — a Pluxee FBP landing screen (how it works · benefits · note) leading into the declaration screen via a Get started CTA. |
