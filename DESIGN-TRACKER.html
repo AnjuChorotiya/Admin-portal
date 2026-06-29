@@ -326,12 +326,22 @@ Pre-handoff design pipeline (list view). Status ∈ `To build` · `In design` ·
     { name:'contractor-legal-ai', what:'Contractor compliance app (Next.js) — live in production', url:'https://legal.wisemonk.io' }
   ];
   const cmsgs = () => document.getElementById('chat-msgs');
+  function pick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
   function addMsg(role, html){ const d = document.createElement('div'); d.className = 'msg ' + role; d.innerHTML = html; cmsgs().appendChild(d); cmsgs().scrollTop = cmsgs().scrollHeight; return d; }
   function priTag(p){ return p ? `<span class="mp ${p}">${p}</span>` : ''; }
   function taskLi(t){ const l = linkHtml(t.link).replace('t-link','') ; return `<li>${priTag(t.priority)}<strong>${esc(t.item)}</strong>${t.project?` · ${esc(t.project)}`:''}${t.status?` · ${esc(t.status)}`:''}</li>`; }
   function listMsg(title, arr){
-    if (!arr.length) return addMsg('bot', `No tasks match <strong>${esc(title)}</strong>.`);
-    return addMsg('bot', `${esc(title)} — <strong>${arr.length}</strong>:<ul>${arr.map(taskLi).join('')}</ul>`);
+    if (!arr.length) return addMsg('bot', pick([
+      `Nothing under <strong>${esc(title)}</strong> right now — all clear there. 🎉`,
+      `Hmm, nothing matches <strong>${esc(title)}</strong> at the moment.`,
+      `Looks empty for <strong>${esc(title)}</strong>. Want to add something?`
+    ]));
+    const lead = pick([
+      `Here's what's in <strong>${esc(title)}</strong> (${arr.length}):`,
+      `You've got <strong>${arr.length}</strong> under ${esc(title)}:`,
+      `Sure — ${esc(title)}, ${arr.length} item${arr.length === 1 ? '' : 's'}:`
+    ]);
+    return addMsg('bot', `${lead}<ul>${arr.map(taskLi).join('')}</ul>`);
   }
 
   function parseAdd(text){
@@ -350,10 +360,13 @@ Pre-handoff design pipeline (list view). Status ∈ `To build` · `In design` ·
   }
   function addTaskFromChat(text){
     const p = parseAdd(text);
-    if (!p.item){ addMsg('bot', 'Tell me the task title — e.g. <em>“add P0 redesign invoices for Client-freelancer”</em>.'); return; }
+    if (!p.item){ addMsg('bot', pick([
+      `Happy to — what's the task? Something like <em>“add P0 redesign invoices for Client-freelancer”</em>.`,
+      `Sure thing. Just tell me the title (and a priority/project if you like) and I'll add it.`
+    ])); return; }
     const t = { id: uid(), item: p.item, project: p.project, status: p.status, priority: p.priority, version: 'v0', updated: today(), link: '', notes: '' };
     tasks.unshift(t); persist(); draw();
-    addMsg('bot', `Added ${priTag(p.priority)}<strong>${esc(p.item)}</strong> → <strong>${esc(p.status)}</strong>${p.project?` · ${esc(p.project)}`:''}. <a href="#" data-edit="${t.id}">Open to edit ↗</a>`);
+    addMsg('bot', `${pick(['Done!','Got it 👍','Added 👍','Nice, that\'s in.','On the board!'])} ${priTag(p.priority)}<strong>${esc(p.item)}</strong> → <strong>${esc(p.status)}</strong>${p.project?` · ${esc(p.project)}`:''}. <a href="#" data-edit="${t.id}">Open to edit ↗</a>`);
   }
   function bulkAdd(text){
     const lines = text.split(/\r?\n/).map(cleanLine).filter(Boolean);
@@ -366,33 +379,47 @@ Pre-handoff design pipeline (list view). Status ∈ `To build` · `In design` ·
       tasks.unshift(t); added.push(t);
     });
     persist(); draw();
-    addMsg('bot', `Added <strong>${added.length}</strong> task${added.length === 1 ? '' : 's'}:<ul>${added.map(t => `<li>${priTag(t.priority)}${esc(t.item)}${t.project ? ` · ${esc(t.project)}` : ''} · ${esc(t.status)}</li>`).join('')}</ul>Click any row to edit details.`);
+    const lead = pick([`Boom — added all <strong>${added.length}</strong>:`, `Done! Dropped <strong>${added.length}</strong> tasks on the board:`, `Got your list — <strong>${added.length}</strong> new tasks:`]);
+    addMsg('bot', `${lead}<ul>${added.map(t => `<li>${priTag(t.priority)}${esc(t.item)}${t.project ? ` · ${esc(t.project)}` : ''} · ${esc(t.status)}</li>`).join('')}</ul>Click any row to fill in version, link or notes.`);
   }
 
   function summaryMsg(){
     const by = {}; STATUSES.forEach(s => by[s] = 0); tasks.forEach(t => by[t.status] = (by[t.status]||0) + 1);
     const pri = { P0:0, P1:0, P2:0, P3:0 }; tasks.forEach(t => { if (pri[t.priority] != null) pri[t.priority]++; });
-    addMsg('bot', `<strong>${tasks.length}</strong> tasks total.<ul>${STATUSES.map(s => `<li>${s}: <strong>${by[s]}</strong></li>`).join('')}</ul>By priority: ${['P0','P1','P2','P3'].map(p => `${priTag(p)}${pri[p]}`).join('  ')}`);
+    const lead = pick([`Here's where things stand — <strong>${tasks.length}</strong> tasks in all:`, `Quick rundown of all <strong>${tasks.length}</strong> tasks:`, `Sure! <strong>${tasks.length}</strong> tasks on the board:`]);
+    const tail = pri.P0 ? `<br>${pri.P0} of those ${pri.P0 === 1 ? 'is' : 'are'} ${priTag('P0')}— probably worth a look first.` : '';
+    addMsg('bot', `${lead}<ul>${STATUSES.map(s => `<li>${s}: <strong>${by[s]}</strong></li>`).join('')}</ul>By priority: ${['P0','P1','P2','P3'].map(p => `${priTag(p)}${pri[p]}`).join('  ')}${tail}`);
   }
   function reposMsg(){
-    addMsg('bot', `Hosted projects (live):<ul>${REPOS.map(r => `<li><a href="${r.url}" target="_blank" rel="noopener">${esc(r.name)}</a> — ${esc(r.what)}</li>`).join('')}</ul>Full index: <a href="registry.html">registry</a>.`);
+    addMsg('bot', `${pick(['Here are the hosted projects this tracker feeds into:', 'Sure — these are the live projects:', 'Here\'s everything that\'s hosted:'])}<ul>${REPOS.map(r => `<li><a href="${r.url}" target="_blank" rel="noopener">${esc(r.name)}</a> — ${esc(r.what)}</li>`).join('')}</ul>Want the full index? It's in the <a href="registry.html">registry</a>.`);
+  }
+  function smalltalk(low){
+    if (/\b(hi|hii|hey|hello|yo|howdy)\b/.test(low)) return addMsg('bot', pick([`Hey! 👋 What are we working on?`, `Hi there — what can I help you track?`, `Hey hey! Ask me anything, or paste some tasks to add.`])), true;
+    if (/\b(thanks|thank you|thx|ty|cheers|nice|great|awesome|perfect|cool)\b/.test(low)) return addMsg('bot', pick([`Anytime! 🙌`, `You got it.`, `Glad to help — what's next?`, `👍 Happy to.`])), true;
+    if (/\b(bye|see ya|later|goodnight|good night)\b/.test(low)) return addMsg('bot', pick([`Catch you later! 👋`, `See ya — I'll keep the board warm.`])), true;
+    if (/^\s*(ok|okay|k|got it|sounds good|alright)\s*$/.test(low)) return addMsg('bot', pick([`👍`, `Cool.`, `On it whenever you are.`])), true;
+    return false;
   }
 
   function botRespond(text){
     const q = text.trim(); if (!q) return;
     const low = q.toLowerCase();
     if (/^(add|new|create|\+|todo)\b/i.test(q)) return addTaskFromChat(q);
-    if (/\b(help|what can you|how do)\b/.test(low))
-      return addMsg('bot', `I know everything in this tracker and the hosted repos. Try:<ul><li><em>add P0 redesign invoices for Client-freelancer</em></li><li><strong>Paste a whole list</strong> (one task per line) — Shift+Enter for a new line — and I'll create them all.</li><li><em>what's P0?</em> · <em>in review</em> · <em>ready for handoff</em> · <em>hosted</em></li><li><em>summary</em> · <em>hosted pages / links</em></li><li>or type any keyword to search tasks.</li></ul>`);
+    if (/\b(help|what can you|how do|what do you)\b/.test(low))
+      return addMsg('bot', `Happy to help! I keep tabs on everything in this tracker and the hosted repos. A few things you can ask:<ul><li><em>add P0 redesign invoices for Client-freelancer</em></li><li><strong>Paste a whole list</strong> (one task per line — Shift+Enter for a new line) and I'll create them all.</li><li><em>what's P0?</em> · <em>in review</em> · <em>ready for handoff</em> · <em>hosted</em></li><li><em>summary</em> · <em>hosted pages / links</em></li><li>or just type a keyword and I'll dig up matching tasks.</li></ul>`);
+    if (smalltalk(low)) return;
     if (/\b(repo|repositor|hosted page|live (url|link|site)|links|pages|projects)\b/.test(low)) return reposMsg();
-    if (/\b(summary|overview|how many|count|status|stats)\b/.test(low)) return summaryMsg();
+    if (/\b(summary|overview|how many|count|status|stats|where (are|do) (we|things))\b/.test(low)) return summaryMsg();
     const pm = low.match(/\bp([0-3])\b/); if (pm) return listMsg('Priority P' + pm[1], tasks.filter(t => t.priority === 'P' + pm[1]));
     for (const st of STATUSES){ if (low.includes(st.toLowerCase()) || (st === 'Ready for handoff' && /\bhandoff\b/.test(low))) return listMsg(st, tasks.filter(t => t.status === st)); }
     const proj = [...new Set(tasks.map(t => t.project).filter(Boolean))].find(p => low.includes(p.toLowerCase()));
     if (proj) return listMsg(proj, tasks.filter(t => t.project === proj));
     const hits = tasks.filter(t => (t.item + ' ' + t.project + ' ' + t.notes).toLowerCase().includes(low));
-    if (hits.length) return listMsg('Matches for “' + q + '”', hits);
-    addMsg('bot', `No match. I can <em>add</em> tasks, filter by <em>priority/status/project</em>, give a <em>summary</em>, or list <em>hosted pages</em>. Type <em>help</em>.`);
+    if (hits.length) return listMsg('“' + q + '”', hits);
+    addMsg('bot', pick([
+      `Hmm, I didn't find anything for that. I'm best at <em>adding tasks</em>, filtering by <em>priority / status / project</em>, a quick <em>summary</em>, or listing <em>hosted pages</em>. Want me to add it as a task instead? Just start with <em>“add …”</em>.`,
+      `Not sure I caught that one. Try a keyword, ask for a <em>summary</em>, or say <em>“add …”</em> to make it a task. Type <em>help</em> for the full list.`
+    ]));
   }
   function growInput(){ const i = document.getElementById('chat-input'); i.style.height = 'auto'; i.style.height = Math.min(i.scrollHeight, 140) + 'px'; }
   function sendChat(){
@@ -408,7 +435,7 @@ Pre-handoff design pipeline (list view). Status ∈ `To build` · `In design` ·
     c.classList.toggle('open', open); f.classList.toggle('open', open);
     f.setAttribute('aria-label', open ? 'Close assistant' : 'Open assistant');
     if (open){
-      if (!chatGreeted){ addMsg('bot', `Hi! I'm your tracker assistant — I have live info on all <strong>${tasks.length}</strong> tasks and the hosted repos. Ask me anything, or say <em>“add …”</em> to create a task.`); chatGreeted = true; }
+      if (!chatGreeted){ addMsg('bot', `Hey! 👋 I'm your tracker buddy — I've got the full picture on all <strong>${tasks.length}</strong> tasks and the hosted projects. Ask me what's P0, get a quick summary, or just paste a list and I'll add it. What's up?`); chatGreeted = true; }
       document.getElementById('chat-sub').textContent = tasks.length + ' tasks';
       setTimeout(() => document.getElementById('chat-input').focus(), 200);
     }
