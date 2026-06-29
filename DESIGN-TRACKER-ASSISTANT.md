@@ -32,8 +32,12 @@ hosted projects (`REPOS`). Both are current at the moment of asking.
 | 7 | **By priority** | contains `P0`–`P3` | List tasks at that priority (or "all clear" if none). |
 | 8 | **By status** | a status name (`to build`, `in design`, `in review`, `ready for handoff`/`handoff`, `hosted`) | List tasks in that status. |
 | 9 | **By project** | a known project name (e.g. `Admin-portal`) | List that project's tasks. |
-| 10 | **Keyword search** | any other text | Match against task title/project/notes; list hits. |
-| 11 | **No match** | nothing above hit | Friendly fallback: suggest keyword / summary / `add …`; mention `help`. |
+| 10 | **Export** | `export`, `download`, `backup`, `snapshot` | Trigger the `DESIGN-TRACKER.md` download; confirm + remind to commit/share it. |
+| 11 | **Reset board** | `reset board`, `discard edits`, `restore list` | Confirm, then clear localStorage and reload the published seed. |
+| 12 | **Keyword search** | any other text | Match against task title/project/notes; list hits. |
+| 13 | **No match** | nothing above hit | Friendly fallback: suggest keyword / summary / `add …`; mention `help`. |
+
+> Export and Reset have **no toolbar buttons** — they're chat-only commands. Filtering is done by clicking the **Pri / Project / Status** column headers (multi-select checkboxes, AND across columns); only free-text **Search** remains in the toolbar.
 
 ## Add parsing (intents 1 & 2)
 From a single line, detect and strip — order doesn't matter to the user:
