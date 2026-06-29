@@ -69,7 +69,7 @@ Repo: https://github.com/AnjuChorotiya/wisemonk-recruit-portal · Pages base: `h
 | recruit-help.html | [src](https://github.com/AnjuChorotiya/wisemonk-recruit-portal/blob/main/recruit-help.html) | [live](https://anjuchorotiya.github.io/wisemonk-recruit-portal/recruit-help.html) | [README](https://github.com/AnjuChorotiya/wisemonk-recruit-portal/blob/main/SCREENS.md#recruit-helphtml) |
 | recruit-upgrade.html | [src](https://github.com/AnjuChorotiya/wisemonk-recruit-portal/blob/main/recruit-upgrade.html) | [live](https://anjuchorotiya.github.io/wisemonk-recruit-portal/recruit-upgrade.html) | [README](https://github.com/AnjuChorotiya/wisemonk-recruit-portal/blob/main/SCREENS.md#recruit-upgradehtml) |
 
-## Client-freelancer (folder: wisemonk-signup-portal)
+## Client-freelancer
 Repo: https://github.com/AnjuChorotiya/Client-freelancer · Pages base: `https://anjuchorotiya.github.io/Client-freelancer/` · Flow overview: [README](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/README.md)
 
 | Page | Source | Live Preview | Docs |
@@ -106,7 +106,7 @@ The **freelancer-facing** product — the *"I'm looking to get paid"* journey (c
 | freelancer-onboarding.html — Freelancer self-onboarding | [src](https://github.com/AnjuChorotiya/Freelancer-portal/blob/main/freelancer-onboarding.html) | [live](https://anjuchorotiya.github.io/Freelancer-portal/freelancer-onboarding.html) | [README](https://github.com/AnjuChorotiya/Freelancer-portal/blob/main/SCREENS.md#freelancer-onboardinghtml) |
 | dashboard.html — Freelancer home (payouts · balance · activity; modals: bank details / invite client / request payment; `?empty` state) | [src](https://github.com/AnjuChorotiya/Freelancer-portal/blob/main/dashboard.html) | [live](https://anjuchorotiya.github.io/Freelancer-portal/dashboard.html) | [README](https://github.com/AnjuChorotiya/Freelancer-portal/blob/main/SCREENS.md#dashboardhtml) |
 
-## client-balance (folder: wisemonk-portal-demo)
+## client-balance
 Repo: https://github.com/AnjuChorotiya/client-balance · Pages base: `https://anjuchorotiya.github.io/client-balance/` · Flow overview: [README](https://github.com/AnjuChorotiya/client-balance/blob/main/README.md)
 
 | Page | Source | Live Preview | Docs |
@@ -116,7 +116,7 @@ Repo: https://github.com/AnjuChorotiya/client-balance · Pages base: `https://an
 | billing.html (Invoices tab + invoice detail) | [src](https://github.com/AnjuChorotiya/client-balance/blob/main/billing.html) | [live](https://anjuchorotiya.github.io/client-balance/billing.html) | [README](https://github.com/AnjuChorotiya/client-balance/blob/main/SCREENS.md#billinghtml) |
 | deposits.html (Advance invoices) | [src](https://github.com/AnjuChorotiya/client-balance/blob/main/deposits.html) | [live](https://anjuchorotiya.github.io/client-balance/deposits.html) | [README](https://github.com/AnjuChorotiya/client-balance/blob/main/SCREENS.md#depositshtml) |
 
-## contractor-legal-ai (Next.js app — source on `dev`; live in production on Vercel)
+## contractor-legal-ai
 Repo: https://github.com/AnjuChorotiya/contractor-legal-ai · Production: https://legal.wisemonk.io · Flow overview: [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/README.md)
 
 | Route | Source | Live Preview | Docs |
