@@ -2,7 +2,7 @@
 
 Master index of designed pages and their GitHub hosting. Update this whenever a new page is designed and pushed to git.
 
-**Last verified:** 2026-06-17 — all 53 live-preview links below return HTTP 200.
+**Last verified:** 2026-06-28 — all 78 live-preview links below return HTTP 200.
 
 ## Wisemonk UI — Universal Design System
 The shared, framework-free design system for **every** Wisemonk project — design tokens, components, and behaviors in plain HTML/CSS/JS (no build step). CSS classes prefixed `wm-`, tokens `--wm-`, JS global `WMUI`. Follows the official palette (Satoshi + Open Sans Light type; Iconsax Vuesax linear icons). Source lives in the Client-freelancer repo under `wisemonk-ui/`. **Current version: `v1.5.0`** — see the [CHANGELOG](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/wisemonk-ui/CHANGELOG.md).
@@ -116,26 +116,26 @@ Repo: https://github.com/AnjuChorotiya/client-balance · Pages base: `https://an
 | billing.html (Invoices tab + invoice detail) | [src](https://github.com/AnjuChorotiya/client-balance/blob/main/billing.html) | [live](https://anjuchorotiya.github.io/client-balance/billing.html) | [README](https://github.com/AnjuChorotiya/client-balance/blob/main/SCREENS.md#billinghtml) |
 | deposits.html (Advance invoices) | [src](https://github.com/AnjuChorotiya/client-balance/blob/main/deposits.html) | [live](https://anjuchorotiya.github.io/client-balance/deposits.html) | [README](https://github.com/AnjuChorotiya/client-balance/blob/main/SCREENS.md#depositshtml) |
 
-## contractor-legal-ai (Next.js app — branch: dev, no live Pages preview)
-Repo: https://github.com/AnjuChorotiya/contractor-legal-ai · Flow overview: [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/README.md)
+## contractor-legal-ai (Next.js app — source on `dev`; live in production on Vercel)
+Repo: https://github.com/AnjuChorotiya/contractor-legal-ai · Production: https://legal.wisemonk.io · Flow overview: [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/README.md)
 
-| Route | Source | Docs |
-|---|---| --- |
-| / | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/page.tsx) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md) |
-| /login | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/login/page.tsx) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#login) |
-| /dashboard | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/dashboard/page.tsx) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#dashboard) |
-| /upload | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/upload/page.tsx) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#upload) |
-| /privacy | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/privacy/page.tsx) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#privacy) |
-| /analysis/[id] | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/analysis/%5Bid%5D/page.tsx) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#analysisid) |
-| /admin | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/admin/page.tsx) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#admin) |
-| /admin/documents | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/admin/documents/page.tsx) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#admindocuments) |
-| /admin/rules | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/admin/rules/page.tsx) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#adminrules) |
-| /onboarding | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/onboarding/page.tsx) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#onboarding) |
-| /onboarding/get-started | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/onboarding/get-started/page.tsx) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#onboardingget-started) |
-| /onboarding/organization | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/onboarding/organization/page.tsx) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#onboardingorganization) |
-| /onboarding/workspace | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/onboarding/workspace/page.tsx) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#onboardingworkspace) |
-| /onboarding/employee | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/onboarding/employee/page.tsx) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#onboardingemployee) |
-| /onboarding/employee/sent | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/onboarding/employee/sent/page.tsx) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#onboardingemployeesent) |
+| Route | Source | Live Preview | Docs |
+|---|---|---| --- |
+| / | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/page.tsx) | [live](https://legal.wisemonk.io/) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md) |
+| /login | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/login/page.tsx) | [live](https://legal.wisemonk.io/login) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#login) |
+| /dashboard | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/dashboard/page.tsx) | [live](https://legal.wisemonk.io/dashboard) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#dashboard) |
+| /upload | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/upload/page.tsx) | — (auth-gated → /login) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#upload) |
+| /privacy | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/privacy/page.tsx) | [live](https://legal.wisemonk.io/privacy) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#privacy) |
+| /analysis/[id] | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/analysis/%5Bid%5D/page.tsx) | — (dynamic) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#analysisid) |
+| /admin | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/admin/page.tsx) | [live](https://legal.wisemonk.io/admin) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#admin) |
+| /admin/documents | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/admin/documents/page.tsx) | [live](https://legal.wisemonk.io/admin/documents) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#admindocuments) |
+| /admin/rules | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/admin/rules/page.tsx) | [live](https://legal.wisemonk.io/admin/rules) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#adminrules) |
+| /onboarding | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/onboarding/page.tsx) | — (auth-gated → /login) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#onboarding) |
+| /onboarding/get-started | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/onboarding/get-started/page.tsx) | — (dev only) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#onboardingget-started) |
+| /onboarding/organization | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/onboarding/organization/page.tsx) | [live](https://legal.wisemonk.io/onboarding/organization) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#onboardingorganization) |
+| /onboarding/workspace | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/onboarding/workspace/page.tsx) | — (dev only) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#onboardingworkspace) |
+| /onboarding/employee | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/onboarding/employee/page.tsx) | [live](https://legal.wisemonk.io/onboarding/employee) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#onboardingemployee) |
+| /onboarding/employee/sent | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/onboarding/employee/sent/page.tsx) | [live](https://legal.wisemonk.io/onboarding/employee/sent) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#onboardingemployeesent) |
 
 ## contractor-of-record
 Repo: https://github.com/AnjuChorotiya/contractor-of-record · Pages base: `https://anjuchorotiya.github.io/contractor-of-record/` · Flow overview: [README](https://github.com/AnjuChorotiya/contractor-of-record/blob/main/README.md)
@@ -152,6 +152,7 @@ Dated log of registry changes (pages added, removed, renamed, promoted). Newest 
 
 | Date | Version | Change |
 |---|---|---|
+| 2026-06-29 | — | **contractor-legal-ai is live in production** (`legal.wisemonk.io`, Vercel) — added **Live Preview** links per route to its registry section (auth-gated / dynamic / dev-only routes noted), and re-verified **all 78 live links → 200**. |
 | 2026-06-29 | — | Created the **contractor-of-record** repo — a standalone Contractor of Record (COR) portal. Seeded with `index.html` (COR landing: Freelancers-vs-COR comparison, 6%-per-contractor pricing, Talk-to-sales modal) and `contractor-onboarding.html` (Add a contractor), extracted from the Client-freelancer COR feature. GitHub Pages enabled from root. |
 | 2026-06-29 | — | Added **dashboard.html** to Freelancer-portal — the freelancer home: stat cards (upcoming payout / pending request / active clients), an available-balance card, and a recent-activity feed, with three modals (bank account details, invite client, request payment) and a `?empty` new-freelancer state. Also restored the missing `wisemonk_logo_final.png` used across the portal. |
 | 2026-06-29 | — | Created the **Freelancer-portal** repo — the freelancer-facing product (the *"I'm looking to get paid"* flow), split out from the client-facing Client-freelancer repo. Seeded with the shared `wisemonk-ui/` design system and the full freelancer journey: `login` → `check-inbox` → `signup-role` → `signup-country` (role=freelancer) → `freelancer-onboarding`. GitHub Pages enabled. |
