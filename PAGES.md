@@ -94,6 +94,17 @@ Repo: https://github.com/AnjuChorotiya/Client-freelancer · Pages base: `https:/
 | time-attendance.html | [src](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/time-attendance.html) | [live](https://anjuchorotiya.github.io/Client-freelancer/time-attendance.html) | [README](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/SCREENS.md#time-attendancehtml) |
 | time-leaves.html | [src](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/time-leaves.html) | [live](https://anjuchorotiya.github.io/Client-freelancer/time-leaves.html) | [README](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/SCREENS.md#time-leaveshtml) |
 
+## Freelancer-portal
+The **freelancer-facing** product — the *"I'm looking to get paid"* journey (counterpart to the client-facing Client-freelancer repo). Repo: https://github.com/AnjuChorotiya/Freelancer-portal · Pages base: `https://anjuchorotiya.github.io/Freelancer-portal/` · Flow: login → check-inbox → signup-role ("get paid") → signup-country (role=freelancer) → freelancer-onboarding. Built on the shared `wisemonk-ui/` design system. Flow overview: [README](https://github.com/AnjuChorotiya/Freelancer-portal/blob/main/README.md)
+
+| Page | Source | Live Preview | Docs |
+|---|---|---| --- |
+| login.html — Sign up / log in | [src](https://github.com/AnjuChorotiya/Freelancer-portal/blob/main/login.html) | [live](https://anjuchorotiya.github.io/Freelancer-portal/login.html) | [README](https://github.com/AnjuChorotiya/Freelancer-portal/blob/main/SCREENS.md#loginhtml) |
+| check-inbox.html — Verify email | [src](https://github.com/AnjuChorotiya/Freelancer-portal/blob/main/check-inbox.html) | [live](https://anjuchorotiya.github.io/Freelancer-portal/check-inbox.html) | [README](https://github.com/AnjuChorotiya/Freelancer-portal/blob/main/SCREENS.md#check-inboxhtml) |
+| signup-role.html — Role select ("I'm looking to get paid") | [src](https://github.com/AnjuChorotiya/Freelancer-portal/blob/main/signup-role.html) | [live](https://anjuchorotiya.github.io/Freelancer-portal/signup-role.html) | [README](https://github.com/AnjuChorotiya/Freelancer-portal/blob/main/SCREENS.md#signup-rolehtml) |
+| signup-country.html — Country select (role=freelancer) | [src](https://github.com/AnjuChorotiya/Freelancer-portal/blob/main/signup-country.html) | [live](https://anjuchorotiya.github.io/Freelancer-portal/signup-country.html?role=freelancer) | [README](https://github.com/AnjuChorotiya/Freelancer-portal/blob/main/SCREENS.md#signup-countryhtml) |
+| freelancer-onboarding.html — Freelancer self-onboarding | [src](https://github.com/AnjuChorotiya/Freelancer-portal/blob/main/freelancer-onboarding.html) | [live](https://anjuchorotiya.github.io/Freelancer-portal/freelancer-onboarding.html) | [README](https://github.com/AnjuChorotiya/Freelancer-portal/blob/main/SCREENS.md#freelancer-onboardinghtml) |
+
 ## client-balance (folder: wisemonk-portal-demo)
 Repo: https://github.com/AnjuChorotiya/client-balance · Pages base: `https://anjuchorotiya.github.io/client-balance/` · Flow overview: [README](https://github.com/AnjuChorotiya/client-balance/blob/main/README.md)
 
@@ -130,6 +141,7 @@ Dated log of registry changes (pages added, removed, renamed, promoted). Newest 
 
 | Date | Version | Change |
 |---|---|---|
+| 2026-06-29 | — | Created the **Freelancer-portal** repo — the freelancer-facing product (the *"I'm looking to get paid"* flow), split out from the client-facing Client-freelancer repo. Seeded with the shared `wisemonk-ui/` design system and the full freelancer journey: `login` → `check-inbox` → `signup-role` → `signup-country` (role=freelancer) → `freelancer-onboarding`. GitHub Pages enabled. |
 | 2026-06-23 | — | Added **wallet.html** to Client-freelancer — a client wallet that stores favourable-FX surplus from payments (balance card + transaction ledger). `pay.html` credits the surplus on settlement and offers to apply existing wallet credit to a payment; both pages share `wm-wallet.js`. Wallet nav item added across the portal sidebar. |
 | 2026-06-18 | — | Added **confirmation screens** (`pluxee-confirm.html`, `zaggle-confirm.html`) shown after Confirm & Next, displaying the declared total + submit. |
 | 2026-06-18 | — | Added the **Zaggle** flow — `zaggle-flexible-benefits-intro.html` (FBP intro) and `zaggle-flexible-benefits.html` (declaration with Old/New regime tabs); cross-linked Pluxee/Zaggle nav tabs. |
