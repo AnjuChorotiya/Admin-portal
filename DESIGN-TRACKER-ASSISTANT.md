@@ -54,9 +54,11 @@ Examples:
 - `P1 invoice reminders in review` → **P1** · *invoice reminders* · In review
 
 ## Status & priority vocabulary
-- Statuses: `To build` · `In design` · `In review` · `Ready for handoff` · `Hosted`
-  ("Hosted" = the design has shipped to the registry).
-- Priorities: `P0` (urgent) · `P1` · `P2` · `P3`; blank = none (used for shipped items).
+- The board has **two tabs**: **Ongoing** and **Finalized**.
+- Ongoing statuses: `Backlog` · `Upcoming` · `In design`.
+- **Finalized** = pushed to main; a task is finalized when it has a `Pushed` date
+  (the **Push to main** button / `pushToMain` sets it to today; **Undo** clears it).
+- Priorities: `P0` (urgent) · `P1` · `P2` · `P3`; blank = none (used for finalized items).
 
 ## Response style rules
 - Lead lines vary (e.g. "Here's what's in P0 (3):" / "You've got 3 under P0:").
