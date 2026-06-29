@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design Tracker</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:#1e1f22; color:#e6e6e6;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; line-height:1.5; }
+  a { color:#5aa6ff; text-decoration:none; } a:hover { text-decoration:underline; }
+  code { background:#2b2d31; padding:1px 5px; border-radius:5px; font-size:90%; font-family:"Cascadia Code",Consolas,monospace; }
+  .wrap { max-width:1500px; margin:0 auto; padding:24px 22px 64px; }
+  .header { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:6px; }
+  h1 { font-size:26px; margin:0; }
+  .sub { color:#9aa0a6; font-size:13px; margin:2px 0 18px; }
+  .sub a { color:#9aa0a6; text-decoration:underline; }
+  .controls { display:flex; gap:10px; flex:0 0 auto; flex-wrap:wrap; }
+  #search, #proj { height:38px; padding:0 12px; font-size:14px; color:#e6e6e6; background:#2b2d31;
+    border:1px solid #3a3c42; border-radius:9px; outline:none; }
+  #search { width:260px; max-width:100%; }
+  #search:focus, #proj:focus { border-color:#5aa6ff; }
+  .board { display:grid; grid-template-columns:repeat(5, minmax(220px,1fr)); gap:14px; align-items:start; }
+  .col { background:#26282c; border:1px solid #34363b; border-radius:14px; padding:10px 10px 14px; min-height:80px; }
+  .col-head { display:flex; align-items:center; gap:8px; padding:6px 8px 10px; font-size:13.5px; font-weight:700; }
+  .col-dot { width:9px; height:9px; border-radius:50%; flex:0 0 auto; }
+  .col-count { margin-left:auto; font-size:12px; font-weight:700; color:#9aa0a6; background:#1e1f22; border-radius:100px; padding:1px 9px; }
+  .card { background:#1f2024; border:1px solid #34363b; border-radius:11px; padding:12px 12px 11px; margin:8px 0; }
+  .card-top { display:flex; align-items:flex-start; gap:8px; }
+  .card-title { font-size:14px; font-weight:700; color:#f0f1f3; flex:1; }
+  .ver { flex:0 0 auto; font-size:11px; font-weight:700; color:#cdd2d8; background:#2b2d31; border:1px solid #3a3c42; border-radius:6px; padding:1px 7px; }
+  .meta { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:9px; }
+  .chip { font-size:11px; font-weight:600; color:#cdd2d8; background:#2b2d31; border-radius:100px; padding:2px 9px; }
+  .upd { font-size:11px; color:#7f868f; }
+  .notes { font-size:12.5px; color:#aab0b8; margin-top:9px; line-height:1.45; }
+  .card-link { display:inline-block; font-size:12px; font-weight:600; margin-top:9px; }
+  .empty { color:#6b727b; font-size:12px; text-align:center; padding:14px 6px; }
+  .nores { display:none; color:#c98a8a; padding:20px 4px; }
+  @media (max-width:1100px){ .board{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:620px){ .board{ grid-template-columns:1fr; } #search{width:100%;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <h1 id="title">Design Tracker</h1>
+    <div class="controls">
+      <select id="proj"><option value="">All projects</option></select>
+      <input id="search" type="search" autocomplete="off" spellcheck="false" placeholder="Search items, notes…">
+    </div>
+  </div>
+  <div class="sub" id="sub">Pre-handoff pipeline · <strong>Hosted</strong> reflects the <a href="registry.html">Hosted Pages Registry</a>.</div>
+  <div class="board" id="board"></div>
+  <div class="nores" id="nores">No matching cards.</div>
+</div>
+
+<script id="md" type="text/plain">
+# Design Tracker
+
+Pre-handoff design pipeline. Cards flow left → right: **To build → In design → In review → Ready for handoff → Hosted**. When a design ships to the [Hosted Pages Registry](registry.html), move it to **Hosted**. Edit the table below and rebuild.
+
+Status must be one of: `To build` · `In design` · `In review` · `Ready for handoff` · `Hosted`.
+
+| Item | Project | Status | Version | Updated | Link | Notes |
+|---|---|---|---|---|---|---|
+| PLG loop — self-serve activation + paywall | Client-freelancer | To build | v0 | 2026-06-28 |  | SCOPE P0 · signup → add contractor → pay → upgrade |
+| AI support widget ("Ask AI") | Wisemonk UI | To build | v0 | 2026-06-28 |  | SCOPE P0 · grounded in help/SCREENS, human fallback |
+| ICP-branched onboarding | Client-freelancer | To build | v0 | 2026-06-28 |  | SCOPE P1 · goal selector → tailored checklist/dashboard |
+| Unified Admin Console | Admin-portal | To build | v0 | 2026-06-28 |  | SCOPE P1 · one shell over Form 16 / Notifications / Rules / Usage |
+| In-workflow testimonials | Client-freelancer | To build | v0 | 2026-06-28 |  | SCOPE P2 · capture after positive feedback |
+| Funnel analytics events | contractor-legal-ai | In design | v0.1 | 2026-06-28 |  | Q3 M0 · signup→activate→pay→upgrade event spec |
+| Contractor onboarding · Get started | contractor-legal-ai | Ready for handoff | v1 | 2026-06-28 | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/onboarding/get-started/page.tsx) | on `dev`; merge dev→main to ship to prod |
+| Workspace onboarding (5-step) | contractor-legal-ai | Ready for handoff | v1 | 2026-06-28 | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/onboarding/workspace/page.tsx) | on `dev`; not yet in prod |
+| App shell (nav + header) | Wisemonk UI | Hosted | v1.3 | 2026-06-12 | [live](https://anjuchorotiya.github.io/Client-freelancer/wisemonk-ui/app-shell.html) | shipped · exact portal nav+header |
+| Dev notes (annotations) | Wisemonk UI | Hosted | v1.5 | 2026-06-17 | [live](https://anjuchorotiya.github.io/Client-freelancer/wisemonk-ui/dev-notes.js) | shipped · drop-in on every project |
+| Before/after-setup home + empty tabs | Client-freelancer | Hosted | v1 | 2026-06-17 | [live](https://anjuchorotiya.github.io/Client-freelancer/home.html?setup) | shipped · checklist, empty tabs, setup banner |
+| EOR org + employee onboarding | wisemonk | Hosted | v1 | 2026-06-12 | [live](https://anjuchorotiya.github.io/wisemonk/) | shipped |
+| contractor-legal-ai (app) | contractor-legal-ai | Hosted | v1 | 2026-06-28 | [live](https://legal.wisemonk.io) | shipped · live in production |
+
+<!-- How to add: copy a row, set Status to one of the five values, bump Version on each iteration, update the date.
+     Hosted = it's in the registry (registry.html). Rebuild with: node build-registry.js "1234" "EOR/docs/design-tracker.html" "DESIGN-TRACKER.md" "DESIGN-TRACKER.html" "Design tracker" "Enter the password to view the design tracker." 'if (document.getElementById("md")) render();' -->
+</script>
+
+<script>
+  const md = document.getElementById('md').textContent;
+  const board = document.getElementById('board');
+  const sub = document.getElementById('sub');
+  const COLUMNS = [
+    { key:'To build',          dot:'#9aa0a6' },
+    { key:'In design',         dot:'#5aa6ff' },
+    { key:'In review',         dot:'#f0b132' },
+    { key:'Ready for handoff', dot:'#3ad29f' },
+    { key:'Hosted',            dot:'#37c97a' }
+  ];
+  let items = [];
+
+  function parse(text){
+    const rows = [];
+    text.split(/\r?\n/).forEach(line => {
+      line = line.trim();
+      if (line[0] !== '|') return;
+      const cells = line.split('|').slice(1, -1).map(c => c.trim());
+      if (cells.length < 3) return;
+      if (/^:?-{2,}:?$/.test(cells[0])) return;          // separator row
+      if (cells[0].toLowerCase() === 'item') return;     // header row
+      rows.push({
+        item: cells[0], project: cells[1] || '', status: cells[2] || '',
+        version: cells[3] || '', updated: cells[4] || '', link: cells[5] || '', notes: cells[6] || ''
+      });
+    });
+    return rows;
+  }
+  function linkHtml(cell){
+    const m = cell.match(/\[([^\]]+)\]\(([^)]+)\)/);
+    if (!m) return '';
+    return `<a class="card-link" href="${m[2]}" target="_blank" rel="noopener">${m[1]} →</a>`;
+  }
+  function esc(s){ return s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+  function render(){
+    items = parse(md);
+    // populate project filter
+    const proj = document.getElementById('proj');
+    const projects = [...new Set(items.map(i => i.project).filter(Boolean))].sort();
+    proj.innerHTML = '<option value="">All projects</option>' + projects.map(p => `<option>${esc(p)}</option>`).join('');
+    apply();
+    document.getElementById('search').addEventListener('input', apply);
+    proj.addEventListener('change', apply);
+  }
+
+  function apply(){
+    const q = (document.getElementById('search').value || '').trim().toLowerCase();
+    const pf = document.getElementById('proj').value;
+    board.innerHTML = '';
+    let shown = 0;
+    COLUMNS.forEach(col => {
+      const cards = items.filter(i =>
+        i.status === col.key &&
+        (!pf || i.project === pf) &&
+        (!q || (i.item + ' ' + i.project + ' ' + i.notes).toLowerCase().includes(q))
+      );
+      shown += cards.length;
+      const colEl = document.createElement('div');
+      colEl.className = 'col';
+      colEl.innerHTML = `<div class="col-head"><span class="col-dot" style="background:${col.dot}"></span>${col.key}<span class="col-count">${cards.length}</span></div>`
+        + (cards.length ? cards.map(cardHtml).join('') : '<div class="empty">—</div>');
+      board.appendChild(colEl);
+    });
+    document.getElementById('nores').style.display = shown ? 'none' : 'block';
+    sub.innerHTML = `${items.length} items · <strong>Hosted</strong> reflects the <a href="registry.html">Hosted Pages Registry</a>.`;
+  }
+
+  function cardHtml(i){
+    return `<div class="card">
+      <div class="card-top"><span class="card-title">${esc(i.item)}</span>${i.version ? `<span class="ver">${esc(i.version)}</span>` : ''}</div>
+      <div class="meta">${i.project ? `<span class="chip">${esc(i.project)}</span>` : ''}${i.updated ? `<span class="upd">${esc(i.updated)}</span>` : ''}</div>
+      ${i.notes ? `<div class="notes">${esc(i.notes)}</div>` : ''}
+      ${linkHtml(i.link)}
+    </div>`;
+  }
+
+  if (document.getElementById("md")) render();
+</script>
+</body>
+</html>

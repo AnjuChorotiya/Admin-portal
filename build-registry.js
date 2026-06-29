@@ -7,19 +7,25 @@ const crypto = require('crypto');
 
 const password = process.argv[2];
 const outfile = process.argv[3];
+// Optional args let this encrypt any md-backed viewer (e.g. the design tracker).
+const dataFile = process.argv[4] || 'PAGES.md';
+const templateFile = process.argv[5] || 'PAGES.html';
+const gateTitle = process.argv[6] || 'Protected registry';
+const gateText = process.argv[7] || 'Enter the password to view the Hosted Pages Registry.';
+const triggerLine = process.argv[8] || "if (window.marked) render(); else window.addEventListener('load', render);";
 if (!password || !outfile) { console.error('need password + outfile'); process.exit(1); }
 
-// 0. PAGES.md is canonical — mirror it into PAGES.html so the viewer never drifts.
-const md = '\n' + fs.readFileSync('PAGES.md', 'utf8').replace(/\s*$/, '') + '\n';
-let html = fs.readFileSync('PAGES.html', 'utf8');
+// 0. The .md is canonical — mirror it into the local viewer so they never drift.
+const md = '\n' + fs.readFileSync(dataFile, 'utf8').replace(/\s*$/, '') + '\n';
+let html = fs.readFileSync(templateFile, 'utf8');
 if (!/<script id="md" type="text\/plain">[\s\S]*?<\/script>/.test(html)) {
-  console.error('md block not found in PAGES.html'); process.exit(1);
+  console.error('md block not found in ' + templateFile); process.exit(1);
 }
 const syncedHtml = html.replace(
   /<script id="md" type="text\/plain">[\s\S]*?<\/script>/,
   '<script id="md" type="text/plain">' + md + '</script>'
 );
-if (syncedHtml !== html) { fs.writeFileSync('PAGES.html', syncedHtml); console.log('synced PAGES.html <- PAGES.md'); }
+if (syncedHtml !== html) { fs.writeFileSync(templateFile, syncedHtml); console.log('synced ' + templateFile + ' <- ' + dataFile); }
 html = syncedHtml;
 
 // 2. Encrypt with PBKDF2-SHA256 -> AES-256-GCM (Web Crypto compatible).
@@ -68,8 +74,8 @@ html = html.replace('</style>', gateCss);
 const gateHtml = `<body>
 <div class="gate" id="gate">
   <form class="gate-card" id="pw-form">
-    <h2>Protected registry</h2>
-    <p>Enter the password to view the Hosted Pages Registry.</p>
+    <h2>${gateTitle}</h2>
+    <p>${gateText}</p>
     <input id="pw" type="password" autocomplete="current-password" placeholder="Password" autofocus>
     <button type="submit">Unlock</button>
     <div class="gate-err" id="pw-err"></div>
@@ -116,10 +122,7 @@ const gateJs = `// --- password gate: decrypt the registry in-browser ---
     });
     input.focus();
   })();`;
-html = html.replace(
-  'if (window.marked) render(); else window.addEventListener(\'load\', render);',
-  gateJs
-);
+html = html.replace(triggerLine, gateJs);
 
 fs.writeFileSync(outfile, html);
 console.log('wrote', outfile, '(', html.length, 'bytes, ct', enc.ct.length, 'b64 chars )');
