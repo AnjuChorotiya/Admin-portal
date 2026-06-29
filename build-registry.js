@@ -28,6 +28,13 @@ const syncedHtml = html.replace(
 if (syncedHtml !== html) { fs.writeFileSync(templateFile, syncedHtml); console.log('synced ' + templateFile + ' <- ' + dataFile); }
 html = syncedHtml;
 
+// 1b. No-gate mode: publish the viewer as-is (no encryption) for non-sensitive boards.
+if (password === 'none' || password === '-') {
+  fs.writeFileSync(outfile, html);
+  console.log('wrote', outfile, '(', html.length, 'bytes, OPEN — no password gate )');
+  process.exit(0);
+}
+
 // 2. Encrypt with PBKDF2-SHA256 -> AES-256-GCM (Web Crypto compatible).
 const salt = crypto.randomBytes(16);
 const iv = crypto.randomBytes(12);
