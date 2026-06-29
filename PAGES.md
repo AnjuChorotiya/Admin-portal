@@ -136,11 +136,22 @@ Repo: https://github.com/AnjuChorotiya/contractor-legal-ai · Flow overview: [RE
 | /onboarding/employee | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/onboarding/employee/page.tsx) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#onboardingemployee) |
 | /onboarding/employee/sent | [src](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/frontend/src/app/onboarding/employee/sent/page.tsx) | [README](https://github.com/AnjuChorotiya/contractor-legal-ai/blob/dev/SCREENS.md#onboardingemployeesent) |
 
+## contractor-of-record
+Repo: https://github.com/AnjuChorotiya/contractor-of-record · Pages base: `https://anjuchorotiya.github.io/contractor-of-record/` · Flow overview: [README](https://github.com/AnjuChorotiya/contractor-of-record/blob/main/README.md)
+
+Standalone **Contractor of Record (COR)** portal — the COR comparison landing + contractor onboarding form, extracted from the Client-freelancer COR feature.
+
+| Page | Source | Live Preview | Docs |
+|---|---|---| --- |
+| index.html — COR landing (Freelancers-vs-COR comparison · 6% per contractor · Talk to sales) | [src](https://github.com/AnjuChorotiya/contractor-of-record/blob/main/index.html) | [live](https://anjuchorotiya.github.io/contractor-of-record/index.html) | [README](https://github.com/AnjuChorotiya/contractor-of-record/blob/main/SCREENS.md#indexhtml) |
+| contractor-onboarding.html — Add a contractor | [src](https://github.com/AnjuChorotiya/contractor-of-record/blob/main/contractor-onboarding.html) | [live](https://anjuchorotiya.github.io/contractor-of-record/contractor-onboarding.html) | [README](https://github.com/AnjuChorotiya/contractor-of-record/blob/main/SCREENS.md#contractor-onboardinghtml) |
+
 ## Changelog / Version History
 Dated log of registry changes (pages added, removed, renamed, promoted). Newest first. The Wisemonk UI design system carries its own [semantic-versioned CHANGELOG](https://github.com/AnjuChorotiya/Client-freelancer/blob/main/wisemonk-ui/CHANGELOG.md).
 
 | Date | Version | Change |
 |---|---|---|
+| 2026-06-29 | — | Created the **contractor-of-record** repo — a standalone Contractor of Record (COR) portal. Seeded with `index.html` (COR landing: Freelancers-vs-COR comparison, 6%-per-contractor pricing, Talk-to-sales modal) and `contractor-onboarding.html` (Add a contractor), extracted from the Client-freelancer COR feature. GitHub Pages enabled from root. |
 | 2026-06-29 | — | Created the **Freelancer-portal** repo — the freelancer-facing product (the *"I'm looking to get paid"* flow), split out from the client-facing Client-freelancer repo. Seeded with the shared `wisemonk-ui/` design system and the full freelancer journey: `login` → `check-inbox` → `signup-role` → `signup-country` (role=freelancer) → `freelancer-onboarding`. GitHub Pages enabled. |
 | 2026-06-23 | — | Added **wallet.html** to Client-freelancer — a client wallet that stores favourable-FX surplus from payments (balance card + transaction ledger). `pay.html` credits the surplus on settlement and offers to apply existing wallet credit to a payment; both pages share `wm-wallet.js`. Wallet nav item added across the portal sidebar. |
 | 2026-06-18 | — | Added **confirmation screens** (`pluxee-confirm.html`, `zaggle-confirm.html`) shown after Confirm & Next, displaying the declared total + submit. |
