@@ -24,9 +24,6 @@
   .btn:hover { border-color:#5aa6ff; color:#fff; }
   .btn-primary { background:#2684FF; color:#fff; border-color:#2684FF; }
   .btn-primary:hover { background:#1a6fe0; }
-  .quickadd { display:flex; gap:8px; margin:0 0 18px; }
-  .quickadd input { flex:1; height:42px; padding:0 14px; font-size:14px; color:#e6e6e6; background:#26282c; border:1px solid #34363b; border-radius:10px; outline:none; }
-  .quickadd input:focus { border-color:#5aa6ff; }
   /* list */
   .list { display:flex; flex-direction:column; gap:7px; }
   .lhead, .lrow { display:grid; grid-template-columns:46px minmax(0,1fr) 150px 150px 52px 92px; gap:14px; align-items:center; }
@@ -72,6 +69,37 @@
     .lhead, .lrow { grid-template-columns:42px minmax(0,1fr) 120px; }
     .lhead .h-proj, .lhead .h-ver, .lhead .h-upd, .lrow .chip, .lrow .ver, .lrow .upd { display:none; }
   }
+  /* chat assistant */
+  .fab { position:fixed; right:24px; bottom:24px; z-index:60; width:56px; height:56px; border-radius:50%;
+    background:#2684FF; color:#fff; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    box-shadow:0 6px 22px rgba(0,0,0,.45); transition:transform .2s ease, background .2s ease; }
+  .fab:hover { background:#1a6fe0; transform:translateY(-1px); }
+  .fab svg { width:26px; height:26px; transition:transform .25s ease; }
+  .fab.open svg { transform:rotate(45deg); }
+  .chat { position:fixed; right:24px; bottom:92px; z-index:60; width:min(380px,calc(100vw - 32px)); height:min(540px,calc(100vh - 130px));
+    background:#1b1c1f; border:1px solid #34363b; border-radius:16px; box-shadow:0 14px 40px rgba(0,0,0,.5);
+    display:flex; flex-direction:column; overflow:hidden; opacity:0; transform:translateY(12px) scale(.98); pointer-events:none; transition:opacity .2s ease, transform .2s ease; }
+  .chat.open { opacity:1; transform:translateY(0) scale(1); pointer-events:auto; }
+  .chat-head { display:flex; align-items:center; gap:10px; padding:14px 16px; border-bottom:1px solid #34363b; }
+  .chat-head .dot { width:9px; height:9px; border-radius:50%; background:#37c97a; box-shadow:0 0 0 3px rgba(55,201,122,.18); }
+  .chat-head strong { font-size:14px; }
+  .chat-head span { font-size:11.5px; color:#8a9098; }
+  .chat-msgs { flex:1; overflow:auto; padding:16px; display:flex; flex-direction:column; gap:12px; }
+  .msg { max-width:88%; font-size:13.5px; line-height:1.5; padding:9px 12px; border-radius:13px; word-wrap:break-word; }
+  .msg.bot { align-self:flex-start; background:#26282c; border:1px solid #34363b; border-bottom-left-radius:4px; }
+  .msg.me { align-self:flex-end; background:#2684FF; color:#fff; border-bottom-right-radius:4px; }
+  .msg a { color:#5aa6ff; } .msg.me a { color:#dbe9ff; }
+  .msg ul { margin:6px 0 2px; padding-left:18px; } .msg li { margin:2px 0; }
+  .msg .mp { display:inline-flex; align-items:center; justify-content:center; min-width:26px; height:18px; padding:0 5px; border-radius:5px; font-size:10px; font-weight:800; margin-right:4px; }
+  .msg .mp.P0{background:#3a2122;color:#ff8a80} .msg .mp.P1{background:#3a3020;color:#ffc46b} .msg .mp.P2{background:#1f2b3d;color:#7db2ff} .msg .mp.P3{background:#2b2d31;color:#9aa0a6}
+  .chips { display:flex; flex-wrap:wrap; gap:6px; padding:0 14px 10px; }
+  .qchip { font-size:11.5px; color:#cdd2d8; background:#26282c; border:1px solid #34363b; border-radius:100px; padding:4px 10px; cursor:pointer; }
+  .qchip:hover { border-color:#5aa6ff; color:#fff; }
+  .chat-in { display:flex; gap:8px; padding:12px 14px; border-top:1px solid #34363b; }
+  .chat-in input { flex:1; height:40px; padding:0 13px; font-size:13.5px; color:#e6e6e6; background:#26282c; border:1px solid #34363b; border-radius:10px; outline:none; }
+  .chat-in input:focus { border-color:#5aa6ff; }
+  .chat-in button { height:40px; width:44px; flex:0 0 auto; border:none; border-radius:10px; background:#2684FF; color:#fff; cursor:pointer; }
+  .chat-in button:hover { background:#1a6fe0; }
 </style>
 </head>
 <body>
@@ -88,11 +116,6 @@
     </div>
   </div>
   <div class="sub" id="sub">Your working list · edits save in this browser · <strong>Hosted</strong> = shipped to the <a href="registry.html">registry</a>.</div>
-
-  <div class="quickadd">
-    <input id="qa" type="text" placeholder="+ Dump a task… (title, press Enter — lands in “To build”, P2)">
-    <button class="btn btn-primary" id="qa-btn">Add</button>
-  </div>
 
   <div class="lhead">
     <span>Pri</span><span>Task</span><span class="h-proj">Project</span><span>Status</span><span class="h-ver">Ver</span><span class="h-upd">Updated</span>
@@ -126,6 +149,26 @@
     <button class="btn btn-primary" id="d-save">Save</button>
   </div>
 </aside>
+
+<!-- chat assistant -->
+<div class="chat" id="chat" role="dialog" aria-label="Tracker assistant">
+  <div class="chat-head"><span class="dot"></span><strong>Tracker assistant</strong><span id="chat-sub"></span></div>
+  <div class="chat-msgs" id="chat-msgs"></div>
+  <div class="chips" id="chat-chips">
+    <span class="qchip" data-q="What's P0?">What's P0?</span>
+    <span class="qchip" data-q="Summary">Summary</span>
+    <span class="qchip" data-q="Ready for handoff">Ready for handoff</span>
+    <span class="qchip" data-q="Hosted pages">Hosted pages</span>
+    <span class="qchip" data-q="add ">+ Add a task</span>
+  </div>
+  <div class="chat-in">
+    <input id="chat-input" type="text" autocomplete="off" placeholder="Ask, or “add P0 …” to create a task">
+    <button id="chat-send" aria-label="Send"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M3.4 20.4l17.45-7.48a1 1 0 0 0 0-1.84L3.4 3.6a1 1 0 0 0-1.39 1.18L4.3 11.5 12 12l-7.7.5-2.29 6.72A1 1 0 0 0 3.4 20.4z"/></svg></button>
+  </div>
+</div>
+<button class="fab" id="fab" aria-label="Open assistant" title="Tracker assistant">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+</button>
 
 <script id="md" type="text/plain">
 # Design Tracker
@@ -271,16 +314,102 @@ Pre-handoff design pipeline (list view). Status ∈ `To build` · `In design` ·
     const blob = new Blob([out], { type: 'text/markdown' });
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'DESIGN-TRACKER.md'; a.click(); URL.revokeObjectURL(a.href);
   }
-  function quickAdd(){
-    const inp = document.getElementById('qa'); const v = inp.value.trim(); if (!v) return;
-    tasks.unshift({ id: uid(), item: v, project: '', status: 'To build', priority: 'P2', version: 'v0', updated: today(), link: '', notes: '' });
-    inp.value = ''; persist(); draw();
+  // ---- chat assistant (local, no backend) ----
+  // Live repository knowledge base — the hosted projects this tracker feeds.
+  const REPOS = [
+    { name:'Wisemonk UI', what:'Universal design system (wm- classes, tokens, Iconsax, dev-notes)', url:'https://anjuchorotiya.github.io/Client-freelancer/wisemonk-ui/index.html' },
+    { name:'wisemonk', what:'EOR org + employee onboarding (Next.js static export)', url:'https://anjuchorotiya.github.io/wisemonk/' },
+    { name:'Client-freelancer', what:'Client + freelancer portal (home, workspace, invoices, payments)', url:'https://anjuchorotiya.github.io/Client-freelancer/home.html' },
+    { name:'Admin-portal', what:'Internal admin tooling (Form 16, notifications, rules, usage)', url:'https://anjuchorotiya.github.io/Admin-portal/' },
+    { name:'wisemonk-recruit-portal', what:'Recruiting flow', url:'https://anjuchorotiya.github.io/wisemonk-recruit-portal/' },
+    { name:'client-balance', what:'Wallet / balance demo portal', url:'https://anjuchorotiya.github.io/client-balance/' },
+    { name:'contractor-legal-ai', what:'Contractor compliance app (Next.js) — live in production', url:'https://legal.wisemonk.io' }
+  ];
+  const cmsgs = () => document.getElementById('chat-msgs');
+  function addMsg(role, html){ const d = document.createElement('div'); d.className = 'msg ' + role; d.innerHTML = html; cmsgs().appendChild(d); cmsgs().scrollTop = cmsgs().scrollHeight; return d; }
+  function priTag(p){ return p ? `<span class="mp ${p}">${p}</span>` : ''; }
+  function taskLi(t){ const l = linkHtml(t.link).replace('t-link','') ; return `<li>${priTag(t.priority)}<strong>${esc(t.item)}</strong>${t.project?` · ${esc(t.project)}`:''}${t.status?` · ${esc(t.status)}`:''}</li>`; }
+  function listMsg(title, arr){
+    if (!arr.length) return addMsg('bot', `No tasks match <strong>${esc(title)}</strong>.`);
+    return addMsg('bot', `${esc(title)} — <strong>${arr.length}</strong>:<ul>${arr.map(taskLi).join('')}</ul>`);
   }
+
+  function parseAdd(text){
+    let s = text.replace(/^\s*(add|new|create|\+|todo)\b[:\-]?\s*/i, '').trim();
+    let priority = 'P2', project = '', status = 'To build';
+    const pm = s.match(/\bP([0-3])\b/i); if (pm){ priority = 'P' + pm[1]; s = s.replace(pm[0], ' '); }
+    STATUSES.forEach(st => { const re = new RegExp('\\b' + st.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&') + '\\b', 'i'); if (re.test(s)){ status = st; s = s.replace(re, ' '); } });
+    const projects = [...new Set([...tasks.map(t => t.project), ...REPOS.map(r => r.name)].filter(Boolean))];
+    projects.sort((a,b) => b.length - a.length).forEach(p => { const re = new RegExp('(?:\\bfor|\\bin|\\bto|\\bon)?\\s*\\b' + p.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&') + '\\b', 'i'); if (!project && re.test(s)){ project = p; s = s.replace(re, ' '); } });
+    s = s.replace(/\b(task|for|to|in|on|priority|status|project)\b/gi, ' ').replace(/\s{2,}/g, ' ').replace(/^[\s:,\-]+|[\s:,\-]+$/g, '').trim();
+    return { item: s, priority, project, status };
+  }
+  function addTaskFromChat(text){
+    const p = parseAdd(text);
+    if (!p.item){ addMsg('bot', 'Tell me the task title — e.g. <em>“add P0 redesign invoices for Client-freelancer”</em>.'); return; }
+    const t = { id: uid(), item: p.item, project: p.project, status: p.status, priority: p.priority, version: 'v0', updated: today(), link: '', notes: '' };
+    tasks.unshift(t); persist(); draw();
+    addMsg('bot', `Added ${priTag(p.priority)}<strong>${esc(p.item)}</strong> → <strong>${esc(p.status)}</strong>${p.project?` · ${esc(p.project)}`:''}. <a href="#" data-edit="${t.id}">Open to edit ↗</a>`);
+  }
+
+  function summaryMsg(){
+    const by = {}; STATUSES.forEach(s => by[s] = 0); tasks.forEach(t => by[t.status] = (by[t.status]||0) + 1);
+    const pri = { P0:0, P1:0, P2:0, P3:0 }; tasks.forEach(t => { if (pri[t.priority] != null) pri[t.priority]++; });
+    addMsg('bot', `<strong>${tasks.length}</strong> tasks total.<ul>${STATUSES.map(s => `<li>${s}: <strong>${by[s]}</strong></li>`).join('')}</ul>By priority: ${['P0','P1','P2','P3'].map(p => `${priTag(p)}${pri[p]}`).join('  ')}`);
+  }
+  function reposMsg(){
+    addMsg('bot', `Hosted projects (live):<ul>${REPOS.map(r => `<li><a href="${r.url}" target="_blank" rel="noopener">${esc(r.name)}</a> — ${esc(r.what)}</li>`).join('')}</ul>Full index: <a href="registry.html">registry</a>.`);
+  }
+
+  function botRespond(text){
+    const q = text.trim(); if (!q) return;
+    const low = q.toLowerCase();
+    if (/^(add|new|create|\+|todo)\b/i.test(q)) return addTaskFromChat(q);
+    if (/\b(help|what can you|how do)\b/.test(low))
+      return addMsg('bot', `I know everything in this tracker and the hosted repos. Try:<ul><li><em>add P0 redesign invoices for Client-freelancer</em></li><li><em>what's P0?</em> · <em>in review</em> · <em>ready for handoff</em> · <em>hosted</em></li><li><em>summary</em> · <em>hosted pages / links</em></li><li>or type any keyword to search tasks.</li></ul>`);
+    if (/\b(repo|repositor|hosted page|live (url|link|site)|links|pages|projects)\b/.test(low)) return reposMsg();
+    if (/\b(summary|overview|how many|count|status|stats)\b/.test(low)) return summaryMsg();
+    const pm = low.match(/\bp([0-3])\b/); if (pm) return listMsg('Priority P' + pm[1], tasks.filter(t => t.priority === 'P' + pm[1]));
+    for (const st of STATUSES){ if (low.includes(st.toLowerCase()) || (st === 'Ready for handoff' && /\bhandoff\b/.test(low))) return listMsg(st, tasks.filter(t => t.status === st)); }
+    const proj = [...new Set(tasks.map(t => t.project).filter(Boolean))].find(p => low.includes(p.toLowerCase()));
+    if (proj) return listMsg(proj, tasks.filter(t => t.project === proj));
+    const hits = tasks.filter(t => (t.item + ' ' + t.project + ' ' + t.notes).toLowerCase().includes(low));
+    if (hits.length) return listMsg('Matches for “' + q + '”', hits);
+    addMsg('bot', `No match. I can <em>add</em> tasks, filter by <em>priority/status/project</em>, give a <em>summary</em>, or list <em>hosted pages</em>. Type <em>help</em>.`);
+  }
+  function sendChat(){
+    const inp = document.getElementById('chat-input'); const v = inp.value.trim(); if (!v) return;
+    addMsg('me', esc(v)); inp.value = ''; setTimeout(() => botRespond(v), 120);
+  }
+  let chatGreeted = false;
+  function toggleChat(force){
+    const c = document.getElementById('chat'), f = document.getElementById('fab');
+    const open = force != null ? force : !c.classList.contains('open');
+    c.classList.toggle('open', open); f.classList.toggle('open', open);
+    f.setAttribute('aria-label', open ? 'Close assistant' : 'Open assistant');
+    if (open){
+      if (!chatGreeted){ addMsg('bot', `Hi! I'm your tracker assistant — I have live info on all <strong>${tasks.length}</strong> tasks and the hosted repos. Ask me anything, or say <em>“add …”</em> to create a task.`); chatGreeted = true; }
+      document.getElementById('chat-sub').textContent = tasks.length + ' tasks';
+      setTimeout(() => document.getElementById('chat-input').focus(), 200);
+    }
+  }
+
   function wireOnce(){
     ['search'].forEach(id => document.getElementById(id).addEventListener('input', draw));
     ['proj','fstatus','fpri'].forEach(id => document.getElementById(id).addEventListener('change', draw));
-    document.getElementById('qa-btn').addEventListener('click', quickAdd);
-    document.getElementById('qa').addEventListener('keydown', e => { if (e.key === 'Enter') quickAdd(); });
+    document.getElementById('fab').addEventListener('click', () => toggleChat());
+    document.getElementById('chat-send').addEventListener('click', sendChat);
+    document.getElementById('chat-input').addEventListener('keydown', e => { if (e.key === 'Enter') sendChat(); });
+    document.getElementById('chat-chips').addEventListener('click', e => {
+      const q = e.target.getAttribute && e.target.getAttribute('data-q'); if (q == null) return;
+      const inp = document.getElementById('chat-input');
+      if (q.trim().toLowerCase() === 'add'){ inp.value = 'add '; inp.focus(); }
+      else { addMsg('me', esc(q)); setTimeout(() => botRespond(q), 120); }
+    });
+    cmsgs().addEventListener('click', e => {
+      const id = e.target.getAttribute && e.target.getAttribute('data-edit');
+      if (id){ e.preventDefault(); toggleChat(false); openEditor(id); }
+    });
     document.getElementById('export').addEventListener('click', exportMd);
     document.getElementById('reset').addEventListener('click', () => { if (confirm('Discard local edits and reload the published list?')) { try { localStorage.removeItem(STORE); } catch(e){} tasks = parseSeed(md); persist(); draw(); } });
     document.getElementById('d-close').addEventListener('click', closeEditor);
@@ -288,7 +417,7 @@ Pre-handoff design pipeline (list view). Status ∈ `To build` · `In design` ·
     document.getElementById('ov').addEventListener('click', closeEditor);
     document.getElementById('d-save').addEventListener('click', saveEditor);
     document.getElementById('d-del').addEventListener('click', deleteEditor);
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeEditor(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape'){ closeEditor(); toggleChat(false); } });
   }
 
   if (document.getElementById("md")) render();
