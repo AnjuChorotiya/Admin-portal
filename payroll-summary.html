@@ -53,7 +53,7 @@
     /* ---- Frequency + cycle selectors ---- */
     .sel-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 16px 0 6px; }
     .ovw-sel { margin-bottom: 0; min-width: 150px; }
-    .ovw-sel .wm-select { padding: 10px 38px 10px 14px; font-size: 14px; font-weight: 600; border-radius: var(--wm-radius-sm); }
+    .ovw-sel .wm-select { padding: 10px 38px 10px 14px; font-size: 14px; font-weight: 400; border-radius: var(--wm-radius-sm); }
 
     /* ---- Payslip template card ---- */
     .pay-tpl .pt-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
@@ -628,7 +628,8 @@
         if (currentCycle > defs.length) currentCycle = 1;
         var sel = defs[currentCycle - 1];
 
-        // Per-employee amounts: gross split evenly; PT (fixed) only in cycle/run 1.
+        // Only the employee table changes with the selected cycle: gross split evenly,
+        // PT (fixed) charged once in run 1. Headline + heading stay on the monthly view.
         cycleRows.forEach(function (tr) {
           var cells = tr.querySelectorAll('td.num-col span');
           if (cells.length < 2) return;
@@ -639,17 +640,15 @@
           cells[0].textContent = fmtINR(g / div);
           cells[1].textContent = fmtINR(base - (currentCycle === 1 ? pt : 0));
         });
-
-        // Headline + descriptive labels
-        document.getElementById('ovwAmt').textContent = fmtINR(MONTHLY_TOTAL / div);
-        document.getElementById('ovwAmtLabel').textContent = single ? 'Total payroll amount' : 'Payout this ' + runWord(freq);
-        document.getElementById('ovwDesc').textContent = "An overview of the company's payroll for the selected " + (single ? 'period.' : runWord(freq) + '.');
-        document.getElementById('invColLabel').textContent = single ? 'Invoice' : (freq === 'weekly' ? 'Week' : 'Cycle') + ' invoice';
+        document.getElementById('ovwAmt').textContent = fmtINR(MONTHLY_TOTAL);
+        document.getElementById('ovwAmtLabel').textContent = 'Total payroll amount';
+        document.getElementById('ovwDesc').textContent = "An overview of the company's payroll for the selected period.";
+        document.getElementById('invColLabel').textContent = 'Invoice';
+        document.getElementById('tblHeadCycle').textContent = '';
 
         // Cycle selector: hidden for monthly, dropdown for weekly / bi-monthly
         if (single) {
           cycleSelWrap.style.display = 'none';
-          document.getElementById('tblHeadCycle').textContent = '— ' + m.name + ' ' + m.year;
         } else {
           cycleSelWrap.style.display = '';
           cycleSel.innerHTML = defs.map(function (d, i) {
@@ -659,7 +658,6 @@
           cycleSel.classList.add('touched');
           // The custom select menu is built from options once; rebuild it after we repopulate.
           if (typeof cycleSel._wmRebuildMenu === 'function') cycleSel._wmRebuildMenu();
-          document.getElementById('tblHeadCycle').textContent = '— ' + m.name + ' ' + m.year + ' · ' + sel.label + ' (' + sel.range + ')';
         }
 
         // Payslip template (varies with the selected cycle)
