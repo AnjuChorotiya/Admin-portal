@@ -50,6 +50,36 @@
     .period-sel { min-width: 132px; }
     .period-sel .wm-select { padding: 10px 38px 10px 14px; font-size: 14px; font-weight: 600; border-radius: var(--wm-radius-sm); }
 
+    /* ---- Frequency + cycle selectors ---- */
+    .sel-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 16px 0 6px; }
+    .ovw-sel { margin-bottom: 0; min-width: 150px; }
+    .ovw-sel .wm-select { padding: 10px 38px 10px 14px; font-size: 14px; font-weight: 600; border-radius: var(--wm-radius-sm); }
+
+    /* ---- Payslip template card ---- */
+    .pay-tpl .pt-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+    .pay-tpl .pt-head h3 { font-weight: 700; font-size: 16px; color: var(--wm-text-primary); }
+    .pay-tpl .pt-head p { font-size: 13px; font-weight: 500; color: var(--wm-text-muted); margin-top: 3px; }
+    .pt-badge { padding: 5px 13px; border-radius: var(--wm-radius-full); font-size: 12px; font-weight: 700; background: var(--wm-primary-50); color: var(--wm-primary-600); white-space: nowrap; flex-shrink: 0; }
+    .pt-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+    .pt-col-h { font-size: 11.5px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; color: var(--wm-text-muted); padding-bottom: 9px; border-bottom: 1px solid var(--wm-border); margin-bottom: 4px; }
+    .pt-line { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; font-size: 14px; font-weight: 500; color: var(--wm-text-secondary); }
+    .pt-line > span:last-child { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--wm-text-primary); }
+    .pt-line.pt-sub { border-top: 1px solid var(--wm-border); margin-top: 4px; }
+    .pt-line.pt-sub > span { font-weight: 700; color: var(--wm-text-primary); }
+    .pt-net { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 18px; padding: 14px 18px; background: var(--wm-primary-50); border-radius: var(--wm-radius-md); }
+    .pt-net > span:first-child { font-weight: 700; font-size: 15px; color: var(--wm-primary-700); }
+    .pt-net > span:last-child { font-weight: 700; font-size: 20px; color: var(--wm-primary-700); font-variant-numeric: tabular-nums; }
+    @media (max-width: 760px) { .pt-cols { grid-template-columns: 1fr; gap: 6px; } }
+
+    /* Frequency + cycle sit beside the search box; the template link goes to the far right */
+    .wm-toolbar .wm-search { flex: 0 1 340px; }
+    .wm-toolbar .wm-toolbar-actions { margin-left: 0; flex: 1; }
+
+    /* ---- Payslip template link (in the table toolbar) ---- */
+    .tpl-link { display: inline-flex; align-items: center; gap: 7px; margin-left: auto; font-size: 13.5px; font-weight: 600; color: var(--wm-primary-600); cursor: pointer; padding: 9px 12px; border-radius: var(--wm-radius-sm); white-space: nowrap; transition: background .15s; }
+    .tpl-link:hover { background: var(--wm-primary-50); }
+    .tpl-link svg { width: 16px; height: 16px; flex-shrink: 0; }
+
     /* ---- Table card head (title + status counts + export) ---- */
     .tbl-head { display: flex; align-items: center; gap: 20px; padding: 18px 20px 4px; flex-wrap: wrap; }
     .tbl-head h3 { font-weight: 700; font-size: 16px; color: var(--wm-text-primary); }
@@ -177,22 +207,50 @@
           <div class="ovw">
             <div class="ovw-head">
               <h2>Payroll</h2>
-              <p>An overview of the company's payroll for the selected period.</p>
-              <div class="ovw-amt-label">Total payroll amount</div>
-              <div class="ovw-amt">₹25,52,30,775.96</div>
+              <p id="ovwDesc">An overview of the company's payroll for the selected period.</p>
+              <div class="ovw-amt-label" id="ovwAmtLabel">Total payroll amount</div>
+              <div class="ovw-amt" id="ovwAmt">₹25,52,30,775.96</div>
             </div>
             <div class="ovw-actions">
-              <div class="period-sel wm-field-float" style="margin-bottom:0;">
-                <select class="wm-select" id="periodSel" aria-label="Payroll period">
-                  <option>June 2026</option>
-                  <option>May 2026</option>
-                  <option>April 2026</option>
-                  <option>March 2026</option>
-                </select>
-              </div>
               <button class="wm-btn wm-btn--primary" id="finalizeBtn">Finalize payroll</button>
               <button class="wm-btn wm-btn--outline" id="executeBtn" disabled>Execute payroll</button>
-              <button class="wm-btn wm-btn--outline" id="markPaidBtn" disabled>Mark as Paid</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payslip template modal (opened from the table toolbar; varies by cycle) -->
+        <div class="wm-modal-overlay" id="payslipModal" aria-hidden="true">
+          <div class="wm-modal wm-modal--lg pay-tpl" role="dialog" aria-modal="true" aria-labelledby="ptTitle">
+            <div class="wm-modal-head">
+              <div>
+                <h2 id="ptTitle">Payslip template — June 2026</h2>
+                <p id="ptSub">Sample payslip for the selected period</p>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px;">
+                <span class="pt-badge" id="ptBadge">Monthly</span>
+                <button class="wm-icon-btn" data-wm-close aria-label="Close">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="wm-modal-body">
+              <div class="pt-cols">
+                <div class="pt-col">
+                  <div class="pt-col-h">Earnings</div>
+                  <div class="pt-line"><span>Basic</span><span id="ptBasic">—</span></div>
+                  <div class="pt-line"><span>House rent allowance</span><span id="ptHra">—</span></div>
+                  <div class="pt-line"><span>Special allowance</span><span id="ptSa">—</span></div>
+                  <div class="pt-line pt-sub"><span>Gross earnings</span><span id="ptGross">—</span></div>
+                </div>
+                <div class="pt-col">
+                  <div class="pt-col-h">Deductions</div>
+                  <div class="pt-line"><span>Income tax (TDS)</span><span id="ptTds">—</span></div>
+                  <div class="pt-line"><span>Provident fund (PF)</span><span id="ptPf">—</span></div>
+                  <div class="pt-line" id="ptPtRow"><span>Professional tax (PT)</span><span id="ptPt">—</span></div>
+                  <div class="pt-line pt-sub"><span>Total deductions</span><span id="ptDed">—</span></div>
+                </div>
+              </div>
+              <div class="pt-net"><span id="ptNetLabel">Net pay this period</span><span id="ptNet">—</span></div>
             </div>
           </div>
         </div>
@@ -200,7 +258,7 @@
         <!-- Employee status -->
         <div class="wm-table-card">
           <div class="tbl-head">
-            <h3>Employee status (June 2026)</h3>
+            <h3>Employee status <span id="tblHeadCycle">— June 2026 · Cycle 1 (1st–15th)</span></h3>
             <div class="status-counts">
               <span class="sc">Finalized <b>0</b></span>
               <span class="sc">Executed <b>0</b></span>
@@ -215,6 +273,21 @@
             <div class="wm-search">
               <input type="text" id="paySearch" placeholder="Search by name, client or designation">
             </div>
+            <div class="wm-toolbar-actions">
+              <div class="ovw-sel wm-field-float">
+                <select class="wm-select" id="freqSel" aria-label="Payroll frequency">
+                  <option value="weekly">Weekly</option>
+                  <option value="bi">Bi-monthly</option>
+                  <option value="monthly" selected>Monthly</option>
+                </select>
+              </div>
+              <div class="ovw-sel wm-field-float" id="cycleSelWrap" style="display:none;">
+                <select class="wm-select" id="cycleSel" aria-label="Pay cycle"></select>
+              </div>
+              <a class="tpl-link" id="tplLink" data-wm-open="#payslipModal" role="button" tabindex="0">
+                <span id="tplLinkText">View payslip template</span>
+              </a>
+            </div>
           </div>
 
           <table class="wm-table" id="payTable">
@@ -223,8 +296,8 @@
                 <th class="col-check"><input type="checkbox" class="wm-check" id="checkAll"></th>
                 <th>Personnel</th>
                 <th>Client</th>
-                <th data-wm-note="Client-health snapshot at payout time, three signals split by ' / '. (1) Invoice — the client's invoice payment status (Paid/Unpaid). (2) Deposit — deposit balance expressed as inventory runway in months, sourced from the Deposit screen. (3) Risk — client background-verification risk dot, sourced from the Client verification screen (green good · yellow watch · red high risk).">
-                  <span class="th-info">Invoice / Deposit / Risk <span class="info-tip" tabindex="0" aria-label="Column legend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-info-circle"/></svg><span class="info-pop" role="tooltip"><span class="ip-row"><b>Invoice</b> Client's invoice — Paid or Unpaid</span><span class="ip-row"><b>Deposit</b> Inventory runway in months · from the Deposit screen</span><span class="ip-row"><b>Risk</b> Client background risk · from the Client verification screen</span></span></span></span>
+                <th data-wm-note="Client-health snapshot at payout time, three signals split by ' / '. (1) Invoice — this cycle's invoice payment status (Paid/Unpaid). Each cycle is invoiced separately. (2) Deposit — deposit balance expressed as inventory runway in months, sourced from the Deposit screen. (3) Risk — client background-verification risk dot, sourced from the Client verification screen (green good · yellow watch · red high risk).">
+                  <span class="th-info"><span id="invColLabel">Cycle invoice</span> / Deposit / Risk <span class="info-tip" tabindex="0" aria-label="Column legend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-info-circle"/></svg><span class="info-pop" role="tooltip"><span class="ip-row"><b>Invoice</b> This cycle's invoice — Paid or Unpaid (each cycle billed separately)</span><span class="ip-row"><b>Deposit</b> Inventory runway in months · from the Deposit screen</span><span class="ip-row"><b>Risk</b> Client background risk · from the Client verification screen</span></span></span></span>
                 </th>
                 <th>Employment type</th>
                 <th><span class="th-sort">Currency <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-sort"/></svg></span></th>
@@ -458,27 +531,165 @@
         });
       });
 
-      // ---- Payroll lifecycle buttons (demo state machine) ----
+      // ================= Payroll frequency + cycle logic =================
+      var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      var PT_AMOUNT = 200;            // professional tax — fixed, charged once (in cycle 1)
+      var MONTHLY_TOTAL = 255230775.96; // headline monthly payout (all personnel)
+      var CURRENT_PERIOD = MONTHS[new Date().getMonth()] + ' ' + new Date().getFullYear();
+      var freq = 'monthly';           // 'weekly' | 'bi' | 'monthly'
+      var currentCycle = 1;
+      var cycleRows = Array.prototype.slice.call(document.getElementById('payTable').tBodies[0].rows);
+
+      // Element refs
+      var freqSel = document.getElementById('freqSel');
+      var cycleSel = document.getElementById('cycleSel');
+      var cycleSelWrap = document.getElementById('cycleSelWrap');
       var finalizeBtn = document.getElementById('finalizeBtn');
       var executeBtn = document.getElementById('executeBtn');
-      var markPaidBtn = document.getElementById('markPaidBtn');
+      freq = freqSel.value; // keep in sync with the select ('monthly' default)
 
+      function monthInfo() {
+        var parts = CURRENT_PERIOD.split(' ');
+        var idx = MONTHS.indexOf(parts[0]);
+        var year = parseInt(parts[1], 10);
+        var eom = new Date(year, idx + 1, 0).getDate();
+        return { abbr: parts[0].slice(0, 3), name: parts[0], year: year, eom: eom };
+      }
+      function ordinal(d) { var s = ['th', 'st', 'nd', 'rd'], v = d % 100; return d + (s[(v - 20) % 10] || s[v] || s[0]); }
+      function parseNum(s) { return parseFloat(String(s).replace(/[^0-9.]/g, '')) || 0; }
+      function fmtINR(n) { return '₹' + (Math.round(n * 100) / 100).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function resetLifecycle() { finalizeBtn.disabled = false; executeBtn.disabled = true; }
+      function divisorFor(f) { return f === 'weekly' ? 4 : f === 'bi' ? 2 : 1; }
+      function runWord(f) { return f === 'weekly' ? 'week' : 'cycle'; }
+      function freqLabel(f) { return f === 'weekly' ? 'Weekly' : f === 'bi' ? 'Bi-monthly' : 'Monthly'; }
+
+      // Cycle/run definitions per frequency (within the selected month).
+      function cycleDefs(f, m) {
+        var eo = ordinal(m.eom);
+        if (f === 'monthly') return [{ label: 'Month', range: '1st–' + eo, pay: m.eom, slip: 'Payslip' }];
+        if (f === 'bi') return [
+          { label: 'Cycle 1', range: '1st–15th', pay: 15, slip: 'Payslip 1' },
+          { label: 'Cycle 2', range: '16th–' + eo, pay: m.eom, slip: 'Payslip 2' }
+        ];
+        return [ // weekly
+          { label: 'Week 1', range: '1st–7th', pay: 7, slip: 'Payslip 1' },
+          { label: 'Week 2', range: '8th–14th', pay: 14, slip: 'Payslip 2' },
+          { label: 'Week 3', range: '15th–21st', pay: 21, slip: 'Payslip 3' },
+          { label: 'Week 4', range: '22nd–' + eo, pay: m.eom, slip: 'Payslip 4' }
+        ];
+      }
+      function scopeLabel() {
+        var m = monthInfo();
+        if (freq === 'monthly') return m.name + ' ' + m.year;
+        return m.name + ' ' + m.year + ' · ' + cycleDefs(freq, m)[currentCycle - 1].label;
+      }
+
+      // Sample figures for the payslip template (monthly basis).
+      var SAMPLE = { basic: 50000, hra: 25000, sa: 25000, tds: 8000, pf: 1800, pt: 200 };
+
+      // Snapshot the monthly figures once, so re-rendering never compounds.
+      cycleRows.forEach(function (tr) {
+        var cells = tr.querySelectorAll('td.num-col span');
+        if (cells.length < 2) return;
+        tr.dataset.mGross = parseNum(cells[0].textContent);
+        tr.dataset.mNet = parseNum(cells[1].textContent);
+      });
+
+      // Payslip template — proportions and PT presence change with the selected cycle.
+      function renderPayslip(div, c, sel, m, single) {
+        var basic = SAMPLE.basic / div, hra = SAMPLE.hra / div, sa = SAMPLE.sa / div;
+        var gross = basic + hra + sa;
+        var tds = SAMPLE.tds / div, pf = SAMPLE.pf / div, pt = (c === 1) ? SAMPLE.pt : 0;
+        var ded = tds + pf + pt, net = gross - ded;
+        document.getElementById('ptBasic').textContent = fmtINR(basic);
+        document.getElementById('ptHra').textContent = fmtINR(hra);
+        document.getElementById('ptSa').textContent = fmtINR(sa);
+        document.getElementById('ptGross').textContent = fmtINR(gross);
+        document.getElementById('ptTds').textContent = fmtINR(tds);
+        document.getElementById('ptPf').textContent = fmtINR(pf);
+        document.getElementById('ptPt').textContent = fmtINR(pt);
+        document.getElementById('ptPtRow').style.display = (c === 1) ? '' : 'none';
+        document.getElementById('ptDed').textContent = fmtINR(ded);
+        document.getElementById('ptNet').textContent = fmtINR(net);
+        document.getElementById('ptTitle').textContent = single
+          ? 'Payslip template — ' + m.name + ' ' + m.year
+          : 'Payslip template — ' + sel.label + ' (' + sel.range + ')';
+        document.getElementById('ptSub').textContent = 'Sample payslip · pays ' + sel.pay + ' ' + m.abbr + (single ? ' · full month' : '');
+        document.getElementById('ptBadge').textContent = freqLabel(freq);
+        document.getElementById('ptNetLabel').textContent = single ? 'Net pay this month' : 'Net pay this ' + runWord(freq);
+        document.getElementById('tplLinkText').textContent = single ? 'View payslip template' : 'View payslip · ' + sel.label;
+      }
+
+      function render() {
+        var m = monthInfo();
+        var single = (freq === 'monthly');
+        var div = divisorFor(freq);
+        var defs = cycleDefs(freq, m);
+        if (currentCycle > defs.length) currentCycle = 1;
+        var sel = defs[currentCycle - 1];
+
+        // Per-employee amounts: gross split evenly; PT (fixed) only in cycle/run 1.
+        cycleRows.forEach(function (tr) {
+          var cells = tr.querySelectorAll('td.num-col span');
+          if (cells.length < 2) return;
+          var g = parseFloat(tr.dataset.mGross) || 0;
+          var n = parseFloat(tr.dataset.mNet) || 0;
+          var pt = n > 0 ? PT_AMOUNT : 0;
+          var base = (n + pt) / div;
+          cells[0].textContent = fmtINR(g / div);
+          cells[1].textContent = fmtINR(base - (currentCycle === 1 ? pt : 0));
+        });
+
+        // Headline + descriptive labels
+        document.getElementById('ovwAmt').textContent = fmtINR(MONTHLY_TOTAL / div);
+        document.getElementById('ovwAmtLabel').textContent = single ? 'Total payroll amount' : 'Payout this ' + runWord(freq);
+        document.getElementById('ovwDesc').textContent = "An overview of the company's payroll for the selected " + (single ? 'period.' : runWord(freq) + '.');
+        document.getElementById('invColLabel').textContent = single ? 'Invoice' : (freq === 'weekly' ? 'Week' : 'Cycle') + ' invoice';
+
+        // Cycle selector: hidden for monthly, dropdown for weekly / bi-monthly
+        if (single) {
+          cycleSelWrap.style.display = 'none';
+          document.getElementById('tblHeadCycle').textContent = '— ' + m.name + ' ' + m.year;
+        } else {
+          cycleSelWrap.style.display = '';
+          cycleSel.innerHTML = defs.map(function (d, i) {
+            return '<option value="' + (i + 1) + '">' + d.label + ' (' + d.range + ')</option>';
+          }).join('');
+          cycleSel.value = String(currentCycle);
+          cycleSel.classList.add('touched');
+          // The custom select menu is built from options once; rebuild it after we repopulate.
+          if (typeof cycleSel._wmRebuildMenu === 'function') cycleSel._wmRebuildMenu();
+          document.getElementById('tblHeadCycle').textContent = '— ' + m.name + ' ' + m.year + ' · ' + sel.label + ' (' + sel.range + ')';
+        }
+
+        // Payslip template (varies with the selected cycle)
+        renderPayslip(div, currentCycle, sel, m, single);
+
+        // Keep the frequency select in sync, refresh lifecycle
+        freqSel.value = freq;
+        finalizeBtn.textContent = single ? 'Finalize payroll' : 'Finalize ' + runWord(freq);
+        executeBtn.textContent = single ? 'Execute payroll' : 'Execute payout';
+        resetLifecycle();
+      }
+
+      freqSel.addEventListener('change', function () { freq = freqSel.value; currentCycle = 1; render(); });
+      cycleSel.addEventListener('change', function () { currentCycle = parseInt(cycleSel.value, 10) || 1; render(); });
+
+      // ---- Payroll lifecycle buttons (demo state machine) ----
       finalizeBtn.addEventListener('click', function () {
-        WMUI.toast('Payroll finalized for June 2026', { type: 'success' });
+        if (finalizeBtn.disabled) return;
+        var w = freq === 'monthly' ? 'Payroll' : (freq === 'weekly' ? 'Week' : 'Cycle');
+        WMUI.toast(w + ' finalized — ' + scopeLabel(), { type: 'success' });
         finalizeBtn.disabled = true;
         executeBtn.disabled = false;
       });
       executeBtn.addEventListener('click', function () {
         if (executeBtn.disabled) return;
-        WMUI.toast('Payroll execution started', { type: 'success' });
+        WMUI.toast((freq === 'monthly' ? 'Payroll' : 'Payout') + ' execution started — ' + scopeLabel(), { type: 'success' });
         executeBtn.disabled = true;
-        markPaidBtn.disabled = false;
       });
-      markPaidBtn.addEventListener('click', function () {
-        if (markPaidBtn.disabled) return;
-        WMUI.toast('Payroll marked as paid', { type: 'success' });
-        markPaidBtn.disabled = true;
-      });
+
+      render();
 
       // ---- Export ----
       document.getElementById('exportBtn').addEventListener('click', function () {
