@@ -75,6 +75,20 @@
     .wm-toolbar .wm-search { flex: 0 1 340px; }
     .wm-toolbar .wm-toolbar-actions { margin-left: 0; flex: 1; }
 
+    /* ---- Column-header multi-select filters ---- */
+    .th-filter { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; user-select: none; outline: none; }
+    .th-filter .fcaret { font-size: 9px; color: var(--wm-neutral-300); transition: color .15s; }
+    .th-filter:hover .fcaret, .th-filter:focus-visible .fcaret { color: var(--wm-primary-500); }
+    .th-filter.active { color: var(--wm-primary-600); }
+    .th-filter .fcount { background: var(--wm-primary-500); color: #fff; font-size: 10px; font-weight: 700; line-height: 1; border-radius: 10px; padding: 2px 6px; }
+    .col-filter-pop { position: fixed; z-index: 2000; min-width: 200px; max-height: 320px; overflow-y: auto; background: var(--wm-neutral-0); border: 1px solid var(--wm-border-strong); border-radius: var(--wm-radius-md); box-shadow: var(--wm-shadow-lg); padding: 8px; display: none; }
+    .col-filter-pop.open { display: block; }
+    .col-filter-pop label { display: flex; align-items: center; gap: 9px; padding: 7px 9px; border-radius: 6px; font-size: 13.5px; font-weight: 500; color: var(--wm-text-secondary); cursor: pointer; white-space: nowrap; text-transform: none; letter-spacing: normal; }
+    .col-filter-pop label:hover { background: var(--wm-neutral-50); }
+    .col-filter-pop input { width: 16px; height: 16px; accent-color: var(--wm-primary-500); cursor: pointer; flex-shrink: 0; }
+    .col-filter-pop .cf-clear { width: 100%; margin-top: 6px; padding: 8px; border: 0; background: var(--wm-neutral-50); border-radius: 6px; font-weight: 600; font-size: 12.5px; color: var(--wm-text-secondary); cursor: pointer; font-family: inherit; }
+    .col-filter-pop .cf-clear:hover { background: var(--wm-neutral-100); }
+
     /* ---- Payslip template link (in the table toolbar) ---- */
     .tpl-link { display: inline-flex; align-items: center; gap: 7px; margin-left: auto; font-size: 13.5px; font-weight: 600; color: var(--wm-primary-600); cursor: pointer; padding: 9px 12px; border-radius: var(--wm-radius-sm); white-space: nowrap; transition: background .15s; }
     .tpl-link:hover { background: var(--wm-primary-50); }
@@ -275,6 +289,22 @@
             </div>
             <div class="wm-toolbar-actions">
               <div class="ovw-sel wm-field-float">
+                <select class="wm-select" id="periodSel" aria-label="Payroll month">
+                  <option>January 2026</option>
+                  <option>February 2026</option>
+                  <option>March 2026</option>
+                  <option>April 2026</option>
+                  <option>May 2026</option>
+                  <option>June 2026</option>
+                  <option selected>July 2026</option>
+                  <option>August 2026</option>
+                  <option>September 2026</option>
+                  <option>October 2026</option>
+                  <option>November 2026</option>
+                  <option>December 2026</option>
+                </select>
+              </div>
+              <div class="ovw-sel wm-field-float">
                 <select class="wm-select" id="freqSel" aria-label="Payroll frequency">
                   <option value="weekly">Weekly</option>
                   <option value="bi">Bi-monthly</option>
@@ -295,16 +325,16 @@
               <tr>
                 <th class="col-check"><input type="checkbox" class="wm-check" id="checkAll"></th>
                 <th>Personnel</th>
-                <th>Client</th>
+                <th><span class="th-filter" data-col="client" tabindex="0" role="button" aria-label="Filter by client">Client <i class="fcaret">▾</i></span></th>
                 <th data-wm-note="Client-health snapshot at payout time, three signals split by ' / '. (1) Invoice — this cycle's invoice payment status (Paid/Unpaid). Each cycle is invoiced separately. (2) Deposit — deposit balance expressed as inventory runway in months, sourced from the Deposit screen. (3) Risk — client background-verification risk dot, sourced from the Client verification screen (green good · yellow watch · red high risk).">
                   <span class="th-info"><span id="invColLabel">Cycle invoice</span> / Deposit / Risk <span class="info-tip" tabindex="0" aria-label="Column legend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#ic-info-circle"/></svg><span class="info-pop" role="tooltip"><span class="ip-row"><b>Invoice</b> This cycle's invoice — Paid or Unpaid (each cycle billed separately)</span><span class="ip-row"><b>Deposit</b> Inventory runway in months · from the Deposit screen</span><span class="ip-row"><b>Risk</b> Client background risk · from the Client verification screen</span></span></span></span>
                 </th>
-                <th>Employment type</th>
-                <th><span class="th-sort">Currency <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-sort"/></svg></span></th>
+                <th><span class="th-filter" data-col="type" tabindex="0" role="button" aria-label="Filter by employment type">Employment type <i class="fcaret">▾</i></span></th>
+                <th><span class="th-filter" data-col="currency" tabindex="0" role="button" aria-label="Filter by currency">Currency <i class="fcaret">▾</i></span></th>
                 <th>FX Rate</th>
                 <th class="num-col">Gross pay</th>
                 <th class="num-col"><span class="th-sort">Total payout <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-sort"/></svg></span></th>
-                <th><span class="th-sort">Status <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-sort"/></svg></span></th>
+                <th><span class="th-filter" data-col="status" tabindex="0" role="button" aria-label="Filter by status">Status <i class="fcaret">▾</i></span></th>
                 <th></th>
               </tr>
             </thead>
@@ -535,12 +565,12 @@
       var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
       var PT_AMOUNT = 200;            // professional tax — fixed, charged once (in cycle 1)
       var MONTHLY_TOTAL = 255230775.96; // headline monthly payout (all personnel)
-      var CURRENT_PERIOD = MONTHS[new Date().getMonth()] + ' ' + new Date().getFullYear();
       var freq = 'monthly';           // 'weekly' | 'bi' | 'monthly'
       var currentCycle = 1;
       var cycleRows = Array.prototype.slice.call(document.getElementById('payTable').tBodies[0].rows);
 
       // Element refs
+      var periodSel = document.getElementById('periodSel');
       var freqSel = document.getElementById('freqSel');
       var cycleSel = document.getElementById('cycleSel');
       var cycleSelWrap = document.getElementById('cycleSelWrap');
@@ -549,7 +579,7 @@
       freq = freqSel.value; // keep in sync with the select ('monthly' default)
 
       function monthInfo() {
-        var parts = CURRENT_PERIOD.split(' ');
+        var parts = ((periodSel && periodSel.value) || 'July 2026').split(' ');
         var idx = MONTHS.indexOf(parts[0]);
         var year = parseInt(parts[1], 10);
         var eom = new Date(year, idx + 1, 0).getDate();
@@ -588,12 +618,81 @@
       var SAMPLE = { basic: 50000, hra: 25000, sa: 25000, tds: 8000, pf: 1800, pt: 200 };
 
       // Snapshot the monthly figures once, so re-rendering never compounds.
-      cycleRows.forEach(function (tr) {
+      // Also assign each employee a pay frequency so the list can filter by cycle.
+      var ROW_FREQS = ['monthly', 'bi', 'weekly'];
+      cycleRows.forEach(function (tr, i) {
         var cells = tr.querySelectorAll('td.num-col span');
         if (cells.length < 2) return;
         tr.dataset.mGross = parseNum(cells[0].textContent);
         tr.dataset.mNet = parseNum(cells[1].textContent);
+        if (!tr.dataset.freq) tr.dataset.freq = ROW_FREQS[i % ROW_FREQS.length];
       });
+
+      // ---- Column-header multi-select filters ----
+      var COL_INDEX = { client: 2, type: 4, currency: 5, status: 9 };
+      var colFilters = { client: new Set(), type: new Set(), currency: new Set(), status: new Set() };
+      function rowColVal(tr, key) { var td = tr.children[COL_INDEX[key]]; return td ? td.textContent.replace(/\s+/g, ' ').trim() : ''; }
+      function colOptions(key) { var seen = {}; cycleRows.forEach(function (tr) { var v = rowColVal(tr, key); if (v) seen[v] = 1; }); return Object.keys(seen).sort(); }
+      function rowPassesColumns(tr) {
+        for (var key in colFilters) { if (colFilters[key].size && !colFilters[key].has(rowColVal(tr, key))) return false; }
+        return true;
+      }
+
+      var colPop = document.createElement('div');
+      colPop.className = 'col-filter-pop';
+      document.body.appendChild(colPop);
+      var openCol = null;
+
+      function buildColPop(key) {
+        colPop.innerHTML = colOptions(key).map(function (v) {
+          return '<label><input type="checkbox" value="' + v.replace(/"/g, '&quot;') + '"' + (colFilters[key].has(v) ? ' checked' : '') + '>' + v + '</label>';
+        }).join('') + (colFilters[key].size ? '<button type="button" class="cf-clear">Clear filter</button>' : '');
+      }
+      function openColFilter(key, anchor) {
+        if (openCol === key) return closeColFilter();
+        openCol = key; buildColPop(key);
+        var r = anchor.getBoundingClientRect();
+        colPop.style.left = Math.max(8, Math.min(r.left, window.innerWidth - 220)) + 'px';
+        colPop.style.top = (r.bottom + 8) + 'px';
+        colPop.classList.add('open');
+      }
+      function closeColFilter() { openCol = null; colPop.classList.remove('open'); }
+      function syncClearBtn(key) {
+        var existing = colPop.querySelector('.cf-clear');
+        if (colFilters[key].size && !existing) {
+          var b = document.createElement('button'); b.type = 'button'; b.className = 'cf-clear'; b.textContent = 'Clear filter';
+          colPop.appendChild(b);
+        } else if (!colFilters[key].size && existing) { existing.remove(); }
+      }
+
+      colPop.addEventListener('change', function (e) {
+        if (!openCol || e.target.type !== 'checkbox') return;
+        if (e.target.checked) colFilters[openCol].add(e.target.value); else colFilters[openCol].delete(e.target.value);
+        applyFilters();
+        syncClearBtn(openCol); // toggle the "Clear filter" button without rebuilding checkboxes
+      });
+      colPop.addEventListener('click', function (e) {
+        if (e.target.classList.contains('cf-clear') && openCol) { colFilters[openCol].clear(); buildColPop(openCol); applyFilters(); }
+      });
+      Array.prototype.slice.call(document.querySelectorAll('.th-filter')).forEach(function (h) {
+        h.addEventListener('click', function (e) { e.stopPropagation(); openColFilter(h.dataset.col, h); });
+        h.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openColFilter(h.dataset.col, h); } });
+      });
+      document.addEventListener('click', function (e) {
+        if (openCol && !colPop.contains(e.target) && !e.target.closest('.th-filter')) closeColFilter();
+      });
+
+      function updateHeaderStates() {
+        Array.prototype.slice.call(document.querySelectorAll('.th-filter')).forEach(function (h) {
+          var n = colFilters[h.dataset.col].size;
+          h.classList.toggle('active', n > 0);
+          var badge = h.querySelector('.fcount');
+          if (n > 0) {
+            if (!badge) { badge = document.createElement('span'); badge.className = 'fcount'; h.insertBefore(badge, h.querySelector('.fcaret')); }
+            badge.textContent = n;
+          } else if (badge) { badge.remove(); }
+        });
+      }
 
       // Payslip template — proportions and PT presence change with the selected cycle.
       function renderPayslip(div, c, sel, m, single) {
@@ -660,6 +759,9 @@
           if (typeof cycleSel._wmRebuildMenu === 'function') cycleSel._wmRebuildMenu();
         }
 
+        // Show only the employees paid in the selected frequency (combined with search)
+        applyFilters();
+
         // Payslip template (varies with the selected cycle)
         renderPayslip(div, currentCycle, sel, m, single);
 
@@ -670,6 +772,7 @@
         resetLifecycle();
       }
 
+      periodSel.addEventListener('change', render);
       freqSel.addEventListener('change', function () { freq = freqSel.value; currentCycle = 1; render(); });
       cycleSel.addEventListener('change', function () { currentCycle = parseInt(cycleSel.value, 10) || 1; render(); });
 
@@ -694,21 +797,28 @@
         WMUI.toast('Preparing payroll export…');
       });
 
-      // ---- Global search ----
-      var table = document.getElementById('payTable');
-      var bodyRows = Array.prototype.slice.call(table.tBodies[0].rows);
+      // ---- Global search + frequency filter ----
       var search = document.getElementById('paySearch');
-      var empty = document.querySelector('.wm-table-empty');
 
+      // A row shows only if it matches the selected pay frequency AND the search text.
       function applyFilters() {
-        var q = (search.value || '').toLowerCase().trim();
+        var searchEl = document.getElementById('paySearch');
+        var q = ((searchEl && searchEl.value) || '').toLowerCase().trim();
         var visible = 0;
-        bodyRows.forEach(function (tr) {
-          var show = !q || tr.textContent.toLowerCase().indexOf(q) !== -1;
+        cycleRows.forEach(function (tr) {
+          var matchFreq = tr.dataset.freq === freq;
+          var matchSearch = !q || tr.textContent.toLowerCase().indexOf(q) !== -1;
+          var show = matchFreq && matchSearch && rowPassesColumns(tr);
           tr.style.display = show ? '' : 'none';
           if (show) visible++;
         });
+        updateHeaderStates();
+        var empty = document.querySelector('.wm-table-empty');
         if (empty) empty.classList.toggle('show', visible === 0);
+        // Status counts reflect the employees shown for this frequency (all are "Skipped" here)
+        var totalB = document.querySelector('.sc.total b'), skipB = document.querySelector('.sc.skip b');
+        if (totalB) totalB.textContent = visible;
+        if (skipB) skipB.textContent = visible;
         var vis = visibleRows();
         var checked = vis.filter(function (x) { return x.checked; });
         checkAll.checked = vis.length > 0 && checked.length === vis.length;
