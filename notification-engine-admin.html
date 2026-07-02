@@ -579,35 +579,45 @@
   .wm-dd-item.is-hidden,
   .wm-dd-group-header.is-hidden { display: none; }
 
-  /* Template variable picker chips */
+  /* Template variable picker chips — subtler outlined tags */
   .tpl-var-chips {
-    display: flex; flex-wrap: wrap; gap: 6px;
+    display: flex; flex-wrap: wrap; gap: 8px;
     align-items: center;
-    margin: 6px 0 12px;
+    margin: 18px 0 4px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--border-strong);
   }
   .tpl-var-chips-label {
+    width: 100%;
     font-size: 11px; font-weight: 700;
     color: var(--neutral-500);
-    text-transform: uppercase; letter-spacing: 0.4px;
-    margin-right: 4px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 2px;
   }
   .tpl-var-chip {
     font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
+    background: transparent;
+    color: var(--neutral-700);
+    border: 1px solid var(--border-strong);
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 100ms ease;
+    line-height: 1.5;
+    letter-spacing: 0.2px;
+  }
+  .tpl-var-chip:hover {
     background: var(--primary-50);
     color: var(--primary-700);
-    border: 1px solid var(--primary-100);
-    padding: 3px 9px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 100ms ease, transform 100ms ease;
-    line-height: 1.4;
+    border-color: var(--primary-200);
   }
-  .tpl-var-chip:hover { background: var(--primary-100); }
-  .tpl-var-chip:active { transform: scale(0.95); }
-  .tpl-var-chip::before { content: '{'; opacity: 0.5; }
-  .tpl-var-chip::after  { content: '}'; opacity: 0.5; }
+  .tpl-var-chip:active { transform: scale(0.97); }
+  .tpl-var-chip::before { content: '{'; color: var(--neutral-400); }
+  .tpl-var-chip::after  { content: '}'; color: var(--neutral-400); }
+  .tpl-var-chip:hover::before,
+  .tpl-var-chip:hover::after { color: var(--primary-500); }
 
   /* Multi-select dropdown */
   .wm-dd-item .wm-dd-check {
@@ -1242,8 +1252,8 @@
     <div class="field-row">
       <label class="field-label">Notification template</label>
 
-      <div style="display:flex; flex-direction:column; gap:10px; margin-top:6px;">
-        <input class="tpl-input" id="new-rule-subject" type="text" placeholder="Subject — e.g. ⚠️ {client} — payslip ready" />
+      <div style="display:flex; flex-direction:column; gap:12px; margin-top:8px;">
+        <input class="tpl-input" id="new-rule-subject" type="text" placeholder="Subject — e.g. {client} — payslip ready" />
         <textarea class="tpl-textarea" id="new-rule-body" rows="3" placeholder="Body — e.g. The payslip for {month} is ready to download for {employee}."></textarea>
         <input class="tpl-input" id="new-rule-cta" type="text" placeholder="CTA — e.g. Download payslip" style="max-width:280px;" />
       </div>
