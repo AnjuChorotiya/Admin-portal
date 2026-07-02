@@ -576,7 +576,8 @@
     min-width: 0;
   }
   .wm-dropdown--combobox .wm-dd-input::placeholder { color: var(--neutral-400); }
-  .wm-dd-item.is-hidden { display: none; }
+  .wm-dd-item.is-hidden,
+  .wm-dd-group-header.is-hidden { display: none; }
 
   /* Template variable picker chips */
   .tpl-var-chips {
@@ -1573,43 +1574,81 @@
   }
   function newRule() { showNewRuleModal(); }
 
-  // A mocked "DB" of available product events the engine can route. In
-  // production this list would come from a backend endpoint. The list
-  // includes everything already in the modules data plus a handful of
-  // catalogue entries that aren't yet configured.
-  const eventCatalogue = [
-    // Additional unconfigured events the user can subscribe to
-    'Payslip download requested',
-    'Profile photo updated',
-    'Bank details verified',
-    'Investment proof rejected',
-    'Holiday calendar published',
-    'New policy document available',
-    'Asset assigned to employee',
-    'Asset return requested',
-    'Anniversary reminder',
-    'Birthday reminder',
-  ];
+  // A mocked "DB" of available product events grouped by module. In
+  // production this would come from a backend endpoint. Each key is a
+  // module label; each value is the list of extra catalogue events
+  // beyond what's already configured in modules[]. Configured events
+  // are merged in automatically per-module.
+  const catalogueByModule = {
+    'Onboarding': [
+      'Signup completed',
+      'Client account created',
+      'MSA signed',
+      'Onboarding call scheduled',
+    ],
+    'Employees': [
+      'Profile photo updated',
+      'Bank details verified',
+      'Asset assigned to employee',
+      'Asset return requested',
+      'Anniversary reminder',
+      'Birthday reminder',
+    ],
+    'Payroll': [
+      'Payslip download requested',
+    ],
+    'Compliance': [
+      'Investment proof rejected',
+      'New policy document available',
+    ],
+    'Leaves': [
+      'Holiday calendar published',
+    ],
+    'Invoicing': [],
+    'Contractors': [],
+    'Account': [],
+  };
 
-  function getEventCatalogue() {
-    const fromData = allEvents().map(e => e.name);
-    // Merge while preserving order and deduping
-    const seen = new Set();
-    const combined = [...fromData, ...eventCatalogue].filter(name => {
-      const k = name.toLowerCase();
-      if (seen.has(k)) return false;
-      seen.add(k);
-      return true;
-    });
-    return combined.sort((a, b) => a.localeCompare(b));
-  }
+  const moduleOrder = ['Onboarding','Employees','Payroll','Leaves','Compliance','Invoicing','Contractors','Account','Custom'];
 
   function populateNewRuleEventSelect() {
     const sel = document.getElementById('new-rule-event');
-    const list = getEventCatalogue();
-    sel.innerHTML = '<option value="">Pick an event…</option>'
-      + list.map(name => `<option value="${escapeText(name)}">${escapeText(name)}</option>`).join('');
-    // Re-build the wm-dropdown menu so the new options appear
+    if (!sel) return;
+
+    // Build a "configured events" list per existing module
+    const configured = {};
+    modules.forEach(m => {
+      configured[m.name] = m.events.map(e => e.name);
+    });
+
+    // Union: for each module in a canonical order, merge configured +
+    // catalogue additions, sort, then emit an <optgroup>.
+    const groups = [];
+    const knownModules = new Set([...Object.keys(catalogueByModule), ...Object.keys(configured)]);
+    const ordered = moduleOrder.filter(m => knownModules.has(m));
+    // Include any module names that aren't in the canonical order but exist in data
+    Array.from(knownModules).forEach(m => { if (!ordered.includes(m)) ordered.push(m); });
+
+    ordered.forEach(mod => {
+      const seen = new Set();
+      const events = [
+        ...(configured[mod] || []),
+        ...(catalogueByModule[mod] || []),
+      ].filter(name => {
+        const k = name.toLowerCase();
+        if (seen.has(k)) return false;
+        seen.add(k);
+        return true;
+      }).sort((a, b) => a.localeCompare(b));
+      if (events.length) groups.push({ mod, events });
+    });
+
+    const optgroups = groups.map(({ mod, events }) => {
+      const opts = events.map(name => `<option value="${escapeText(name)}">${escapeText(name)}</option>`).join('');
+      return `<optgroup label="${escapeText(mod)}">${opts}</optgroup>`;
+    }).join('');
+
+    sel.innerHTML = '<option value="">Pick an event…</option>' + optgroups;
     if (typeof sel._wmRebuild === 'function') sel._wmRebuild();
   }
 
@@ -2407,22 +2446,25 @@
       Array.from(selectEl.children).forEach(child => {
         if (child.tagName === 'OPTGROUP') {
           const header = document.createElement('div');
-          header.style.cssText = "font-family:'Open Sans',sans-serif;font-weight:300;font-size:11px;color:var(--wm-text-muted);text-transform:uppercase;letter-spacing:.5px;padding:8px 12px 4px;";
+          header.className = 'wm-dd-group-header';
+          header.dataset.group = child.label;
+          header.style.cssText = "font-family:'Open Sans',sans-serif;font-weight:300;font-size:11px;color:var(--wm-text-muted);text-transform:uppercase;letter-spacing:.5px;padding:10px 12px 4px;";
           header.textContent = child.label;
           menu.appendChild(header);
-          Array.from(child.children).forEach(opt => appendItem(opt));
+          Array.from(child.children).forEach(opt => appendItem(opt, child.label));
         } else if (child.tagName === 'OPTION') {
-          appendItem(child);
+          appendItem(child, null);
         }
       });
     }
-    function appendItem(opt) {
+    function appendItem(opt, groupLabel) {
       const item = document.createElement('button');
       item.type = 'button';
       const isSelected = isMulti ? opt.selected : (opt.value === selectEl.value);
       item.className = 'wm-dd-item' + (isSelected ? ' selected' : '');
       item.dataset.value = opt.value;
       item.dataset.label = opt.textContent;
+      if (groupLabel) item.dataset.group = groupLabel;
       if (isMulti) {
         item.innerHTML = `<span class="wm-dd-check ${isSelected ? 'checked' : ''}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>${escapeText(opt.textContent)}</span>`;
         item.addEventListener('click', e => {
@@ -2471,16 +2513,23 @@
 
     function filterMenuByQuery(q) {
       const ql = (q || '').toLowerCase().trim();
+      const visibleGroups = new Set();
       let any = false;
       menu.querySelectorAll('.wm-dd-item').forEach(item => {
-        // Skip the placeholder "Pick an event…" row when typing
         const v = item.dataset.value || '';
         const text = (item.dataset.label || '').toLowerCase();
         const hide = ql !== '' && (!v || !text.includes(ql));
         item.classList.toggle('is-hidden', hide);
-        if (!hide) any = true;
+        if (!hide) {
+          any = true;
+          if (item.dataset.group) visibleGroups.add(item.dataset.group);
+        }
       });
-      // Hide empty-state if any visible
+      // Hide group headers whose group has no visible items
+      menu.querySelectorAll('.wm-dd-group-header').forEach(h => {
+        const g = h.dataset.group;
+        h.classList.toggle('is-hidden', ql !== '' && !visibleGroups.has(g));
+      });
       return any;
     }
 
