@@ -1580,11 +1580,19 @@
   // beyond what's already configured in modules[]. Configured events
   // are merged in automatically per-module.
   const catalogueByModule = {
-    'Onboarding': [
+    'Signup': [
+      'Signup started',
+      'Email verified',
+      'Password set',
       'Signup completed',
+      'Free trial started',
+    ],
+    'Onboarding': [
       'Client account created',
       'MSA signed',
       'Onboarding call scheduled',
+      'First hire added',
+      'Product tour completed',
     ],
     'Employees': [
       'Profile photo updated',
@@ -1597,19 +1605,27 @@
     'Payroll': [
       'Payslip download requested',
     ],
+    'Leaves': [
+      'Holiday calendar published',
+    ],
     'Compliance': [
       'Investment proof rejected',
       'New policy document available',
     ],
-    'Leaves': [
-      'Holiday calendar published',
-    ],
     'Invoicing': [],
     'Contractors': [],
     'Account': [],
+    'Offboarding': [
+      'Resignation submitted',
+      'Full and final settled',
+      'Exit interview scheduled',
+    ],
   };
 
-  const moduleOrder = ['Onboarding','Employees','Payroll','Leaves','Compliance','Invoicing','Contractors','Account','Custom'];
+  // Reads left → right as the customer + employee lifecycle:
+  // signup → onboard → employee lifecycle → payroll → leaves →
+  // compliance → invoicing → contractors → account → offboarding
+  const moduleOrder = ['Signup','Onboarding','Employees','Payroll','Leaves','Compliance','Invoicing','Contractors','Account','Offboarding','Custom'];
 
   function populateNewRuleEventSelect() {
     const sel = document.getElementById('new-rule-event');
